@@ -129,6 +129,7 @@ namespace EdmConstants {
         constexpr uint32_t DISALLOW_NEAR_LINK = 18;
         constexpr uint32_t DISABLE_DEVELOPER_MODE = 20;
         constexpr uint32_t DISABLE_RESET_FACTORY = 21;
+        constexpr uint32_t DISABLE_SECURE_ERAS = 27;
         constexpr uint32_t DISABLE_OTA = 23;
         constexpr uint32_t DISALLOWED_NFC = 24;
         constexpr uint32_t DISALLOW_REMOTE_DESK = 25;
@@ -205,6 +206,7 @@ namespace EdmConstants {
         const char* const LABEL_DISALLOWED_POLICY_VIRTUAL_SERVICE = "virtualService";
         const char* const LABEL_DISALLOWED_POLICY_MODIFY_WALLPAPER = "modifyWallpaper";
         const char* const LABEL_DISALLOWED_POLICY_USB_SERIAL = "usbSerial";
+        const char* const LABEL_DISALLOWED_POLICY_SECURE_ERAS = "secureEras";
         const char* const LABEL_DISALLOWED_POLICY_SUPERHUB = "superhub";
         const char* const LABEL_DISALLOWED_POLICY_MULTI_WINDOW = "multiWindow";
     } // namespace Restrictions
@@ -437,6 +439,7 @@ namespace PolicyName {
         "install_enterprise_re_signature_certificate";
     const char* const POLICY_SET_KEY_CODE = "set_key_code";
     const char* const POLICY_DISALLOW_USB_SERIAL = "disallow_usb_serial";
+    const char* const POLICY_DISALLOW_SECURE_ERAS = "disallow_secure_eras";
     const char* const POLICY_DISALLOW_UINPUT = "disallow_uinput";
     const char* const POLICY_DISABLED_ACTIVATION_LOCK = "disable_activation_lock";
     const char* const POLICY_ACTIVE_SIM = "active_sim";
