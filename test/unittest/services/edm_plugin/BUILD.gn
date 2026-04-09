@@ -434,6 +434,7 @@ ohos_unittest("EdmFingerPrintPluginTest") {
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
+    "udmf:udmf_client",
     "window_manager:session_manager_lite",
   ]
 
@@ -556,6 +557,7 @@ ohos_static_library("edm_all_plugin_static") {
     "imf:inputmethod_client",
     "ipc:ipc_core",
     "samgr:samgr_proxy",
+    "udmf:udmf_client",
     "window_manager:libwm",
     "window_manager:sms",
     "window_manager:session_manager_lite",
