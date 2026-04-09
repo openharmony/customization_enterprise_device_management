@@ -174,6 +174,7 @@
 #include "disallow_modify_datetime_query.h"
 #include "disallow_unmute_device_query.h"
 #include "disallow_usb_serial_query.h"
+#include "disallow_secure_eras_query.h"
 #include "disallow_uinput_query.h"
 #include "disallow_virtual_service_query.h"
 #include "disallowed_install_bundles_query.h"
@@ -754,6 +755,9 @@ ErrCode PluginPolicyReader::GetPolicyQueryTenth(std::shared_ptr<IPolicyQuery> &o
 #endif
         case EdmInterfaceCode::DISALLOW_USB_SERIAL:
             obj = std::make_shared<DisallowUsbSerialQuery>();
+            return ERR_OK;
+        case EdmInterfaceCode::POLICY_CODE_END + 27:
+            obj = std::make_shared<DisallowSecureErasQuery>();
             return ERR_OK;
         case EdmInterfaceCode::INSTALL_LOCAL_ENTERPRISE_APP_ENABLED_FOR_ACCOUNT:
 #ifdef FEATURE_PC_ONLY
