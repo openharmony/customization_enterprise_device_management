@@ -27,7 +27,8 @@ void DisallowSecureErasPlugin::InitPlugin(std::shared_ptr<IPluginTemplate<Disall
     ptr)
 {
     EDMLOGI("DisallowSecureErasPlugin InitPlugin...");
-    ptr->InitAttribute(EdmInterfaceCode::POLICY_CODE_END + 27, PolicyName::POLICY_DISALLOW_SECURE_ERAS,
+    ptr->InitAttribute(EdmInterfaceCode::POLICY_CODE_END + EdmConstants::PolicyCode::DISABLE_SECURE_ERAS,
+        PolicyName::POLICY_DISALLOW_SECURE_ERAS,
         EdmPermission::PERMISSION_ENTERPRISE_MANAGE_RESTRICTIONS, IPlugin::PermissionType::SUPER_DEVICE_ADMIN, true);
     ptr->SetSerializer(BoolSerializer::GetInstance());
     ptr->SetOnHandlePolicyListener(&DisallowSecureErasPlugin::OnSetPolicy, FuncOperateType::SET);
