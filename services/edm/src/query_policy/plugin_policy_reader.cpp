@@ -756,7 +756,7 @@ ErrCode PluginPolicyReader::GetPolicyQueryTenth(std::shared_ptr<IPolicyQuery> &o
         case EdmInterfaceCode::DISALLOW_USB_SERIAL:
             obj = std::make_shared<DisallowUsbSerialQuery>();
             return ERR_OK;
-        case EdmInterfaceCode::POLICY_CODE_END + 27:
+        case EdmInterfaceCode::POLICY_CODE_END + EdmConstants::PolicyCode::DISABLE_SECURE_ERAS:
             obj = std::make_shared<DisallowSecureErasQuery>();
             return ERR_OK;
         case EdmInterfaceCode::INSTALL_LOCAL_ENTERPRISE_APP_ENABLED_FOR_ACCOUNT:
