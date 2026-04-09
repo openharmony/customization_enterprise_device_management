@@ -125,6 +125,7 @@ ohos_unittest("EdmPluginTest") {
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
     "data_share:datashare_consumer",
+    "udmf:udmf_client",
     "window_manager:session_manager_lite",
   ]
 
