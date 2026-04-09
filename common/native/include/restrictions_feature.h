@@ -22,6 +22,7 @@ enum class RestrictionsFeature : int32_t {
     WIFI_P2P = 0,
     LOCAL_INPUT = 2,
     CORE_DUMP = 6,
+    SECURE_ERASE = 8,
 };
 } // namespace EDM
 } // namespace OHOS

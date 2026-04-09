@@ -92,7 +92,6 @@ std::vector<uint32_t> PermissionChecker::supportAdminNullPolicyCode_ = {
     EdmInterfaceCode::DISABLED_HDC_REMOTE,
     EdmInterfaceCode::DISALLOW_MODIFY_WALLPAPER,
     EdmInterfaceCode::DISALLOW_USB_SERIAL,
-    EdmInterfaceCode::POLICY_CODE_END + EdmConstants::PolicyCode::DISABLE_SECURE_ERAS,
     EdmInterfaceCode::DISALLOWED_UINPUT,
     EdmInterfaceCode::SET_INSTALL_LOCAL_ENTERPRISE_APP_ENABLED,
     EdmInterfaceCode::INSTALL_LOCAL_ENTERPRISE_APP_ENABLED_FOR_ACCOUNT,
@@ -126,7 +125,7 @@ std::unordered_set<std::string> PermissionChecker::allowDelegatedPolicies_ = {
     PolicyName::POLICY_INSTALLED_BUNDLE_INFO_LIST, PolicyName::POLICY_CLEAR_UP_APPLICATION_DATA,
     PolicyName::POLICY_ALLOW_ALL, PolicyName::POLICY_DISABLED_HDC_REMOTE,
     PolicyName::POLICY_DISALLOW_UNMUTE_DEVICE, PolicyName::POLICY_DISALLOW_VIRTUAL_SERVICE,
-    PolicyName::POLICY_DISALLOW_USB_SERIAL, PolicyName::POLICY_DISALLOW_SECURE_ERAS,
+    PolicyName::POLICY_DISALLOW_USB_SERIAL,
 };
 
 std::shared_ptr<PermissionChecker> PermissionChecker::GetInstance()

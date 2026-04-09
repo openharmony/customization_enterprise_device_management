@@ -71,7 +71,6 @@ std::unordered_map<std::string, uint32_t> RestrictionsAddon::labelCodeMap = {
     {EdmConstants::Restrictions::LABEL_DISALLOWED_POLICY_UNMUTE_DEVICE, EdmInterfaceCode::DISALLOW_UNMUTE_DEVICE},
     {EdmConstants::Restrictions::LABEL_DISALLOWED_POLICY_VIRTUAL_SERVICE, EdmInterfaceCode::DISALLOW_VIRTUAL_SERVICE},
     {EdmConstants::Restrictions::LABEL_DISALLOWED_POLICY_USB_SERIAL, EdmInterfaceCode::DISALLOW_USB_SERIAL},
-    {EdmConstants::Restrictions::LABEL_DISALLOWED_POLICY_SECURE_ERAS, EdmInterfaceCode::POLICY_CODE_END + EdmConstants::PolicyCode::DISABLE_SECURE_ERAS},
 };
 
 std::unordered_map<std::string, uint32_t> RestrictionsAddon::itemCodeMap = {
@@ -127,6 +126,8 @@ std::unordered_map<int32_t, uint32_t> RestrictionsAddon::featureEnum2InterfaceCo
     {static_cast<int32_t>(RestrictionsFeature::WIFI_P2P), EdmInterfaceCode::DISALLOWED_P2P},
     {static_cast<int32_t>(RestrictionsFeature::LOCAL_INPUT), EdmInterfaceCode::DISALLOWED_UINPUT},
     {static_cast<int32_t>(RestrictionsFeature::CORE_DUMP), EdmInterfaceCode::DISALLOW_CORE_DUMP},
+    {static_cast<int32_t>(RestrictionsFeature::SECURE_ERASE),
+        EdmInterfaceCode::POLICY_CODE_END + EdmConstants::PolicyCode::DISABLE_SECURE_ERAS},
 };
 
 napi_value RestrictionsAddon::Init(napi_env env, napi_value exports)
