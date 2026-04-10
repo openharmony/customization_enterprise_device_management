@@ -117,7 +117,6 @@ std::unordered_map<std::string, uint32_t> RestrictionsAddon::labelCodeMapForAcco
         EdmInterfaceCode::DISALLOWED_USB_STORAGE_DEVICE_WRITE},
     {EdmConstants::Restrictions::LABEL_DISALLOWED_POLICY_PRINT, EdmInterfaceCode::DISABLED_PRINT},
     {EdmConstants::Restrictions::LABEL_DISALLOWED_POLICY_OPEN_FILE_BOOST, EdmInterfaceCode::DISALLOWED_FILEBOOST_OPEN},
-    {EdmConstants::Restrictions::LABEL_DISALLOWED_POLICY_MULTI_WINDOW, EdmInterfaceCode::DISALLOWED_MULTI_WINDOW},
 };
 
 std::unordered_map<int32_t, uint32_t> RestrictionsAddon::featureEnum2InterfaceCodeMap = {
@@ -127,6 +126,8 @@ std::unordered_map<int32_t, uint32_t> RestrictionsAddon::featureEnum2InterfaceCo
 };
 
 std::unordered_map<int32_t, uint32_t> RestrictionsAddon::featureForAccountEnum2InterfaceCodeMap = {
+    {static_cast<int32_t>(RestrictionsFeatureForAccount::MULTI_WINDOW),
+        EdmInterfaceCode::DISALLOWED_MULTI_WINDOW},
     {static_cast<int32_t>(RestrictionsFeatureForAccount::SUPER_HUB),
         POLICY_CODE_END + EdmConstants::PolicyCode::DISABLE_SUPERHUB},
 };
@@ -971,6 +972,10 @@ void RestrictionsAddon::CreateFeatureForDeviceObject(napi_env env, napi_value va
 
 void RestrictionsAddon::CreateFeatureForAccountObject(napi_env env, napi_value value)
 {
+    napi_value nMultiWindow;
+    NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env,
+        static_cast<uint32_t>(RestrictionsFeatureForAccount::MULTI_WINDOW), &nMultiWindow));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "MULTI_WINDOW", nMultiWindow));
     napi_value nSuperHub;
     NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env,
         static_cast<uint32_t>(RestrictionsFeatureForAccount::SUPER_HUB), &nSuperHub));
