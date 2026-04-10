@@ -83,5 +83,17 @@ ErrCode EdmDataAbilityUtils::GetIntFromSettingsDataShare(const std::string &strU
     value = 0;
     return ERR_OK;
 }
+
+ErrCode EdmDataAbilityUtils::UpdateSettingsData(const std::string &baseUri, const std::string &key,
+    const std::string &value)
+{
+    GTEST_LOG_(INFO) << "mock EdmDataAbilityUtils UpdateSettingsData start: " << result_.c_str();
+    if (result_ == "SYSTEM_ABNORMALLY") {
+        GTEST_LOG_(INFO) << "mock EdmDataAbilityUtils result SYSTEM_ABNORMALLY";
+        return EdmReturnErrCode::SYSTEM_ABNORMALLY;
+    }
+    GTEST_LOG_(INFO) << "mock EdmDataAbilityUtils test Success";
+    return ERR_OK;
+}
 } // namespace EDM
 } // namespace OHOS
