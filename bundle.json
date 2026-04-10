@@ -91,6 +91,7 @@
         "ipc",
         "location",
         "napi",
+        "nfc",
         "os_account",
         "pasteboard",
         "power_manager",
