@@ -117,6 +117,8 @@
             vtable?for?OHOS::EDM::BluetoothProtocolPolicySerializer;
             OHOS::EDM::ScreenWatermarkImageSerializer::*;
             vtable?for?OHOS::EDM::ScreenWatermarkImageSerializer;
+            OHOS::EDM::EnableSelfDeviceAdminParamSerializer::*;
+            vtable?for?OHOS::EDM::EnableSelfDeviceAdminParamSerializer;
         };
     local:
         *;

@@ -56,6 +56,8 @@ namespace EdmReturnErrCode {
     constexpr uint32_t START_ABILITY_FAILED = 9200014;
     constexpr uint32_t ABILITY_NOT_EXIST = 9200015;
     constexpr uint32_t EXECUTE_TIME_OUT = 9200016;
+    constexpr uint32_t CHECK_CREDENTIAL_FAILED = 9200017;
+    constexpr uint32_t NOT_ENTERPRISE_DEVICE = 9200018;
 
     constexpr uint32_t MANAGED_CERTIFICATE_FAILED = 9201001;
     constexpr uint32_t APPLICATION_INSTALL_FAILED = 9201002;

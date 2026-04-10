@@ -24,7 +24,6 @@ namespace EDM {
 namespace TEST {
 uint64_t Utils::selfTokenId_ = 0;
 uint64_t Utils::mockTokenId_ = 0;
-constexpr int32_t DEFAULT_USER_ID = 100;
 constexpr int32_t API_VERSION = 12;
 const std::string SET_EDM_SERVICE = "persist.edm.edm_enable";
 const std::string SET_EDC_SERVICE = "persist.edm.edm_ext_enable";
