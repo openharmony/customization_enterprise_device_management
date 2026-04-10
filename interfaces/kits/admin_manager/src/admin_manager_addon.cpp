@@ -170,6 +170,40 @@ napi_value AdminManager::ReplaceSuperAdmin(napi_env env, napi_callback_info info
     return nullptr;
 }
 
+napi_value AdminManager::EnableSelfDeviceAdmin(napi_env env, napi_callback_info info)
+{
+#ifdef FEATURE_PC_ONLY
+    EDMLOGI("NAPI_EnableSelfDeviceAdmin called");
+    AppExecFwk::ElementName admin;
+    std::string credential;
+    size_t argc = ARGS_SIZE_TWO;
+    napi_value argv[ARGS_SIZE_TWO] = {nullptr};
+    napi_value thisArg = nullptr;
+    void *data = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisArg, &data));
+    ASSERT_AND_THROW_PARAM_ERROR(env, argc >= ARGS_SIZE_TWO, "Parameter count error");
+    bool matchFlag = MatchValueType(env, argv[ARR_INDEX_ZERO], napi_object) &&
+        MatchValueType(env, argv[ARR_INDEX_ONE], napi_string);
+
+    ASSERT_AND_THROW_PARAM_ERROR(env, matchFlag, "parameter type error");
+    ASSERT_AND_THROW_PARAM_ERROR(env, ParseElementName(env, admin, argv[ARR_INDEX_ZERO]),
+        "admin param error");
+    ASSERT_AND_THROW_PARAM_ERROR(env, ParseString(env, credential, argv[ARR_INDEX_ONE]),
+        "credential param error");
+
+    auto proxy = EnterpriseDeviceMgrProxy::GetInstance();
+    int32_t retCode = proxy->EnableSelfDeviceAdmin(admin, credential);
+    if (FAILED(retCode)) {
+        napi_throw(env, CreateError(env, retCode));
+    }
+    return nullptr;
+#else
+    EDMLOGW("AdminManager::EnableSelfDeviceAdmin Unsupported Capabilities.");
+    napi_throw(env, CreateError(env, EdmReturnErrCode::INTERFACE_UNSUPPORTED));
+    return nullptr;
+#endif
+}
+
 AdminType AdminManager::ParseAdminType(int32_t type)
 {
     if (type == static_cast<int32_t>(AdminType::NORMAL) || type == static_cast<int32_t>(AdminType::ENT) ||
@@ -1311,6 +1345,7 @@ napi_value AdminManager::Init(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("enableDeviceAdmin", EnableDeviceAdmin),
         DECLARE_NAPI_FUNCTION("disableDeviceAdmin", DisableDeviceAdmin),
         DECLARE_NAPI_FUNCTION("getEnterpriseManagedTips", GetEnterpriseManagedTips),
+        DECLARE_NAPI_FUNCTION("enableSelfDeviceAdmin", EnableSelfDeviceAdmin),
 
         DECLARE_NAPI_PROPERTY("AdminType", nAdminType),
         DECLARE_NAPI_PROPERTY("ManagedEvent", nManagedEvent),

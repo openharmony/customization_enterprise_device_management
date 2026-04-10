@@ -69,7 +69,7 @@ bool EnterpriseDeviceMgrProxy::IsEdmExtEnabled()
 }
 
 ErrCode EnterpriseDeviceMgrProxy::EnableAdmin(AppExecFwk::ElementName &admin, EntInfo &entInfo, AdminType type,
-    int32_t userId)
+    int32_t userId, bool enableSelf)
 {
     EDMLOGD("EnterpriseDeviceMgrProxy::EnableAdmin");
     sptr<IRemoteObject> remote = LoadAndGetEdmService();
@@ -77,6 +77,10 @@ ErrCode EnterpriseDeviceMgrProxy::EnableAdmin(AppExecFwk::ElementName &admin, En
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;
     }
     sptr<IEnterpriseDeviceMgrIdl> mgrService = iface_cast<IEnterpriseDeviceMgrIdl>(remote);
+    if (enableSelf) {
+        EDMLOGD("EnterpriseDeviceMgrProxy::Enable Self Admin");
+        return mgrService->EnableAdmin(admin, entInfo, type, userId, true);
+    }
     return mgrService->EnableAdmin(admin, entInfo, type, userId);
 }
 
@@ -156,6 +160,17 @@ ErrCode EnterpriseDeviceMgrProxy::DisableSuperAdmin(const std::string &bundleNam
     }
     sptr<IEnterpriseDeviceMgrIdl> mgrService = iface_cast<IEnterpriseDeviceMgrIdl>(remote);
     return mgrService->DisableSuperAdmin(bundleName);
+}
+
+ErrCode EnterpriseDeviceMgrProxy::EnableSelfDeviceAdmin(const AppExecFwk::ElementName &admin, std::string &credential)
+{
+    EDMLOGD("EnterpriseDeviceMgrProxy::EnableSelfDeviceAdmin");
+    sptr<IRemoteObject> remote = LoadAndGetEdmService();
+    if (!remote) {
+        return EdmReturnErrCode::SYSTEM_ABNORMALLY;
+    }
+    sptr<IEnterpriseDeviceMgrIdl> mgrService = iface_cast<IEnterpriseDeviceMgrIdl>(remote);
+    return mgrService->EnableSelfDeviceAdmin(admin, credential);
 }
 
 ErrCode EnterpriseDeviceMgrProxy::GetEnabledAdmin(AdminType type, std::vector<std::string> &enabledAdminList)

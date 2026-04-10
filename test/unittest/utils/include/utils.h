@@ -25,6 +25,7 @@
 namespace OHOS {
 namespace EDM {
 namespace TEST {
+constexpr int32_t DEFAULT_USER_ID = 100;
 class Utils {
 public:
     static constexpr int32_t EDM_UID = 3057;

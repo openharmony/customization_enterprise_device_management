@@ -58,6 +58,7 @@
 #include "func_code_utils.h"
 #include "hisysevent_adapter.h"
 #include "language_manager.h"
+#include "notification_manager.h"
 #include "plugin_policy_reader.h"
 #include "policy_type.h"
 #include "update_policy_utils.h"
@@ -107,6 +108,9 @@ const int32_t AG_PERMISSION_INDEX = 2;
 constexpr int32_t MAX_SDA_AND_DA_COUNT = 10;
 constexpr int32_t BUNDLE_UPDATE_EVENT = 2;
 constexpr int32_t BUNDLE_INVALID_EVENT = -1;
+#if defined(FEATURE_PC_ONLY)
+constexpr float ICON_AXIS = 0.5;
+#endif
 const std::string EDM_LOG_PATH = "/data/service/el1/public/edm/log";
 const std::string PARAM_DISABLE_SLOT = "persist.edm.disable_slot_";
 const std::string OOBE_FINISHED_EVENT = "custom.event.OOBE.HWSTARTUPGUIDE.FINISHED";
@@ -1363,7 +1367,7 @@ bool EnterpriseDeviceMgrAbility::UnsubscribeAppState()
 ErrCode EnterpriseDeviceMgrAbility::VerifyEnableAdminCondition(const AppExecFwk::ElementName &admin, AdminType type,
     int32_t userId, bool isDebug)
 {
-    if ((type == AdminType::ENT || type == AdminType::NORMAL) && userId != DEFAULT_USER_ID) {
+    if ((type == AdminType::ENT || type == AdminType::NORMAL) && userId != EdmConstants::DEFAULT_USER_ID) {
         EDMLOGW("EnableAdmin: super device admin or device admin can only be enabled in default user.");
         return ERR_EDM_ADD_ADMIN_FAILED;
     }
@@ -1441,8 +1445,8 @@ ErrCode EnterpriseDeviceMgrAbility::CheckReplaceAdmins(const AppExecFwk::Element
         EDMLOGW("ReplaceSuperAdmin: VerifyEnableAdminCondition failed.");
         return EdmReturnErrCode::REPLACE_ADMIN_FAILED;
     }
-    if (FAILED(GetPermissionChecker()->GetAllPermissionsByAdmin(newAdmin.GetBundleName(), DEFAULT_USER_ID,
-        permissionList))) {
+    if (FAILED(GetPermissionChecker()->GetAllPermissionsByAdmin(newAdmin.GetBundleName(),
+        EdmConstants::DEFAULT_USER_ID, permissionList))) {
         EDMLOGW("ReplaceSuperAdmin: GetAllPermissionsByAdmin failed");
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;
     }
@@ -1557,7 +1561,8 @@ ErrCode EnterpriseDeviceMgrAbility::ReplaceSuperAdmin(const AppExecFwk::ElementN
         return EdmReturnErrCode::REPLACE_ADMIN_FAILED;
     }
     std::string adminName = oldAdmin.GetBundleName();
-    std::shared_ptr<Admin> adminPtr = AdminManager::GetInstance()->GetAdminByPkgName(adminName, DEFAULT_USER_ID);
+    std::shared_ptr<Admin> adminPtr = AdminManager::GetInstance()->GetAdminByPkgName(adminName,
+        EdmConstants::DEFAULT_USER_ID);
     if (adminPtr == nullptr) {
         EDMLOGE("ReplaceSuperAdmin adminName is not admin");
         return EdmReturnErrCode::ADMIN_INACTIVE;
@@ -1570,12 +1575,12 @@ ErrCode EnterpriseDeviceMgrAbility::ReplaceSuperAdmin(const AppExecFwk::ElementN
         std::string newAdminName = newAdmin.GetBundleName();
         HandleKeepPolicy(adminName, newAdminName, adminInfo, adminPtr->adminInfo_);
     } else {
-        ErrCode res = DoDisableAdmin(adminPtr, DEFAULT_USER_ID, AdminType::ENT);
+        ErrCode res = DoDisableAdmin(adminPtr, EdmConstants::DEFAULT_USER_ID, AdminType::ENT);
         if (res != ERR_OK) {
             EDMLOGE("ReplaceSuperAdmin: delete admin failed");
             return EdmReturnErrCode::REPLACE_ADMIN_FAILED;
         }
-        if (FAILED(AdminManager::GetInstance()->SetAdminValue(DEFAULT_USER_ID, adminInfo))) {
+        if (FAILED(AdminManager::GetInstance()->SetAdminValue(EdmConstants::DEFAULT_USER_ID, adminInfo))) {
             EDMLOGE("ReplaceSuperAdmin: SetAdminValue failed.");
             return EdmReturnErrCode::REPLACE_ADMIN_FAILED;
         }
@@ -1583,7 +1588,7 @@ ErrCode EnterpriseDeviceMgrAbility::ReplaceSuperAdmin(const AppExecFwk::ElementN
     system::SetParameter(PARAM_EDM_ENABLE, "true");
     NotifyAdminEnabled(true);
     OnAdminEnabled(newAdmin.GetBundleName(), newAdmin.GetAbilityName(), IEnterpriseAdmin::COMMAND_ON_ADMIN_ENABLED,
-        DEFAULT_USER_ID, true);
+        EdmConstants::DEFAULT_USER_ID, true);
     EDMLOGI("EnableAdmin: SetAdminEnabled success %{public}s", newAdmin.GetBundleName().c_str());
     AfterEnableAdminReportEdmEvent(newAdmin, oldAdmin);
     return ERR_OK;
@@ -1600,8 +1605,24 @@ void EnterpriseDeviceMgrAbility::AfterEnableAdminReportEdmEvent(const AppExecFwk
         static_cast<int32_t>(AdminType::ENT), oldAdmin.GetBundleName().c_str());
 }
 
-ErrCode EnterpriseDeviceMgrAbility::EnableAdmin(
-    const AppExecFwk::ElementName &admin, const EntInfo &entInfo, AdminType type, int32_t userId)
+ErrCode EnterpriseDeviceMgrAbility::EnableAdmin(const AppExecFwk::ElementName &admin, const EntInfo &entInfo,
+    AdminType adminType, int32_t userId, bool enableSelf)
+{
+#if defined(FEATURE_PC_ONLY)
+    if (enableSelf) {
+        return EnableAdminWithPermission(admin, entInfo, adminType, userId,
+            EdmPermission::PERMISSION_ENTERPRISE_ACTIVATE_DEVICE_ADMIN);
+    }
+    return EnableAdminWithPermission(admin, entInfo, adminType, userId,
+            EdmPermission::PERMISSION_MANAGE_ENTERPRISE_DEVICE_ADMIN);
+#else
+    EDMLOGW("EnterpriseDeviceMgrAbility::EnableAdmin self Unsupported Capabilities.");
+    return EdmReturnErrCode::INTERFACE_UNSUPPORTED;
+#endif
+}
+
+ErrCode EnterpriseDeviceMgrAbility::EnableAdminWithPermission(const AppExecFwk::ElementName &admin,
+    const EntInfo &entInfo, AdminType type, int32_t userId, const std::string &permission)
 {
     EDMLOGD("EnterpriseDeviceMgrAbility::EnableAdmin");
     ErrCode res = EnableAdminPreCheck(type);
@@ -1616,8 +1637,7 @@ ErrCode EnterpriseDeviceMgrAbility::EnableAdmin(
     }
     bool isDebug = GetPermissionChecker()->CheckIsDebug();
     Security::AccessToken::AccessTokenID tokenId = IPCSkeleton::GetCallingTokenID();
-    if (!isDebug && !GetPermissionChecker()->VerifyCallingPermission(tokenId,
-        EdmPermission::PERMISSION_MANAGE_ENTERPRISE_DEVICE_ADMIN)) {
+    if (!isDebug && !GetPermissionChecker()->VerifyCallingPermission(tokenId, permission)) {
         EDMLOGW("EnterpriseDeviceMgrAbility::EnableAdmin check permission failed");
         return EdmReturnErrCode::PERMISSION_DENIED;
     }
@@ -1652,6 +1672,14 @@ ErrCode EnterpriseDeviceMgrAbility::EnableAdmin(
     }
     AfterEnableAdmin(admin, type, userId);
     return ERR_OK;
+}
+
+
+ErrCode EnterpriseDeviceMgrAbility::EnableAdmin(
+    const AppExecFwk::ElementName &admin, const EntInfo &entInfo, AdminType type, int32_t userId)
+{
+    return EnableAdminWithPermission(admin, entInfo, type, userId,
+        EdmPermission::PERMISSION_MANAGE_ENTERPRISE_DEVICE_ADMIN);
 }
 
 ErrCode EnterpriseDeviceMgrAbility::CheckEnableDeviceAdmin(const AppExecFwk::ElementName &admin)
@@ -1877,7 +1905,7 @@ ErrCode EnterpriseDeviceMgrAbility::DisableAdmin(const AppExecFwk::ElementName &
         return ret;
     }
     if (deviceAdmin->IsAllowedAcrossAccountSetPolicy()) {
-        userId = DEFAULT_USER_ID;
+        userId = EdmConstants::DEFAULT_USER_ID;
     }
     return DoDisableAdmin(deviceAdmin, userId, deviceAdmin->GetAdminType());
 }
@@ -1937,7 +1965,7 @@ ErrCode EnterpriseDeviceMgrAbility::DoDisableAdmin(const std::string &bundleName
         return ret;
     }
     if (deviceAdmin->IsAllowedAcrossAccountSetPolicy()) {
-        return DoDisableAdmin(deviceAdmin, DEFAULT_USER_ID, adminType);
+        return DoDisableAdmin(deviceAdmin, EdmConstants::DEFAULT_USER_ID, adminType);
     }
     return DoDisableAdmin(deviceAdmin, userId, adminType);
 }
@@ -2175,6 +2203,44 @@ ErrCode EnterpriseDeviceMgrAbility::GetDevicePolicy(uint32_t code, MessageParcel
     }
     EDMLOGI("policy query get finished");
     return errCode;
+}
+
+ErrCode EnterpriseDeviceMgrAbility::EnableSelfDeviceAdmin(const AppExecFwk::ElementName &admin,
+    const std::string &credential)
+{
+#if defined(FEATURE_PC_ONLY)
+    EDMLOGI("EnterpriseDeviceMgrAbility::EnableSelfDeviceAdmin calling.");
+    Security::AccessToken::AccessTokenID tokenId = IPCSkeleton::GetCallingTokenID();
+    if (!GetPermissionChecker()->VerifyCallingPermission(tokenId,
+        EdmPermission::PERMISSION_ENTERPRISE_ACTIVATE_DEVICE_ADMIN)) {
+        EDMLOGE("EnableSelfDeviceAdmin::VerifyCallingPermission check permission failed.");
+        return EdmReturnErrCode::PERMISSION_DENIED;
+    }
+    MessageParcel data;
+    data.WriteString(admin.GetBundleName());
+    data.WriteString(admin.GetAbilityName());
+    data.WriteString(credential);
+    MessageParcel reply;
+    std::uint32_t funcCode =
+        POLICY_FUNC_CODE((std::uint32_t)FuncOperateType::SET, EdmInterfaceCode::ENABLE_SELF_DEVICE_ADMIN);
+    ErrCode ret = PluginManager::GetInstance()->UpdateDevicePolicy(funcCode, admin.GetBundleName(),
+        data, reply, EdmConstants::DEFAULT_USER_ID);
+    if (ret == ERR_OK) {
+        EDMLOGI("EnterpriseDeviceMgrAbility::EnableSelfDeviceAdmin success, start to notification.");
+        WantAgentInfo wantAgentInfo;
+        NotificationInfo notificationInfo = {.title = EdmConstants::DEVICE_MANAGEMENT_TEXT,
+            .body = EdmConstants::MANAGEMENT_NOTIFICATION_TIPS};
+        EdmBundleManagerImpl bundleManager;
+        std::string icon = bundleManager.GetIconByBundleName(admin.GetBundleName());
+        IconInfo iconInfo = {.icon = icon, .xAxis = ICON_AXIS, .yAxis = ICON_AXIS};
+        NotificationManager notificationManager;
+        notificationManager.SendSystemNotification(notificationInfo, iconInfo, wantAgentInfo);
+    }
+    return ret;
+#else
+    EDMLOGW("EnterpriseDeviceMgrAbility::EnableSelfDeviceAdmin Unsupported Capabilities.");
+    return EdmReturnErrCode::INTERFACE_UNSUPPORTED;
+#endif
 }
 
 ErrCode EnterpriseDeviceMgrAbility::GetDevicePolicyFromPlugin(uint32_t code, MessageParcel &data, MessageParcel &reply,

@@ -64,6 +64,7 @@ ohos_shared_library("edmservice_kits") {
     "./common/src/domain_account_policy.cpp",
     "./common/src/edm_load_callback.cpp",
     "./common/src/edm_load_manager.cpp",
+    "./common/src/enable_self_device_admin_param_serializer.cpp",
     "./common/src/ent_info.cpp",
     "./common/src/enterprise_device_mgr_proxy.cpp",
     "./common/src/iadmin_manager.cpp",
