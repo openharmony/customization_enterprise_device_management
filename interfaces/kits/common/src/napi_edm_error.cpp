@@ -70,6 +70,7 @@ static const std::unordered_map<int32_t, std::string> errMessageMap = {
         "Failed to set default data sim, please turn off airplane mode or insert sim card."},
     {EdmReturnErrCode::SCREEN_LOCK_PWD_HAS_BEEN_SET,
         "A lock screen password has been set for the device."},
+    {EdmReturnErrCode::SWITCH_STATUS_FAILED, "switch status failed."},
 };
 
 napi_value CreateError(napi_env env, ErrCode errorCode, int32_t isAfterApi24)
