@@ -105,6 +105,7 @@
         "storage_service",
         "telephony_data",
         "time_service",
+        "udmf",
         "update_service",
         "usb_manager",
         "user_auth_framework",

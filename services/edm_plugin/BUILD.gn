@@ -551,7 +551,10 @@ ohos_shared_library("sys_service_plugin") {
     }
 
     if (pasteboard_edm_enable) {
-      external_deps += [ "pasteboard:pasteboard_client" ]
+      external_deps += [
+        "pasteboard:pasteboard_client",
+        "udmf:udmf_client",
+      ]
       defines += [ "PASTEBOARD_EDM_ENABLE" ]
       sources += [ "./src/clipboard_policy_plugin.cpp" ]
     }
