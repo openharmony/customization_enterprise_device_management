@@ -319,6 +319,9 @@ namespace EdmPermission {
     const char* const PERMISSION_ENTERPRISE_READ_LOG = "ohos.permission.ENTERPRISE_READ_LOG";
     const char* const PERMISSION_ENTERPRISE_DEACTIVATE_DEVICE_ADMIN =
         "ohos.permission.ENTERPRISE_DEACTIVATE_DEVICE_ADMIN";
+    // api 26.0.0
+    const char* const PERMISSION_ENTERPRISE_ACTIVATE_DEVICE_ADMIN =
+        "ohos.permission.ENTERPRISE_ACTIVATE_DEVICE_ADMIN";
 } // namespace EdmPermission
 namespace PolicyName {
     // open-source
@@ -358,6 +361,7 @@ namespace PolicyName {
     const char* const POLICY_DISALLOWED_NEARLINK_PROTOCOLS = "disallowed_nearlink_protocols";
     const char* const POLICY_DISALLOWED_TETHERING = "disallowed_tethering";
     const char* const POLICY_DISALLOWED_SMS = "disallowed_sms";
+    const char* const POLICY_ENABLE_SELF_DEVICE_ADMIN = "enable_self_device_admin";
     const char* const POLICY_DISALLOWED_UNINSTALL_BUNDLES = "disallowed_uninstall_bundles";
     const char* const POLICY_DISALLOWED_USB_DEVICES = "disallowed_usb_devices";
     const char* const POLICY_DISALLOWED_EXPORT_RECOVERY_KEY = "disallowed_export_recovery_key";

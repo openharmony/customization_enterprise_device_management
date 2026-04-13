@@ -23,6 +23,7 @@ using namespace testing::ext;
 namespace OHOS {
 namespace EDM {
 namespace TEST {
+constexpr int32_t DEFAULT_USER_ID = 100;
 /**
  * @tc.name: TestTemplate
  * @tc.desc: Test PluginTemplate init.

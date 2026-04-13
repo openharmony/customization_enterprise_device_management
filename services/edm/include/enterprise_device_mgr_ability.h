@@ -78,6 +78,9 @@ public:
     ErrCode EnableDeviceAdmin(const AppExecFwk::ElementName &admin) override;
     ErrCode DisableDeviceAdmin(const AppExecFwk::ElementName &admin) override;
     ErrCode GetEnterpriseManagedTips(std::string &tips) override;
+    ErrCode EnableSelfDeviceAdmin(const AppExecFwk::ElementName &admin, const std::string &credential) override;
+    ErrCode EnableAdmin(const AppExecFwk::ElementName &admin, const EntInfo &entInfo, AdminType adminType,
+        int32_t userId, bool enableSelf) override;
 
     ErrCode HandleDevicePolicy(uint32_t code, AppExecFwk::ElementName &admin, MessageParcel &data, MessageParcel &reply,
         int32_t userId) override;
@@ -124,6 +127,8 @@ private:
         const std::vector<int32_t> &nonDefaultUserIds, AdminType adminType);
     ErrCode GetDevicePolicyFromPlugin(uint32_t code, MessageParcel &data, MessageParcel &reply, int32_t userId,
         const std::string &permissionTag);
+    ErrCode EnableAdminWithPermission(const AppExecFwk::ElementName &admin, const EntInfo &entInfo,
+        AdminType adminType, int32_t userId, const std::string &permission);
     int32_t GetCurrentUserId();
     ErrCode HandleApplicationEvent(const std::vector<uint32_t> &events, bool subscribe);
     ErrCode VerifyEnableAdminCondition(const AppExecFwk::ElementName &admin, AdminType type, int32_t userId,

@@ -123,7 +123,8 @@ std::vector<uint32_t> PluginManager::needExtraSoCodes_ = {
     EdmInterfaceCode::GET_EXT_INFO, EdmInterfaceCode::SET_WALL_PAPER,
     EdmInterfaceCode::INSTALL_MARKET_APPS, EdmInterfaceCode::SET_KEY_CODE_POLICYS,
     EdmInterfaceCode::DISABLED_ACTIVATION_LOCK, EdmInterfaceCode::ADD_DOCK_APP,
-    EdmInterfaceCode::HIDDEN_SETTINGS_MENU, EdmInterfaceCode::SET_SWITCH_STATUS
+    EdmInterfaceCode::HIDDEN_SETTINGS_MENU, EdmInterfaceCode::SET_SWITCH_STATUS,
+    EdmInterfaceCode::ENABLE_SELF_DEVICE_ADMIN
 };
 
 PluginManager::PluginManager()

@@ -40,7 +40,8 @@ public:
     static std::shared_ptr<EnterpriseDeviceMgrProxy> GetInstance();
     static void DestroyInstance();
 
-    ErrCode EnableAdmin(AppExecFwk::ElementName &admin, EntInfo &entInfo, AdminType type, int32_t userId);
+    ErrCode EnableAdmin(AppExecFwk::ElementName &admin, EntInfo &entInfo, AdminType type, int32_t userId,
+        bool enableSelf = false);
     ErrCode DisableAdmin(AppExecFwk::ElementName &admin, int32_t userId);
     ErrCode DisableSuperAdmin(const std::string &bundleName);
     ErrCode GetEnabledAdmin(AdminType type, std::vector<std::string> &enabledAdminList);
@@ -69,6 +70,7 @@ public:
     ErrCode EnableDeviceAdmin(AppExecFwk::ElementName &admin);
     ErrCode DisableDeviceAdmin(AppExecFwk::ElementName &admin);
     ErrCode StartAbilityByAdmin(const AppExecFwk::ElementName &admin, const AAFwk::Want &want);
+    ErrCode EnableSelfDeviceAdmin(const AppExecFwk::ElementName &admin, std::string &credential);
 
     void GetEnabledSuperAdmin(std::string &enabledAdmin);
     bool IsSuperAdminExist();
