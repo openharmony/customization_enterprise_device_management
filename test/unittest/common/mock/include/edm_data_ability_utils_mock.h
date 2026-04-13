@@ -31,6 +31,7 @@ public:
         std::string &value);
     static ErrCode GetIntFromSettingsDataShare(const std::string &strUri, const std::string &key, int32_t &value);
     static void SetResult(const std::string &result);
+    static ErrCode UpdateSettingsData(const std::string &baseUri, const std::string &key, const std::string &value);
 private:
     static std::string result_;
 };
