@@ -79,6 +79,9 @@ public:
     MOCK_METHOD(int, DisableDeviceAdmin, (const AppExecFwk::ElementName &), (override));
     MOCK_METHOD(int, GetEnterpriseManagedTips, (std::string &), (override));
     MOCK_METHOD(int, StartAbilityByAdmin, (const AppExecFwk::ElementName &, const AAFwk::Want &), (override));
+    MOCK_METHOD(int, EnableAdmin, (const AppExecFwk::ElementName &, const EntInfo &, AdminType,
+        int32_t, bool), (override));
+    MOCK_METHOD(int, EnableSelfDeviceAdmin, (const AppExecFwk::ElementName &, const std::string &), (override));
 
     int InvokeSendRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option)
     {
