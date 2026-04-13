@@ -23,7 +23,10 @@
 #include "iplugin_manager.h"
 #include "parameters.h"
 #include "wifi_device.h"
- 
+#ifdef NFC_EDM_ENABLE
+#include "nfc_controller.h"
+#endif
+
 namespace OHOS {
 namespace EDM {
 
@@ -31,6 +34,10 @@ const std::string MDM_BLUETOOTH_PROP = "persist.edm.prohibit_bluetooth";
 const std::string MDM_WIFI_PROP = "persist.edm.wifi_enable";
 const std::string PARAM_FORCE_OPEN_WIFI = "persist.edm.force_open_wifi";
 const std::string PARAM_FORCE_ENABLE_BLUETOOTH = "persist.edm.force_enable_bluetooth";
+#ifdef NFC_EDM_ENABLE
+const std::string PARAM_FORCE_ENABLE_NFC = "persist.edm.force_enable_nfc";
+const std::string PARAM_EDM_NFC_DISABLE = "persist.edm.nfc_disable";
+#endif
  
 const bool REGISTER_RESULT = IPluginManager::GetInstance()->AddPlugin(SetSwitchStatusPlugin::GetPlugin());
  
@@ -60,6 +67,11 @@ ErrCode SetSwitchStatusPlugin::OnSetPolicy(SwitchParam &param, MessageParcel &re
         case SwitchKey::WIFI:
             ret = OnSetWifiStatus(param.status);
             break;
+#ifdef NFC_EDM_ENABLE
+        case SwitchKey::NFC:
+            ret = OnSetNFCStatus(param.status);
+            break;
+#endif
         default:
             ret = EdmReturnErrCode::INTERFACE_UNSUPPORTED;
     }
@@ -68,6 +80,42 @@ ErrCode SetSwitchStatusPlugin::OnSetPolicy(SwitchParam &param, MessageParcel &re
         SwitchParamSerializer::GetInstance()->WritePolicy(reply, param);
     }
     return ret;
+}
+
+
+ErrCode SetSwitchStatusPlugin::OnSetNFCStatus(SwitchStatus status)
+{
+#ifdef NFC_EDM_ENABLE
+    EDMLOGE("SetSwitchStatusPlugin OnSetNFCStatus in");
+    ErrCode ret = ERR_OK;
+    if (system::GetBoolParameter(PARAM_EDM_NFC_DISABLE, false)) {
+        EDMLOGE("SetSwitchStatusPlugin OnSetNFCStatus on failed, because nfc has disabled");
+        return EdmReturnErrCode::ENTERPRISE_POLICES_DENIED;
+    }
+    if (status == SwitchStatus::ON) {
+        system::SetParameter(PARAM_FORCE_ENABLE_NFC, "false");
+        ret = NFC::KITS::NfcController::GetInstance().TurnOn();
+    } else if (status == SwitchStatus::OFF) {
+        system::SetParameter(PARAM_FORCE_ENABLE_NFC, "false");
+        ret = NFC::KITS::NfcController::GetInstance().TurnOff();
+    } else if (status == SwitchStatus::FORCE_ON) {
+        if (system::GetBoolParameter(PARAM_FORCE_ENABLE_NFC, false)) {
+            EDMLOGI("SetSwitchStatusPlugin OnSetNFCStatus nfc has force enabled");
+            return ERR_OK;
+        }
+        system::SetParameter(PARAM_FORCE_ENABLE_NFC, "true");
+        ret = NFC::KITS::NfcController::GetInstance().TurnOn();
+    } else {
+        return EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED;
+    }
+    if (ret != ERR_OK) {
+        EDMLOGE("SetSwitchStatusPlugin:OnSetBluetoothStatus send request fail. %{public}d", ret);
+        return EdmReturnErrCode::SWITCH_STATUS_FAILED;
+    }
+    return ERR_OK;
+#else
+    return EdmReturnErrCode::INTERFACE_UNSUPPORTED;
+#endif
 }
 
 ErrCode SetSwitchStatusPlugin::OnSetBluetoothStatus(SwitchStatus status)

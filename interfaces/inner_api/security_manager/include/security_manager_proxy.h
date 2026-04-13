@@ -52,6 +52,8 @@ public:
     int32_t GetPermissionManagedState(MessageParcel &data, int32_t &policy);
     int32_t SetWatermarkImage(const AppExecFwk::ElementName &admin, std::shared_ptr<WatermarkParam> param);
     int32_t CancelWatermarkImage(MessageParcel &data);
+    int32_t SetScreenWatermarkImage(const AppExecFwk::ElementName &admin, std::shared_ptr<WatermarkParam> param);
+    int32_t CancelScreenWatermarkImage(MessageParcel &data);
     int32_t InstallUserCertificate(const AppExecFwk::ElementName &admin,
         const CertBlobCA &certblobCA, std::string &result, std::string &innerCodeMsg);
     int32_t GetUserCertificates(MessageParcel &data, std::vector<std::string> &uriList);
@@ -59,6 +61,8 @@ public:
     int32_t GetExternalSourceExtensionsPolicy(MessageParcel &data, int32_t &policy);
     int32_t InstallEnterpriseReSignatureCertificate(MessageParcel &data);
     int32_t UninstallEnterpriseReSignatureCertificate(MessageParcel &data);
+    int32_t SetScreenLockDisabledForAccount(MessageParcel &data);
+    int32_t IsScreenLockDisabledForAccount(const AppExecFwk::ElementName &admin, bool &disabled);
 private:
     int32_t GetPasswordPolicy(const AppExecFwk::ElementName *admin, PasswordPolicy &policy);
     static std::shared_ptr<SecurityManagerProxy> instance_;

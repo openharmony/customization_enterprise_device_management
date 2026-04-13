@@ -135,6 +135,7 @@ ohos_shared_library("device_core_plugin") {
         "./src/disallow_add_local_account_plugin.cpp",
         "./src/disallow_add_os_account_by_user_plugin.cpp",
         "./src/set_watermark_image_plugin.cpp",
+        "./src/set_screen_watermark_image_plugin.cpp",
         "./src/disallow_modify_wallpaper_plugin.cpp",
       ]
       defines += [ "OS_ACCOUNT_EDM_ENABLE" ]
@@ -191,6 +192,10 @@ ohos_shared_library("device_core_plugin") {
     if (screenlock_mgr_edm_enable) {
       external_deps += [ "screenlock_mgr:screenlock_client" ]
       sources += [ "./src/lock_screen_plugin.cpp" ]
+    }
+    
+    if (screenlock_mgr_edm_enable && !enterprise_device_management_feature_pc_only) {
+      sources += [ "./src/disable_screen_lock_plugin.cpp" ]
     }
 
     if (!enterprise_device_management_feature_pc_only) {
@@ -546,7 +551,10 @@ ohos_shared_library("sys_service_plugin") {
     }
 
     if (pasteboard_edm_enable) {
-      external_deps += [ "pasteboard:pasteboard_client" ]
+      external_deps += [
+        "pasteboard:pasteboard_client",
+        "udmf:udmf_client",
+      ]
       defines += [ "PASTEBOARD_EDM_ENABLE" ]
       sources += [ "./src/clipboard_policy_plugin.cpp" ]
     }
@@ -635,12 +643,13 @@ ohos_shared_library("need_extra_plugin") {
     "samgr:samgr_proxy",
     "window_manager:libwm",
     "window_manager:sms",
-    "wifi:wifi_sdk",
+    "wifi:wifi_sdk"
   ]
 
   if (enterprise_device_management_support_all) {
     defines += [ "EDM_SUPPORT_ALL_ENABLE" ]
     sources += [
+      "./src/enable_self_device_admin_plugin.cpp",
       "./src/get_device_info_plugin.cpp",
       "./src/get_ext_info_plugin.cpp",
       "./src/install_market_apps_plugin.cpp",
@@ -657,6 +666,11 @@ ohos_shared_library("need_extra_plugin") {
         "./src/hidden_settings_menu_plugin.cpp",
       ]
     }
+  
+  if (nfc_edm_enable) {
+    external_deps += ["nfc:nfc_inner_kits_controller"]
+    defines += [ "NFC_EDM_ENABLE" ]
+  }
 
   if (enterprise_device_management_feature_pc_only) {
       sources += [

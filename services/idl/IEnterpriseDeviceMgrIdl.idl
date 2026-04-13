@@ -48,4 +48,6 @@ interface OHOS.EDM.IEnterpriseDeviceMgrIdl {
     [ipccode 26] void DisableDeviceAdmin([in] ElementName admin);
     [ipccode 27] void GetEnterpriseManagedTips([out] String tips);
     [ipccode 28] void StartAbilityByAdmin([in] ElementName admin, [in] Want want);
+    [ipccode 29] void EnableSelfDeviceAdmin([in] ElementName admin, [in] String credential);
+    [ipccode 30] void EnableAdmin([in] ElementName admin, [in] EntInfo entInfo, [in] AdminType adminType, [in] int userId, [in] boolean enableSelf);
 }

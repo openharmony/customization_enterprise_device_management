@@ -1469,6 +1469,38 @@ HWTEST_F(EnterpriseDeviceMgrProxyTest, TestStartAbilityByAdminFail, TestSize.Lev
     ErrCode ret = enterpriseDeviceMgrProxyTest->StartAbilityByAdmin(admin, want);
     EXPECT_TRUE(ret == EdmReturnErrCode::INTERFACE_UNSUPPORTED);
 }
+
+/**
+ * @tc.name: TestEnableSelfDeviceAdminSuc
+ * @tc.desc: Test EnableSelfDeviceAdmin success.
+ * @tc.type: FUNC
+ */
+HWTEST_F(EnterpriseDeviceMgrProxyTest, TestEnableSelfDeviceAdminSuc, TestSize.Level1)
+{
+    AppExecFwk::ElementName admin;
+    std::string credential;
+    EXPECT_CALL(*object_, EnableSelfDeviceAdmin(_, _))
+        .Times(1)
+        .WillOnce(Return(ERR_OK));
+    ErrCode errVal = enterpriseDeviceMgrProxyTest->EnableSelfDeviceAdmin(admin, credential);
+    EXPECT_TRUE(errVal == ERR_OK);
+}
+
+/**
+ * @tc.name: TestEnableSelfDeviceAdminFail
+ * @tc.desc: Test EnableSelfDeviceAdmin fail.
+ * @tc.type: FUNC
+ */
+HWTEST_F(EnterpriseDeviceMgrProxyTest, TestEnableSelfDeviceAdminFail, TestSize.Level1)
+{
+    AppExecFwk::ElementName admin;
+    std::string credential;
+    EXPECT_CALL(*object_, EnableSelfDeviceAdmin(_, _))
+        .Times(1)
+        .WillOnce(Return(EdmReturnErrCode::SYSTEM_ABNORMALLY));
+    ErrCode errVal = enterpriseDeviceMgrProxyTest->EnableSelfDeviceAdmin(admin, credential);
+    EXPECT_TRUE(errVal != ERR_OK);
+}
 } // namespace TEST
 } // namespace EDM
 } // namespace OHOS

@@ -56,6 +56,8 @@ namespace EdmReturnErrCode {
     constexpr uint32_t START_ABILITY_FAILED = 9200014;
     constexpr uint32_t ABILITY_NOT_EXIST = 9200015;
     constexpr uint32_t EXECUTE_TIME_OUT = 9200016;
+    constexpr uint32_t CHECK_CREDENTIAL_FAILED = 9200017;
+    constexpr uint32_t NOT_ENTERPRISE_DEVICE = 9200018;
 
     constexpr uint32_t MANAGED_CERTIFICATE_FAILED = 9201001;
     constexpr uint32_t APPLICATION_INSTALL_FAILED = 9201002;
@@ -77,6 +79,8 @@ namespace EdmReturnErrCode {
     constexpr uint32_t DOCK_APP_BUNDLE_NOT_SUPPORT = 9201018;
     constexpr uint32_t DOCK_APP_INDEX_NOT_SUPPORT = 9201019;
     constexpr uint32_t SET_DEFAULT_DATA_SIM_FAILED = 9201020;
+    constexpr uint32_t SCREEN_LOCK_PWD_HAS_BEEN_SET = 9201021;
+    constexpr uint32_t SWITCH_STATUS_FAILED = 9201042;
 };
 
 // Error code for SERVICE: 0x2000000,value:33554432

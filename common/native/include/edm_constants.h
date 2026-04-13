@@ -138,7 +138,7 @@ namespace EdmConstants {
         constexpr uint32_t SET_KEY_EVENTS = 31;
         constexpr uint32_t DISABLE_SUPERHUB = 36;
         constexpr uint32_t HIDE_LAUNCHER_ICON = 37;
-        constexpr uint32_t DISABLE_SECURE_ERAS = 38;
+        constexpr uint32_t DISABLE_SECURE_ERASE = 39;
     }
 
     namespace KeepAlive {
@@ -206,7 +206,6 @@ namespace EdmConstants {
         const char* const LABEL_DISALLOWED_POLICY_VIRTUAL_SERVICE = "virtualService";
         const char* const LABEL_DISALLOWED_POLICY_MODIFY_WALLPAPER = "modifyWallpaper";
         const char* const LABEL_DISALLOWED_POLICY_USB_SERIAL = "usbSerial";
-        const char* const LABEL_DISALLOWED_POLICY_SECURE_ERAS = "secureEras";
         const char* const LABEL_DISALLOWED_POLICY_SUPERHUB = "superhub";
         const char* const LABEL_DISALLOWED_POLICY_MULTI_WINDOW = "multiWindow";
     } // namespace Restrictions
@@ -321,6 +320,9 @@ namespace EdmPermission {
     const char* const PERMISSION_ENTERPRISE_READ_LOG = "ohos.permission.ENTERPRISE_READ_LOG";
     const char* const PERMISSION_ENTERPRISE_DEACTIVATE_DEVICE_ADMIN =
         "ohos.permission.ENTERPRISE_DEACTIVATE_DEVICE_ADMIN";
+    // api 26.0.0
+    const char* const PERMISSION_ENTERPRISE_ACTIVATE_DEVICE_ADMIN =
+        "ohos.permission.ENTERPRISE_ACTIVATE_DEVICE_ADMIN";
 } // namespace EdmPermission
 namespace PolicyName {
     // open-source
@@ -360,6 +362,7 @@ namespace PolicyName {
     const char* const POLICY_DISALLOWED_NEARLINK_PROTOCOLS = "disallowed_nearlink_protocols";
     const char* const POLICY_DISALLOWED_TETHERING = "disallowed_tethering";
     const char* const POLICY_DISALLOWED_SMS = "disallowed_sms";
+    const char* const POLICY_ENABLE_SELF_DEVICE_ADMIN = "enable_self_device_admin";
     const char* const POLICY_DISALLOWED_UNINSTALL_BUNDLES = "disallowed_uninstall_bundles";
     const char* const POLICY_DISALLOWED_USB_DEVICES = "disallowed_usb_devices";
     const char* const POLICY_DISALLOWED_EXPORT_RECOVERY_KEY = "disallowed_export_recovery_key";
@@ -408,6 +411,7 @@ namespace PolicyName {
     const char* const POLICY_USB_READ_ONLY = "usb_read_only";
     const char* const POLICY_INSTALL_CERTIFICATE = "install_certificate";
     const char* const POLICY_WATERMARK_IMAGE_POLICY = "watermark_image_policy";
+    const char* const POLICY_SCREEN_WATERMARK_IMAGE = "screen_watermark_image";
     const char* const POLICY_ALLOWED_NOTIFICATION_BUNDLES = "allowed_notification_bundles";
     const char* const POLICY_DISALLOWED_MMS = "disallowed_mms";
     const char* const POLICY_DISABLE_BACKUP_AND_RESTORE = "disable_backup_and_restore";
@@ -431,6 +435,7 @@ namespace PolicyName {
     const char* const POLICY_DISALLOWED_TELEPHONY_CALL = "disallowed_telephony_call";
     const char* const POLICY_HANG_UP_CALLING = "hang_up_calling";
     const char* const POLICY_SET_WALL_PAPER = "set_wall_paper";
+    const char* const POLICY_DISABLE_SCREEN_LOCK = "disable_screen_lock";
     const char* const POLICY_MANAGE_FREEZE_EXEMPTED_APPS = "manage_freeze_exempted_apps";
     const char* const POLICY_DISABLED_HDC_REMOTE = "disabled_hdc_remote";
     const char* const POLICY_MANAGE_USER_NON_STOP_APPS = "manage_user_non_stop_apps";

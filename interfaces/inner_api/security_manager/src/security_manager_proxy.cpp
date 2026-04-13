@@ -235,6 +235,36 @@ int32_t SecurityManagerProxy::CancelWatermarkImage(MessageParcel &data)
     return EnterpriseDeviceMgrProxy::GetInstance()->HandleDevicePolicy(funcCode, data);
 }
 
+int32_t SecurityManagerProxy::SetScreenWatermarkImage(const AppExecFwk::ElementName &admin,
+    std::shared_ptr<WatermarkParam> param)
+{
+    EDMLOGD("SecurityManagerProxy::SetScreenWatermarkImage");
+    if (param == nullptr || param->pixels == nullptr) {
+        EDMLOGE("SecurityManagerProxy::SetScreenWatermarkImage param or pixels is null");
+        return EdmReturnErrCode::PARAM_ERROR;
+    }
+    MessageParcel data;
+    std::uint32_t funcCode =
+        POLICY_FUNC_CODE((std::uint32_t)FuncOperateType::SET, EdmInterfaceCode::SCREEN_WATERMARK_IMAGE);
+    data.WriteInterfaceToken(DESCRIPTOR);
+    data.WriteInt32(WITHOUT_USERID);
+    data.WriteParcelable(&admin);
+    data.WriteString(WITHOUT_PERMISSION_TAG);
+    data.WriteInt32(param->width);
+    data.WriteInt32(param->height);
+    data.WriteInt32(param->size);
+    data.WriteRawData(reinterpret_cast<const void*>(param->pixels), param->size);
+    return EnterpriseDeviceMgrProxy::GetInstance()->HandleDevicePolicy(funcCode, data);
+}
+
+int32_t SecurityManagerProxy::CancelScreenWatermarkImage(MessageParcel &data)
+{
+    EDMLOGD("SecurityManagerProxy::CancelScreenWatermarkImage");
+    std::uint32_t funcCode =
+        POLICY_FUNC_CODE((std::uint32_t)FuncOperateType::REMOVE, EdmInterfaceCode::SCREEN_WATERMARK_IMAGE);
+    return EnterpriseDeviceMgrProxy::GetInstance()->HandleDevicePolicy(funcCode, data);
+}
+
 int32_t SecurityManagerProxy::InstallUserCertificate(const AppExecFwk::ElementName &admin,
     const CertBlobCA &certblobCA, std::string &result, std::string &innerCodeMsg)
 {
@@ -344,6 +374,35 @@ int32_t SecurityManagerProxy::UninstallEnterpriseReSignatureCertificate(MessageP
         EDMLOGE("SecurityManagerProxy:UninstallEnterpriseReSignatureCertificate fail. %{public}d", ret);
         return ret;
     }
+    return ERR_OK;
+}
+
+int32_t SecurityManagerProxy::SetScreenLockDisabledForAccount(MessageParcel &data)
+{
+    EDMLOGD("SecurityManagerProxy::SetScreenLockDisabledForAccount");
+    std::uint32_t funcCode =
+        POLICY_FUNC_CODE((std::uint32_t)FuncOperateType::SET, EdmInterfaceCode::DISABLE_SCREEN_LOCK);
+    return EnterpriseDeviceMgrProxy::GetInstance()->HandleDevicePolicy(funcCode, data);
+}
+
+int32_t SecurityManagerProxy::IsScreenLockDisabledForAccount(const AppExecFwk::ElementName &admin, bool &disabled)
+{
+    EDMLOGD("SecurityManagerProxy::IsScreenLockDisabledForAccount");
+    MessageParcel data;
+    MessageParcel reply;
+    data.WriteInterfaceToken(DESCRIPTOR);
+    data.WriteInt32(WITHOUT_USERID);
+    data.WriteString(WITHOUT_PERMISSION_TAG);
+    data.WriteInt32(HAS_ADMIN);
+    data.WriteParcelable(&admin);
+    EnterpriseDeviceMgrProxy::GetInstance()->GetPolicy(EdmInterfaceCode::DISABLE_SCREEN_LOCK, data, reply);
+    int32_t ret = ERR_INVALID_VALUE;
+    reply.ReadInt32(ret);
+    if (ret != ERR_OK) {
+        EDMLOGW("SecurityManagerProxy:IsScreenLockDisabledForAccount fail. %{public}d", ret);
+        return ret;
+    }
+    disabled = reply.ReadBool();
     return ERR_OK;
 }
 } // namespace EDM

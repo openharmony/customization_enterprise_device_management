@@ -121,6 +121,7 @@ private:
     static napi_value SetAdminRunningMode(napi_env env, napi_callback_info info);
     static napi_value EnableDeviceAdmin(napi_env env, napi_callback_info info);
     static napi_value DisableDeviceAdmin(napi_env env, napi_callback_info info);
+    static napi_value EnableSelfDeviceAdmin(napi_env env, napi_callback_info info);
 
     static void NativeEnableAdmin(napi_env env, void *data);
     static void NativeDisableSuperAdmin(napi_env env, void *data);

@@ -23,6 +23,9 @@
 
 namespace OHOS {
 namespace EDM {
+
+constexpr int64_t ONE_HOUR_MS = 3600000;
+
 std::string QueryBundleStatsInfosQuery::GetPolicyName()
 {
     return PolicyName::POLICY_QUERY_BUNDLE_STATS_INFOS;
@@ -47,15 +50,19 @@ ErrCode QueryBundleStatsInfosQuery::QueryPolicy(std::string &policyData, Message
         EDMLOGE("QueryBundleStatsInfo QueryPolicy Read endTime failed.");
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;
     }
-    int32_t accountId = 0;
-    if (!data.ReadInt32(accountId)) {
-        EDMLOGE("QueryBundleStatsInfo QueryPolicy Read accountId failed.");
-        return EdmReturnErrCode::SYSTEM_ABNORMALLY;
+    if (startTime < 0 || endTime < 0 || startTime > endTime) {
+        EDMLOGE("QueryBundleStatsInfo QueryPolicy Param error.");
+        return EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED;
+    }
+    int64_t diffTime = endTime - startTime;
+    if (diffTime < ONE_HOUR_MS) {
+        EDMLOGE("QueryBundleStatsInfo QueryPolicy. The time interval must be at least one hour.");
+        return EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED;
     }
     int32_t intervalType = 0;
     std::vector<BundleActivePackageStats> bundleActivePackageStats;
     ErrCode ret = DeviceUsageStats::BundleActiveClient::GetInstance().QueryBundleStatsInfoByInterval(
-        bundleActivePackageStats, intervalType, startTime, endTime, accountId);
+        bundleActivePackageStats, intervalType, startTime, endTime, userId);
     if (ret != ERR_OK) {
         EDMLOGE("QueryBundleStatsInfo QueryPolicy QueryBundleStatsInfoByInterval failed.");
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;

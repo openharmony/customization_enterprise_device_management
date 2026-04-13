@@ -24,6 +24,11 @@ enum class RestrictionsFeature : int32_t {
     CORE_DUMP = 6,
     SECURE_ERASE = 8,
 };
+
+enum class RestrictionsFeatureForAccount : int32_t {
+    MULTI_WINDOW = 0,
+    SUPER_HUB = 2,
+};
 } // namespace EDM
 } // namespace OHOS
 
