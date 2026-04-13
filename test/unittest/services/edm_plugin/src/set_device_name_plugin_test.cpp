@@ -13,12 +13,16 @@
  * limitations under the License.
  */
 
+#define private public
 #include "set_device_name_plugin.h"
+#undef private
 
 #include <gtest/gtest.h>
 
 #include "edm_data_ability_utils_mock.h"
 #include "edm_ipc_interface_code.h"
+#include "edm_os_account_manager_impl_mock.h"
+#include "external_manager_factory_mock.h"
 #include "iplugin_manager.h"
 #include "utils.h"
 
@@ -28,7 +32,6 @@ using namespace testing;
 namespace OHOS {
 namespace EDM {
 namespace TEST {
-
 
 class SetValueForAccountPluginTest : public testing::Test {
 protected:
@@ -101,6 +104,60 @@ HWTEST_F(SetValueForAccountPluginTest, TestOnSetPolicy_003, TestSize.Level1)
 }
 
 /**
+ * @tc.name: TestOnSetPolicy_InvalidUserId_FAIL
+ * @tc.desc: Test OnSetPolicy function with invalid userId.
+ * @tc.type: FUNC
+ */
+HWTEST_F(SetValueForAccountPluginTest, TestOnSetPolicy_InvalidUserId_FAIL, TestSize.Level1)
+{
+    SetDeviceNamePlugin plugin;
+    std::string data = "test";
+    std::string currentData;
+    std::string mergeData;
+    int32_t id = 101;
+    ErrCode code = plugin.OnSetPolicy(data, currentData, mergeData, id);
+    EXPECT_EQ(code, EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED);
+}
+
+/**
+ * @tc.name: TestOnSetPolicy_GetUserIdFail_FAIL
+ * @tc.desc: Test OnSetPolicy function when get userId fail.
+ * @tc.type: FUNC
+ */
+HWTEST_F(SetValueForAccountPluginTest, TestOnSetPolicy_GetUserIdFail_FAIL, TestSize.Level1)
+{
+    SetDeviceNamePlugin plugin;
+    std::string data = "test";
+    std::string currentData;
+    std::string mergeData;
+    int32_t id = 100;
+    auto factory = std::make_shared<ExternalManagerFactoryMock>();
+    auto osAccountMgrMock = std::make_shared<EdmOsAccountManagerImplMock>();
+    plugin.externalManagerFactory_ = factory;
+    EXPECT_CALL(*factory, CreateOsAccountManager).Times(1).WillOnce(Return(osAccountMgrMock));
+    EXPECT_CALL(*osAccountMgrMock, GetCurrentUserId).Times(1).WillOnce(Return(-1));
+    ErrCode code = plugin.OnSetPolicy(data, currentData, mergeData, id);
+    EXPECT_EQ(code, EdmReturnErrCode::SYSTEM_ABNORMALLY);
+}
+
+/**
+ * @tc.name: TestOnSetPolicy_UpdateSettingsData_FAIL
+ * @tc.desc: Test OnSetPolicy function when update settings data fail.
+ * @tc.type: FUNC
+ */
+HWTEST_F(SetValueForAccountPluginTest, TestOnSetPolicy_UpdateSettingsData_FAIL, TestSize.Level1)
+{
+    SetDeviceNamePlugin plugin;
+    std::string data = "test";
+    std::string currentData;
+    std::string mergeData;
+    int32_t id = 100;
+    EdmDataAbilityUtils::SetResult("SYSTEM_ABNORMALLY");
+    ErrCode code = plugin.OnSetPolicy(data, currentData, mergeData, id);
+    EXPECT_EQ(code, EdmReturnErrCode::SYSTEM_ABNORMALLY);
+}
+
+/**
  * @tc.name: TestOnGetPolicy_001
  * @tc.desc: Test OnGetPolicy function.
  * @tc.type: FUNC
@@ -117,6 +174,60 @@ HWTEST_F(SetValueForAccountPluginTest, TestOnGetPolicy_001, TestSize.Level1)
     EdmDataAbilityUtils::SetResult("test success");
     code = plugin->OnGetPolicy(policyValue, data, reply, DEFAULT_USER_ID);
     EXPECT_EQ(code, ERR_OK);
+}
+
+/**
+ * @tc.name: TestOnGetPolicy_InvalidUserId_FAIL
+ * @tc.desc: Test OnGetPolicy function with invalid userId.
+ * @tc.type: FUNC
+ */
+HWTEST_F(SetValueForAccountPluginTest, TestOnGetPolicy_InvalidUserId_FAIL, TestSize.Level1)
+{
+    SetDeviceNamePlugin plugin;
+    std::string policyValue{"TestString"};
+    MessageParcel data;
+    MessageParcel reply;
+    int32_t id = 101;
+    ErrCode code = plugin.OnGetPolicy(policyValue, data, reply, id);
+    EXPECT_EQ(code, EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED);
+}
+
+/**
+ * @tc.name: TestOnGetPolicy_GetUserIdFail_FAIL
+ * @tc.desc: Test OnGetPolicy function when get userId fail.
+ * @tc.type: FUNC
+ */
+HWTEST_F(SetValueForAccountPluginTest, TestOnGetPolicy_GetUserIdFail_FAIL, TestSize.Level1)
+{
+    SetDeviceNamePlugin plugin;
+    std::string policyValue{"TestString"};
+    MessageParcel data;
+    MessageParcel reply;
+    int32_t id = 100;
+    auto factory = std::make_shared<ExternalManagerFactoryMock>();
+    auto osAccountMgrMock = std::make_shared<EdmOsAccountManagerImplMock>();
+    plugin.externalManagerFactory_ = factory;
+    EXPECT_CALL(*factory, CreateOsAccountManager).Times(1).WillOnce(Return(osAccountMgrMock));
+    EXPECT_CALL(*osAccountMgrMock, GetCurrentUserId).Times(1).WillOnce(Return(-1));
+    ErrCode code = plugin.OnGetPolicy(policyValue, data, reply, id);
+    EXPECT_EQ(code, EdmReturnErrCode::SYSTEM_ABNORMALLY);
+}
+
+/**
+ * @tc.name: TestOnGetPolicy_GetStringFromSettingsDataShare_FAIL
+ * @tc.desc: Test OnGetPolicy function when GetStringFromSettingsDataShare fails.
+ * @tc.type: FUNC
+ */
+HWTEST_F(SetValueForAccountPluginTest, TestOnGetPolicy_GetStringFromSettingsDataShare_FAIL, TestSize.Level1)
+{
+    SetDeviceNamePlugin plugin;
+    std::string policyValue{"TestString"};
+    MessageParcel data;
+    MessageParcel reply;
+
+    EdmDataAbilityUtils::SetResult("test Failed");
+    ErrCode code = plugin.OnGetPolicy(policyValue, data, reply, DEFAULT_USER_ID);
+    EXPECT_EQ(code, EdmReturnErrCode::SYSTEM_ABNORMALLY);
 }
 } // namespace TEST
 } // namespace EDM

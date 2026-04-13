@@ -16,6 +16,7 @@
 #ifndef SERVICES_EDM_PLUGIN_INCLUDE_SET_DEVICE_NAME_PLUGIN_H
 #define SERVICES_EDM_PLUGIN_INCLUDE_SET_DEVICE_NAME_PLUGIN_H
 
+#include "external_manager_factory.h"
 #include "plugin_singleton.h"
 
 namespace OHOS {
@@ -25,6 +26,8 @@ public:
     void InitPlugin(std::shared_ptr<IPluginTemplate<SetDeviceNamePlugin, std::string>> ptr) override;
     ErrCode OnSetPolicy(std::string &data, std::string &currentData, std::string &mergeData, int32_t userId);
     ErrCode OnGetPolicy(std::string &value, MessageParcel &data, MessageParcel &reply, int32_t userId) override;
+private:
+    std::shared_ptr<IExternalManagerFactory> externalManagerFactory_ = std::make_shared<ExternalManagerFactory>();
 };
 } // namespace EDM
 } // namespace OHOS

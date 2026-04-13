@@ -26,6 +26,8 @@ namespace OHOS {
 namespace EDM {
 const std::string KEY_USER_DEFINED_DEVICE_NAME = "settings.general.user_defined_device_name";
 const std::string KEY_DISPLAY_DEVICE_NAME = "settings.general.display_device_name";
+const std::string KEY_DISPLAY_DEVICE_NAME_STATE = "settings.general.display_device_name_state";
+const std::string USER_DEFINED_DEVICE_NAME = "user_defined_device_name";
 const std::string SETTINGS_DATA_BASE_URI =
     "datashare:///com.ohos.settingsdata/entry/settingsdata/USER_SETTINGSDATA_SECURE_";
 const std::string SETTINGS_DATA_PREFIX = "?Proxy=true";
@@ -60,13 +62,23 @@ ErrCode SetDeviceNamePlugin::OnSetPolicy(std::string &data, std::string &current
         EDMLOGE("OnSetPolicy deviceName length exceeds the limit.");
         return EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED;
     }
+    int32_t currentUserId = externalManagerFactory_->CreateOsAccountManager()->GetCurrentUserId();
+    if (currentUserId < 0) {
+        return EdmReturnErrCode::SYSTEM_ABNORMALLY;
+    }
+    if (userId != currentUserId) {
+        EDMLOGE("SetDeviceNamePlugin::OnSetPolicy userId isn't current userId.");
+        return EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED;
+    }
 
     std::string uri = SETTINGS_DATA_BASE_URI + std::to_string(userId) + SETTINGS_DATA_PREFIX;
     ErrCode code1 = EdmDataAbilityUtils::UpdateSettingsData(uri, KEY_USER_DEFINED_DEVICE_NAME, data);
     ErrCode code2 = EdmDataAbilityUtils::UpdateSettingsData(uri, KEY_DISPLAY_DEVICE_NAME, data);
-    if (FAILED(code1) || FAILED(code2)) {
-        EDMLOGE("SetDeviceNamePlugin::set deviceName failed, code1: %{public}d, code2: %{public}d.",
-            code1, code2);
+    ErrCode code3 = EdmDataAbilityUtils::UpdateSettingsData(uri, KEY_DISPLAY_DEVICE_NAME_STATE,
+        USER_DEFINED_DEVICE_NAME);
+    if (FAILED(code1) || FAILED(code2) || FAILED(code3)) {
+        EDMLOGE("SetDeviceNamePlugin::set deviceName failed, code1: %{public}d, code2: %{public}d, code3: %{public}d.",
+            code1, code2, code3);
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;
     }
     return ERR_OK;
@@ -76,6 +88,14 @@ ErrCode SetDeviceNamePlugin::OnGetPolicy(std::string &value, MessageParcel &data
     int32_t userId)
 {
     EDMLOGD("SetDeviceNamePlugin::OnGetPolicy");
+    int32_t currentUserId = externalManagerFactory_->CreateOsAccountManager()->GetCurrentUserId();
+    if (currentUserId < 0) {
+        return EdmReturnErrCode::SYSTEM_ABNORMALLY;
+    }
+    if (userId != currentUserId) {
+        EDMLOGE("SetDeviceNamePlugin::OnGetPolicy userId isn't current userId.");
+        return EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED;
+    }
     std::string result;
     std::string uri = SETTINGS_DATA_BASE_URI + std::to_string(userId) + SETTINGS_DATA_PREFIX;
     ErrCode code = EdmDataAbilityUtils::GetStringFromSettingsDataShare(uri, KEY_DISPLAY_DEVICE_NAME, result);
