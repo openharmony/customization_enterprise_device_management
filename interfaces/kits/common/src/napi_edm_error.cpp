@@ -71,6 +71,8 @@ static const std::unordered_map<int32_t, std::string> errMessageMap = {
     {EdmReturnErrCode::SCREEN_LOCK_PWD_HAS_BEEN_SET,
         "A lock screen password has been set for the device."},
     {EdmReturnErrCode::SWITCH_STATUS_FAILED, "switch status failed."},
+    {EdmReturnErrCode::CHECK_CREDENTIAL_FAILED, "check credential info fialed, please check the credential."},
+    {EdmReturnErrCode::NOT_ENTERPRISE_DEVICE, "current device is not enterprise device or not offline activation."},
 };
 
 napi_value CreateError(napi_env env, ErrCode errorCode, int32_t isAfterApi24)

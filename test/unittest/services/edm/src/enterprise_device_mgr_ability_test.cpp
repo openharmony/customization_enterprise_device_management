@@ -5382,6 +5382,22 @@ HWTEST_F(EnterpriseDeviceMgrAbilityTest, IsInMaintenanceMode_NonEmptyParam, Test
     EXPECT_FALSE(result);
     system::SetParameter(PARAM_MAINTENANCE_MODE, "false");
 }
+
+/**
+ * @tc.name: TestEnableSelfDeviceAdminWithoutPermission
+ * @tc.desc: Test EnableSelfDeviceAdmin without permission.
+ * @tc.type: FUNC
+ */
+HWTEST_F(EnterpriseDeviceMgrAbilityTest, TestEnableSelfDeviceAdminWithoutPermission, TestSize.Level1)
+{
+    AppExecFwk::ElementName admin;
+    admin.SetBundleName(ADMIN_PACKAGENAME);
+    admin.SetAbilityName(ADMIN_PACKAGENAME_ABILITY);
+    std::string credential;
+
+    ErrCode ret = edmMgr_->EnableSelfDeviceAdmin(admin, credential);
+    ASSERT_TRUE(ret != ERR_OK);
+}
 } // namespace TEST
 } // namespace EDM
 } // namespace OHOS

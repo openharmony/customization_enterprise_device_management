@@ -28,7 +28,6 @@
 
 namespace OHOS {
 namespace EDM {
-constexpr int32_t DEFAULT_USER_ID = 100;
 constexpr const char *NONE_PERMISSION_MATCH = "NA";
 
 class IPlugin {

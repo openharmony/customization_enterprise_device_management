@@ -38,6 +38,7 @@ namespace TEST {
 constexpr int32_t TEST_SLEEP_TIME = 5;
 const std::string ADMIN_PACKAGENAME = "com.edm.test";
 const std::string ADMIN_PACKAGENAME_1 = "com.edm.test_1";
+constexpr int32_t DEFAULT_USER_ID = 100;
 
 
 void UpdatePolicyConflictTest::SetUp()

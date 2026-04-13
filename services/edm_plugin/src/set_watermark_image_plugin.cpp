@@ -148,7 +148,7 @@ void SetWatermarkImagePlugin::SetAllWatermarkImage()
     EDMLOGI("SetAllWatermarkImage");
     std::string policyData;
     auto policyManager = IPolicyManager::GetInstance();
-    policyManager->GetPolicy("", PolicyName::POLICY_WATERMARK_IMAGE_POLICY, policyData, DEFAULT_USER_ID);
+    policyManager->GetPolicy("", PolicyName::POLICY_WATERMARK_IMAGE_POLICY, policyData, EdmConstants::DEFAULT_USER_ID);
     std::map<std::pair<std::string, int32_t>, WatermarkImageType> currentData;
     auto serializer = WatermarkImageSerializer::GetInstance();
     serializer->Deserialize(policyData, currentData);

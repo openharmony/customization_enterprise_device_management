@@ -33,7 +33,6 @@ const std::string TEST_ADMIN_POLICY_VALUE = "adminPolicy";
 const std::string TEST_MERAGE_POLICY_VALUE = "mergedValue";
 const std::string TEST_MERAGE_POLICY_VALUE_ONE = "mergedValue1";
 constexpr int HUGE_POLICY_SIZE = 65537;
-constexpr int32_t DEFAULT_USER_ID = 100;
 
 class UserPolicyManagerTest : public testing::Test {
 public:
