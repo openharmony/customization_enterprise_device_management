@@ -60,6 +60,7 @@ ohos_unittest("EdmPluginPermissionUnitTest") {
     "hilog:libhilog",
     "relational_store:native_rdb",
     "safwk:system_ability_fwk",
+    "udmf:udmf_client",
   ]
   if (drivers_interface_usb_edm_enable && storage_service_edm_enable && usb_manager_edm_enable) {
     external_deps += [

@@ -27,6 +27,7 @@ public:
     ErrCode OnSetPolicy(SwitchParam &param,  MessageParcel &reply);
     ErrCode OnSetBluetoothStatus(SwitchStatus status);
     ErrCode OnSetWifiStatus(SwitchStatus status);
+    ErrCode OnSetNFCStatus(SwitchStatus status);
 
 private:
     ErrCode ForceEnableBluetooth();
