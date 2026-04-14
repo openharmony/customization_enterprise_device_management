@@ -552,6 +552,9 @@ ErrCode PluginPolicyReader::GetPolicyQuerySixth(std::shared_ptr<IPolicyQuery> &o
         case EdmInterfaceCode::DISALLOWED_DISTRIBUTED_TRANSMISSION:
             obj = std::make_shared<DisallowDistributedTransmissionQuery>();
             return ERR_OK;
+        case EdmInterfaceCode::DISALLOWED_DISTRIBUTED_TRANSMISSION_FULL:
+            obj = std::make_shared<DisallowDistributedTransmissionFullQuery>();
+            return ERR_OK;
         case EdmInterfaceCode::DISALLOWED_NOTIFICATION:
 #ifdef NOTIFICATION_EDM_ENABLE
             obj = std::make_shared<DisallowedNotificationQuery>();

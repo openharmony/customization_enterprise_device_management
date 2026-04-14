@@ -128,6 +128,8 @@ std::unordered_map<int32_t, uint32_t> RestrictionsAddon::featureEnum2InterfaceCo
 std::unordered_map<int32_t, uint32_t> RestrictionsAddon::featureForAccountEnum2InterfaceCodeMap = {
     {static_cast<int32_t>(RestrictionsFeatureForAccount::MULTI_WINDOW),
         EdmInterfaceCode::DISALLOWED_MULTI_WINDOW},
+    {static_cast<int32_t>(RestrictionsFeatureForAccount::DISTRIBUTED_TRANSMISSION),
+        EdmInterfaceCode::DISALLOWED_DISTRIBUTED_TRANSMISSION_FULL},
     {static_cast<int32_t>(RestrictionsFeatureForAccount::SUPER_HUB),
         POLICY_CODE_END + EdmConstants::PolicyCode::DISABLE_SUPERHUB},
 };
@@ -976,6 +978,10 @@ void RestrictionsAddon::CreateFeatureForAccountObject(napi_env env, napi_value v
     NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env,
         static_cast<uint32_t>(RestrictionsFeatureForAccount::MULTI_WINDOW), &nMultiWindow));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "MULTI_WINDOW", nMultiWindow));
+    napi_value nDistributedTransmission;
+    NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env,
+        static_cast<uint32_t>(RestrictionsFeatureForAccount::DISTRIBUTED_TRANSMISSION), &nDistributedTransmission));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "DISTRIBUTED_TRANSMISSION", nDistributedTransmission));
     napi_value nSuperHub;
     NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env,
         static_cast<uint32_t>(RestrictionsFeatureForAccount::SUPER_HUB), &nSuperHub));
