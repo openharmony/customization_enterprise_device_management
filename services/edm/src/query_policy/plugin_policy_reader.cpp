@@ -171,6 +171,7 @@
 #include "disable_set_biometrics_and_screenLock_query.h"
 #include "disable_set_device_name_query.h"
 #include "disallow_distributed_transmission_query.h"
+#include "disallow_distributed_transmission_full_query.h"
 #include "disallow_modify_datetime_query.h"
 #include "disallow_unmute_device_query.h"
 #include "disallow_usb_serial_query.h"

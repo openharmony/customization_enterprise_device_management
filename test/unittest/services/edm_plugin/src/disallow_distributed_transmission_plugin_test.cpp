@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Huawei Device Co., Ltd.
+ * Copyright (c) 2025-2026 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,10 +14,18 @@
  */
 
 #include <gtest/gtest.h>
+
+#define private public
+#define protected public
 #include "disallow_distributed_transmission_plugin.h"
+#include "policy_manager.h"
+#undef protected
+#undef private
+
 #include "edm_constants.h"
 #include "edm_ipc_interface_code.h"
 #include "iplugin_manager.h"
+#include "ipolicy_manager.h"
 #include "plugin_singleton.h"
 #include "utils.h"
 
@@ -28,6 +36,8 @@ namespace OHOS {
 namespace EDM {
 namespace TEST {
 const std::string TEST_BUNDLE_NAME = "testBundleName";
+const std::string TEST_ADMIN_NAME = "com.edm.test.demo";
+const std::string TEST_POLICY_VALUE = "true";
 class DisallowDistributedTransmissionPluginTest : public testing::Test {
 protected:
     static void SetUpTestSuite(void);
@@ -81,6 +91,72 @@ HWTEST_F(DisallowDistributedTransmissionPluginTest, DisallowDistributedTransmiss
     mergeData = false;
     ret = plugin.OnAdminRemove(TEST_BUNDLE_NAME, data, mergeData, DEFAULT_USER_ID);
     ASSERT_TRUE(ret == ERR_OK);
+}
+
+/**
+ * @tc.name: TestDisallowDistributedTransmissionOnSetPolicyConflict
+ * @tc.desc: Test DisallowDistributedTransmissionPlugin::OnSetPolicy function when conflict exists.
+ * @tc.type: FUNC
+ */
+HWTEST_F(DisallowDistributedTransmissionPluginTest, TestDisallowDistributedTransmissionOnSetPolicyConflict, TestSize.Level1)
+{
+    std::shared_ptr<PolicyManager> policyManager = std::make_shared<PolicyManager>();
+    IPolicyManager::policyManagerInstance_ = policyManager.get();
+    ErrCode res = policyManager->SetPolicy(TEST_ADMIN_NAME, PolicyName::POLICY_DISALLOWED_DISTRIBUTED_TRANSMISSION_FULL,
+        TEST_POLICY_VALUE, TEST_POLICY_VALUE, DEFAULT_USER_ID);
+    ASSERT_TRUE(res == ERR_OK);
+
+    DisallowDistributedTransmissionPlugin plugin;
+    bool data = true;
+    bool currentData;
+    bool mergeData;
+    ErrCode ret = plugin.OnSetPolicy(data, currentData, mergeData, DEFAULT_USER_ID);
+    ASSERT_TRUE(ret == EdmReturnErrCode::CONFIGURATION_CONFLICT_FAILED);
+
+    ErrCode clearRes = policyManager->SetPolicy(TEST_ADMIN_NAME, PolicyName::POLICY_DISALLOWED_DISTRIBUTED_TRANSMISSION_FULL,
+        "", "", DEFAULT_USER_ID);
+    ASSERT_TRUE(clearRes == ERR_OK);
+    IPolicyManager::policyManagerInstance_ = nullptr;
+}
+
+/**
+ * @tc.name: TestDisallowDistributedTransmissionHasConflictPolicyWithConflict
+ * @tc.desc: Test DisallowDistributedTransmissionPlugin::HasConflictPolicy when conflict exists.
+ * @tc.type: FUNC
+ */
+HWTEST_F(DisallowDistributedTransmissionPluginTest, TestDisallowDistributedTransmissionHasConflictPolicyWithConflict, TestSize.Level1)
+{
+    std::shared_ptr<PolicyManager> policyManager = std::make_shared<PolicyManager>();
+    IPolicyManager::policyManagerInstance_ = policyManager.get();
+    ErrCode res = policyManager->SetPolicy(TEST_ADMIN_NAME, PolicyName::POLICY_DISALLOWED_DISTRIBUTED_TRANSMISSION_FULL,
+        TEST_POLICY_VALUE, TEST_POLICY_VALUE, DEFAULT_USER_ID);
+    ASSERT_TRUE(res == ERR_OK);
+
+    DisallowDistributedTransmissionPlugin plugin;
+    bool hasConflict = plugin.HasConflictPolicy(DEFAULT_USER_ID);
+    ASSERT_TRUE(hasConflict == true);
+
+    ErrCode clearRes = policyManager->SetPolicy(TEST_ADMIN_NAME, PolicyName::POLICY_DISALLOWED_DISTRIBUTED_TRANSMISSION_FULL,
+        "", "", DEFAULT_USER_ID);
+    ASSERT_TRUE(clearRes == ERR_OK);
+    IPolicyManager::policyManagerInstance_ = nullptr;
+}
+
+/**
+ * @tc.name: TestDisallowDistributedTransmissionHasConflictPolicyWithoutConflict
+ * @tc.desc: Test DisallowDistributedTransmissionPlugin::HasConflictPolicy when no conflict exists.
+ * @tc.type: FUNC
+ */
+HWTEST_F(DisallowDistributedTransmissionPluginTest, TestDisallowDistributedTransmissionHasConflictPolicyWithoutConflict, TestSize.Level1)
+{
+    std::shared_ptr<PolicyManager> policyManager = std::make_shared<PolicyManager>();
+    IPolicyManager::policyManagerInstance_ = policyManager.get();
+
+    DisallowDistributedTransmissionPlugin plugin;
+    bool hasConflict = plugin.HasConflictPolicy(DEFAULT_USER_ID);
+    ASSERT_TRUE(hasConflict == false);
+
+    IPolicyManager::policyManagerInstance_ = nullptr;
 }
 } // namespace TEST
 } // namespace EDM
