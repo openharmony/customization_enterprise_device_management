@@ -25,7 +25,6 @@
 #include "ipolicy_manager.h"
 #include "os_account_manager.h"
 
-
 namespace OHOS {
 namespace EDM {
 const bool REGISTER_RESULT = IPluginManager::GetInstance()->AddPlugin(
@@ -60,7 +59,7 @@ ErrCode DisallowDistributedTransmissionPlugin::OnSetPolicy(
         EDMLOGE("DisallowDistributedTransmissionPlugin::OnSetPolicy HasConflictPolicy failed");
         return EdmReturnErrCode::CONFIGURATION_CONFLICT_FAILED;
     }
-    ret = SetDistributedTransmissionPolicy(data, userId);
+    ErrCode ret = SetDistributedTransmissionPolicy(data, userId);
     if (FAILED(ret)) {
         EDMLOGE("DisallowDistributedTransmissionPlugin::OnSetPolicy Failed, ret: %{public}d", ret);
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;
