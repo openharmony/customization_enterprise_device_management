@@ -50,8 +50,8 @@ ErrCode QueryTrafficStatsPlugin::OnGetPolicy(std::string &policyData, MessagePar
 
     NetStatsNetwork networkInfo;
     NetStatsNetwork::Unmarshalling(data, networkInfo);
-    if (networkInfo.type > static_cast<int>(NetManagerStandard::NetBearType::BEARER_WIFI) ||
-        networkInfo.type < static_cast<int>(NetManagerStandard::NetBearType::BEARER_CELLULAR)) {
+    if (networkInfo.type > static_cast<uint32_t>(NetManagerStandard::NetBearType::BEARER_WIFI) ||
+        networkInfo.type < static_cast<uint32_t>(NetManagerStandard::NetBearType::BEARER_CELLULAR)) {
         EDMLOGE("QueryTrafficStatsPlugin::OnGetPolicy networkInfo.type invalid");
         reply.WriteInt32(EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED);
         return EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED;
