@@ -28,6 +28,7 @@ public:
 
 private:
     ErrCode SetDistributedTransmissionPolicy(bool policy, int32_t userId);
+    bool HasConflictPolicy(int32_t userId);
 };
 } // namespace EDM
 } // namespace OHOS
