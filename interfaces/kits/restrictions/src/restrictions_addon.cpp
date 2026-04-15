@@ -981,7 +981,8 @@ void RestrictionsAddon::CreateFeatureForAccountObject(napi_env env, napi_value v
     napi_value nDistributedTransmission;
     NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env,
         static_cast<uint32_t>(RestrictionsFeatureForAccount::DISTRIBUTED_TRANSMISSION), &nDistributedTransmission));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "DISTRIBUTED_TRANSMISSION", nDistributedTransmission));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "DISTRIBUTED_TRANSMISSION",
+        nDistributedTransmission));
     napi_value nSuperHub;
     NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env,
         static_cast<uint32_t>(RestrictionsFeatureForAccount::SUPER_HUB), &nSuperHub));

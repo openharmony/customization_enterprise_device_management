@@ -15,7 +15,11 @@
 
 #include <gtest/gtest.h>
 
+#define private public
+#define protected public
 #include "disallow_distributed_transmission_full_query.h"
+#undef protected
+#undef private
 #include "edm_constants.h"
 #include "edm_ipc_interface_code.h"
 #include "utils.h"

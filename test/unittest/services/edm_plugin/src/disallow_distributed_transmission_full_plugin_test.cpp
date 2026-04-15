@@ -18,6 +18,7 @@
 #define private public
 #define protected public
 #include "disallow_distributed_transmission_full_plugin.h"
+#include "policy_manager.h"
 #undef protected
 #undef private
 
@@ -35,6 +36,8 @@ namespace OHOS {
 namespace EDM {
 namespace TEST {
 const std::string TEST_BUNDLE_NAME = "testBundleName";
+const std::string TEST_ADMIN_NAME = "com.edm.test.demo";
+const std::string TEST_POLICY_VALUE = "true";
 class DisallowDistributedTransmissionFullPluginTest : public testing::Test {
 protected:
     static void SetUpTestSuite(void);
@@ -59,7 +62,8 @@ void DisallowDistributedTransmissionFullPluginTest::TearDownTestSuite(void)
  * @tc.desc: Test DisallowDistributedTransmissionFullPlugin::OnSetPolicy function with true value.
  * @tc.type: FUNC
  */
-HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedTransmissionFullOnSetPolicyTrue, TestSize.Level1)
+HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedTransmissionFullOnSetPolicyTrue,
+    TestSize.Level1)
 {
     DisallowDistributedTransmissionFullPlugin plugin;
     bool data = true;
@@ -76,7 +80,8 @@ HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedT
  * @tc.desc: Test DisallowDistributedTransmissionFullPlugin::OnSetPolicy function with false value.
  * @tc.type: FUNC
  */
-HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedTransmissionFullOnSetPolicyFalse, TestSize.Level1)
+HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedTransmissionFullOnSetPolicyFalse,
+    TestSize.Level1)
 {
     DisallowDistributedTransmissionFullPlugin plugin;
     bool data = false;
@@ -93,7 +98,8 @@ HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedT
  * @tc.desc: Test DisallowDistributedTransmissionFullPlugin::OnSetPolicy function with mergeData true.
  * @tc.type: FUNC
  */
-HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedTransmissionFullOnSetPolicyWithMerge, TestSize.Level1)
+HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedTransmissionFullOnSetPolicyWithMerge,
+    TestSize.Level1)
 {
     DisallowDistributedTransmissionFullPlugin plugin;
     bool data = true;
@@ -109,23 +115,26 @@ HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedT
  * @tc.desc: Test DisallowDistributedTransmissionFullPlugin::OnSetPolicy function when conflict exists.
  * @tc.type: FUNC
  */
-HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedTransmissionFullOnSetPolicyConflict, TestSize.Level1)
+HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedTransmissionFullOnSetPolicyConflict,
+    TestSize.Level1)
 {
-    DisallowDistributedTransmissionFullPlugin plugin;
-    // Mock the policy manager to return a non-empty value for disallow_distributed_transmission
-    auto policyManager = IPolicyManager::GetInstance();
-    std::string policyValue = "true";
-    policyManager->SetPolicy("", PolicyName::POLICY_DISALLOWED_DISTRIBUTED_TRANSMISSION, policyValue, DEFAULT_USER_ID);
+    std::shared_ptr<PolicyManager> policyManager = std::make_shared<PolicyManager>();
+    IPolicyManager::policyManagerInstance_ = policyManager.get();
+    ErrCode res = policyManager->SetPolicy(TEST_ADMIN_NAME, PolicyName::POLICY_DISALLOWED_DISTRIBUTED_TRANSMISSION,
+        TEST_POLICY_VALUE, TEST_POLICY_VALUE, DEFAULT_USER_ID);
+    ASSERT_TRUE(res == ERR_OK);
 
+    DisallowDistributedTransmissionFullPlugin plugin;
     bool data = true;
     bool currentData;
     bool mergeData;
     ErrCode ret = plugin.OnSetPolicy(data, currentData, mergeData, DEFAULT_USER_ID);
     ASSERT_TRUE(ret == EdmReturnErrCode::CONFIGURATION_CONFLICT_FAILED);
 
-    // Clean up
-    policyValue = "";
-    policyManager->SetPolicy("", PolicyName::POLICY_DISALLOWED_DISTRIBUTED_TRANSMISSION, policyValue, DEFAULT_USER_ID);
+    ErrCode clearRes = policyManager->SetPolicy(TEST_ADMIN_NAME, PolicyName::POLICY_DISALLOWED_DISTRIBUTED_TRANSMISSION,
+        "", "", DEFAULT_USER_ID);
+    ASSERT_TRUE(clearRes == ERR_OK);
+    IPolicyManager::policyManagerInstance_ = nullptr;
 }
 
 /**
@@ -133,7 +142,8 @@ HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedT
  * @tc.desc: Test DisallowDistributedTransmissionFullPlugin::OnAdminRemove function with mergeData true.
  * @tc.type: FUNC
  */
-HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedTransmissionFullOnAdminRemoveWithMerge, TestSize.Level1)
+HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedTransmissionFullOnAdminRemoveWithMerge,
+    TestSize.Level1)
 {
     DisallowDistributedTransmissionFullPlugin plugin;
     bool data = true;
@@ -147,7 +157,8 @@ HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedT
  * @tc.desc: Test DisallowDistributedTransmissionFullPlugin::OnAdminRemove function with data true.
  * @tc.type: FUNC
  */
-HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedTransmissionFullOnAdminRemoveWithDataTrue, TestSize.Level1)
+HWTEST_F(DisallowDistributedTransmissionFullPluginTest,
+    TestDisallowDistributedTransmissionFullOnAdminRemoveWithDataTrue, TestSize.Level1)
 {
     DisallowDistributedTransmissionFullPlugin plugin;
     bool data = true;
@@ -161,7 +172,11 @@ HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedT
  * @tc.desc: Test DisallowDistributedTransmissionFullPlugin::OnAdminRemove function with data false.
  * @tc.type: FUNC
  */
-HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedTransmissionFullOnAdminRemoveWithDataFalse(false);
+HWTEST_F(DisallowDistributedTransmissionFullPluginTest,
+    TestDisallowDistributedTransmissionFullOnAdminRemoveWithDataFalse, TestSize.Level1)
+{
+    DisallowDistributedTransmissionFullPlugin plugin;
+    bool data = false;
     bool mergeData = false;
     ErrCode ret = plugin.OnAdminRemove(TEST_BUNDLE_NAME, data, mergeData, DEFAULT_USER_ID);
     ASSERT_TRUE(ret == ERR_OK);
@@ -172,20 +187,23 @@ HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedT
  * @tc.desc: Test DisallowDistributedTransmissionFullPlugin::HasConflictPolicy when conflict exists.
  * @tc.type: FUNC
  */
-HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedTransmissionFullHasConflictPolicyWithConflict, TestSize.Level1)
+HWTEST_F(DisallowDistributedTransmissionFullPluginTest,
+    TestDisallowDistributedTransmissionFullHasConflictPolicyWithConflict, TestSize.Level1)
 {
-    DisallowDistributedTransmissionFullPlugin plugin;
-    // Mock the policy manager to return a non-empty value for disallow_distributed_transmission
-    auto policyManager = IPolicyManager::GetInstance();
-    std::string policyValue = "true";
-    policyManager->SetPolicy("", PolicyName::POLICY_DISALLOWED_DISTRIBUTED_TRANSMISSION, policyValue, DEFAULT_USER_ID);
+    std::shared_ptr<PolicyManager> policyManager = std::make_shared<PolicyManager>();
+    IPolicyManager::policyManagerInstance_ = policyManager.get();
+    ErrCode res = policyManager->SetPolicy(TEST_ADMIN_NAME, PolicyName::POLICY_DISALLOWED_DISTRIBUTED_TRANSMISSION,
+        TEST_POLICY_VALUE, TEST_POLICY_VALUE, DEFAULT_USER_ID);
+    ASSERT_TRUE(res == ERR_OK);
 
+    DisallowDistributedTransmissionFullPlugin plugin;
     bool hasConflict = plugin.HasConflictPolicy(DEFAULT_USER_ID);
     ASSERT_TRUE(hasConflict == true);
 
-    // Clean up
-    policyValue = "";
-    policyManager->SetPolicy("", PolicyName::POLICY_DISALLOWED_DISTRIBUTED_TRANSMISSION, policyValue, DEFAULT_USER_ID);
+    ErrCode clearRes = policyManager->SetPolicy(TEST_ADMIN_NAME, PolicyName::POLICY_DISALLOWED_DISTRIBUTED_TRANSMISSION,
+        "", "", DEFAULT_USER_ID);
+    ASSERT_TRUE(clearRes == ERR_OK);
+    IPolicyManager::policyManagerInstance_ = nullptr;
 }
 
 /**
@@ -193,16 +211,17 @@ HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedT
  * @tc.desc: Test DisallowDistributedTransmissionFullPlugin::HasConflictPolicy when no conflict exists.
  * @tc.type: FUNC
  */
-HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedTransmissionFullHasConflictPolicyWithoutConflict, TestSize.Level1)
+HWTEST_F(DisallowDistributedTransmissionFullPluginTest,
+    TestDisallowDistributedTransmissionFullHasConflictPolicyWithoutConflict, TestSize.Level1)
 {
-    DisallowDistributedTransmissionFullPlugin plugin;
-    // Ensure the policy manager returns empty value for disallow_distributed_transmission
-    auto policyManager = IPolicyManager::GetInstance();
-    std::string policyValue = "";
-    policyManager->SetPolicy("", PolicyName::POLICY_DISALLOWED_DISTRIBUTED_TRANSMISSION, policyValue, DEFAULT_USER_ID);
+    std::shared_ptr<PolicyManager> policyManager = std::make_shared<PolicyManager>();
+    IPolicyManager::policyManagerInstance_ = policyManager.get();
 
+    DisallowDistributedTransmissionFullPlugin plugin;
     bool hasConflict = plugin.HasConflictPolicy(DEFAULT_USER_ID);
     ASSERT_TRUE(hasConflict == false);
+
+    IPolicyManager::policyManagerInstance_ = nullptr;
 }
 
 /**
@@ -210,7 +229,8 @@ HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedT
  * @tc.desc: Test DisallowDistributedTransmissionFullPlugin::SetDistributedTransmissionFullPolicy with true.
  * @tc.type: FUNC
  */
-HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedTransmissionFullSetDistributedTransmissionFullPolicyTrue, TestSize.Level1)
+HWTEST_F(DisallowDistributedTransmissionFullPluginTest,
+    TestDisallowDistributedTransmissionFullSetDistributedTransmissionFullPolicyTrue, TestSize.Level1)
 {
     DisallowDistributedTransmissionFullPlugin plugin;
     ErrCode ret = plugin.SetDistributedTransmissionFullPolicy(true, DEFAULT_USER_ID);
@@ -222,7 +242,8 @@ HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedT
  * @tc.desc: Test DisallowDistributedTransmissionFullPlugin::SetDistributedTransmissionFullPolicy with false.
  * @tc.type: FUNC
  */
-HWTEST_F(DisallowDistributedTransmissionFullPluginTest, TestDisallowDistributedTransmissionFullSetDistributedTransmissionFullPolicyFalse, TestSize.Level1)
+HWTEST_F(DisallowDistributedTransmissionFullPluginTest,
+    TestDisallowDistributedTransmissionFullSetDistributedTransmissionFullPolicyFalse, TestSize.Level1)
 {
     DisallowDistributedTransmissionFullPlugin plugin;
     ErrCode ret = plugin.SetDistributedTransmissionFullPolicy(false, DEFAULT_USER_ID);
