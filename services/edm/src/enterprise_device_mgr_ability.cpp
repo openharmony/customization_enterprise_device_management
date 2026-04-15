@@ -421,6 +421,7 @@ void EnterpriseDeviceMgrAbility::AddOnAddSystemAbilityFuncMapSecond()
             that->CallOnOtherServiceStart(EdmInterfaceCode::SNAPSHOT_SKIP);
             that->CallOnOtherServiceStart(EdmInterfaceCode::ALLOWED_KIOSK_APPS, WINDOW_MANAGER_SERVICE_ID);
             that->CallOnOtherServiceStart(EdmInterfaceCode::MANAGE_USER_NON_STOP_APPS, WINDOW_MANAGER_SERVICE_ID);
+            that->CallOnOtherServiceStart(EdmInterfaceCode::SCREEN_WATERMARK_IMAGE);
         };
     addSystemAbilityFuncMap_[RES_SCHED_SYS_ABILITY_ID] =
         [](EnterpriseDeviceMgrAbility* that, int32_t systemAbilityId, const std::string &deviceId) {

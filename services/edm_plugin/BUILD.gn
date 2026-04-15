@@ -126,6 +126,7 @@ ohos_shared_library("device_core_plugin") {
         "graphic_2d:librender_service_client",
         "os_account:libaccountkits",
         "os_account:os_account_innerkits",
+        "window_manager:libdm"
       ]
       sources += [
         "./src/add_os_account_plugin.cpp",
