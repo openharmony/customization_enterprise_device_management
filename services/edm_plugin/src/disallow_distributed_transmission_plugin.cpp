@@ -22,8 +22,8 @@
 #include "edm_ipc_interface_code.h"
 #include "edm_log.h"
 #include "iplugin_manager.h"
+#include "ipolicy_manager.h"
 #include "os_account_manager.h"
-
 
 namespace OHOS {
 namespace EDM {
@@ -54,6 +54,10 @@ ErrCode DisallowDistributedTransmissionPlugin::OnSetPolicy(
     if (mergeData) {
         currentData = data;
         return ERR_OK;
+    }
+    if (HasConflictPolicy(userId)) {
+        EDMLOGE("DisallowDistributedTransmissionPlugin::OnSetPolicy HasConflictPolicy failed");
+        return EdmReturnErrCode::CONFIGURATION_CONFLICT_FAILED;
     }
     ErrCode ret = SetDistributedTransmissionPolicy(data, userId);
     if (FAILED(ret)) {
@@ -92,6 +96,19 @@ ErrCode DisallowDistributedTransmissionPlugin::SetDistributedTransmissionPolicy(
         constraints, policy, userId, EdmConstants::DEFAULT_USER_ID, true);
     EDMLOGI("DisallowDistributedTransmissionPlugin SetSpecificOsAccountConstraints ret: %{public}d", ret);
     return ret;
+}
+
+bool DisallowDistributedTransmissionPlugin::HasConflictPolicy(int32_t userId)
+{
+    auto policyManager = IPolicyManager::GetInstance();
+    std::string policyValue;
+    policyManager->GetPolicy("", PolicyName::POLICY_DISALLOWED_DISTRIBUTED_TRANSMISSION_FULL, policyValue, userId);
+    if (!policyValue.empty()) {
+        EDMLOGE("DisallowDistributedTransmissionPlugin::HasConflictPolicy policy conflict! "
+                 "disallow_distributed_transmission_full is already set");
+        return true;
+    }
+    return false;
 }
 } // namespace EDM
 } // namespace OHOS
