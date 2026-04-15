@@ -26,6 +26,7 @@ enum class RestrictionsFeature : int32_t {
 
 enum class RestrictionsFeatureForAccount : int32_t {
     MULTI_WINDOW = 0,
+    DISTRIBUTED_TRANSMISSION = 1,
     SUPER_HUB = 2,
 };
 } // namespace EDM
