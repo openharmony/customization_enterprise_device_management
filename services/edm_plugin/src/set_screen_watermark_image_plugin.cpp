@@ -15,11 +15,15 @@
 
 #include "set_screen_watermark_image_plugin.h"
 
+#include <chrono>
 #include <fcntl.h>
 #include <fstream>
+#include <random>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include "display.h"
+#include "display_manager.h"
 #include "edm_constants.h"
 #include "edm_ipc_interface_code.h"
 #include "edm_log.h"
@@ -36,6 +40,9 @@ const bool REGISTER_RESULT =
     IPluginManager::GetInstance()->AddPlugin(std::make_shared<SetScreenWatermarkImagePlugin>());
 const std::string SCREEN_WATERMARK_DIR_PATH = "/data/service/el1/public/edm/watermark/";
 const std::string FILE_PREFIX = "edm_screen_";
+constexpr int32_t RANDOM_NUM_MAX = 9999;
+constexpr int32_t WATERMARK_DISPLAY_MODE = 1;
+constexpr int32_t IMAGE_SIZE_MULTIPLIER = 2;
 
 SetScreenWatermarkImagePlugin::SetScreenWatermarkImagePlugin()
 {
@@ -95,28 +102,41 @@ ErrCode SetScreenWatermarkImagePlugin::SetPolicy(MessageParcel &data,
     WatermarkParam param;
     if (!GetWatermarkParam(param, data)) {
         EDMLOGE("SetScreenWatermarkImagePlugin::SetPolicy GetWatermarkParam failed");
-        return EdmReturnErrCode::PARAM_ERROR;
+        return EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED;
     }
     auto pixelMap =
         CreatePixelMapFromUint8(reinterpret_cast<const uint8_t *>(param.pixels), param.size, param.width, param.height);
     if (pixelMap == nullptr) {
         EDMLOGE("SetScreenWatermarkImagePlugin::SetPolicy CreatePixelMapFromUint8 failed");
-        return EdmReturnErrCode::PARAM_ERROR;
+        return EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED;
     }
-    std::string fileName = FILE_PREFIX + std::to_string(time(nullptr));
+    if (!currentData.fileName.empty()) {
+        auto oldPixelMap = GetImageFromUrlUint8(currentData);
+        if (oldPixelMap != nullptr) {
+            Rosen::WMError cleanRet = Rosen::WindowManager::GetInstance().CleanScreenWatermarkImage(oldPixelMap);
+            if (cleanRet != Rosen::WMError::WM_OK) {
+                EDMLOGW("SetScreenWatermarkImagePlugin::SetPolicy CleanScreenWatermarkImage failed, code: %{public}d",
+                    cleanRet);
+            }
+        }
+        RemoveImageFile(currentData.fileName);
+    }
+    auto now = std::chrono::system_clock::now();
+    auto timestamp = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()).count();
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0, RANDOM_NUM_MAX);
+    std::string fileName = FILE_PREFIX + std::to_string(timestamp) + "_" + std::to_string(dis(gen));
     std::string filePath = SCREEN_WATERMARK_DIR_PATH + fileName;
     if (!SetImageUint8(param.pixels, param.size, filePath)) {
         EDMLOGE("SetScreenWatermarkImagePlugin::SetPolicy SetImageUint8 failed");
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;
     }
-    Rosen::WMError ret = Rosen::WindowManager::GetInstance().SetScreenWatermarkImage(pixelMap, 1);
+    Rosen::WMError ret = Rosen::WindowManager::GetInstance().SetScreenWatermarkImage(pixelMap, WATERMARK_DISPLAY_MODE);
     if (ret != Rosen::WMError::WM_OK) {
         EDMLOGE("SetScreenWatermarkImagePlugin SetScreenWatermarkImage fail!code: %{public}d", ret);
         RemoveImageFile(fileName);
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;
-    }
-    if (!currentData.fileName.empty()) {
-        RemoveImageFile(currentData.fileName);
     }
     WatermarkImageType afterHandle{fileName, param.width, param.height};
     currentData = afterHandle;
@@ -130,7 +150,7 @@ ErrCode SetScreenWatermarkImagePlugin::CancelScreenWatermarkImage(WatermarkImage
     EDMLOGI("SetScreenWatermarkImagePlugin::CancelScreenWatermarkImage start");
     if (currentData.fileName.empty()) {
         EDMLOGI("SetScreenWatermarkImagePlugin::CancelScreenWatermarkImage current admin dont have policy");
-        return EdmReturnErrCode::SYSTEM_ABNORMALLY;
+        return ERR_OK;
     }
     auto pixelMap = GetImageFromUrlUint8(currentData);
     if (pixelMap == nullptr) {
@@ -159,14 +179,7 @@ ErrCode SetScreenWatermarkImagePlugin::OnAdminRemove(const std::string &adminNam
         EDMLOGE("SetScreenWatermarkImagePlugin::OnAdminRemove Deserialize failed");
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;
     }
-    
-    // 删除图片文件
-    if (!currentData.fileName.empty()) {
-        RemoveImageFile(currentData.fileName);
-    }
-    
-    EDMLOGI("SetScreenWatermarkImagePlugin::OnAdminRemove success");
-    return ERR_OK;
+    return CancelScreenWatermarkImage(currentData);
 }
 
 ErrCode SetScreenWatermarkImagePlugin::GetOthersMergePolicyData(const std::string &adminName,
@@ -185,6 +198,28 @@ bool SetScreenWatermarkImagePlugin::GetWatermarkParam(WatermarkParam &param, Mes
     param.size = data.ReadInt32();
     if (param.size <= 0) {
         EDMLOGE("SetScreenWatermarkImagePlugin::GetWatermarkParam size error");
+        return false;
+    }
+    if (param.width <= 0 || param.height <= 0) {
+        EDMLOGE("SetScreenWatermarkImagePlugin::GetWatermarkParam width or height error");
+        return false;
+    }
+    OHOS::sptr<Rosen::Display> defaultDisplay = Rosen::DisplayManager::GetInstance().GetDefaultDisplay();
+    if (defaultDisplay == nullptr) {
+        EDMLOGE("SetScreenWatermarkImagePlugin::GetWatermarkParam GetDefaultDisplay failed");
+        return false;
+    }
+    int32_t deviceWidth = defaultDisplay->GetWidth();
+    int32_t deviceHeight = defaultDisplay->GetHeight();
+    if (deviceWidth <= 0 || deviceHeight <= 0) {
+        EDMLOGE("SetScreenWatermarkImagePlugin::GetWatermarkParam invalid device size, "
+                "deviceWidth=%{public}d, deviceHeight=%{public}d", deviceWidth, deviceHeight);
+        return false;
+    }
+    if (param.width > deviceWidth * IMAGE_SIZE_MULTIPLIER || param.height > deviceHeight * IMAGE_SIZE_MULTIPLIER) {
+        EDMLOGE("SetScreenWatermarkImagePlugin::GetWatermarkParam image size exceeds device limit, "
+                "imageWidth=%{public}d, imageHeight=%{public}d, deviceWidth=%{public}d, deviceHeight=%{public}d",
+                param.width, param.height, deviceWidth, deviceHeight);
         return false;
     }
     param.SetPixels(const_cast<void*>(data.ReadRawData(param.size)));
@@ -211,10 +246,16 @@ bool SetScreenWatermarkImagePlugin::SetImageUint8(const void *pixels, int32_t si
         EDMLOGE("SetScreenWatermarkImagePlugin::SetImageUint8 Open file fail!");
         return false;
     }
-    outfile.write(reinterpret_cast<const char *>(pixels), static_cast<std::streamsize>(size));
+    if (!outfile.write(reinterpret_cast<const char *>(pixels), static_cast<std::streamsize>(size))) {
+        EDMLOGE("SetScreenWatermarkImagePlugin::SetImageUint8 write failed");
+        outfile.close();
+        remove(url.c_str());
+        return false;
+    }
     outfile.close();
     if (chmod(url.c_str(), S_IRUSR | S_IWUSR) != 0) {
         EDMLOGE("SetScreenWatermarkImagePlugin::SetImageUint8 chmod fail!");
+        remove(url.c_str());
         return false;
     }
     return true;
@@ -284,6 +325,37 @@ std::shared_ptr<Media::PixelMap> SetScreenWatermarkImagePlugin::CreatePixelMapFr
         return nullptr;
     }
     return pixelMap;
+}
+
+void SetScreenWatermarkImagePlugin::OnOtherServiceStart(int32_t systemAbilityId)
+{
+    EDMLOGI("SetScreenWatermarkImagePlugin::OnOtherServiceStart");
+    std::string policyData;
+    auto policyManager = IPolicyManager::GetInstance();
+    policyManager->GetPolicy("", PolicyName::POLICY_SCREEN_WATERMARK_IMAGE, policyData,
+        EdmConstants::DEFAULT_USER_ID);
+    if (policyData.empty()) {
+        return;
+    }
+    WatermarkImageType currentData;
+    auto serializer = ScreenWatermarkImageSerializer::GetInstance();
+    if (!serializer->Deserialize(policyData, currentData)) {
+        EDMLOGE("SetScreenWatermarkImagePlugin::OnOtherServiceStart Deserialize failed");
+        return;
+    }
+    if (currentData.fileName.empty()) {
+        return;
+    }
+    auto pixelMap = GetImageFromUrlUint8(currentData);
+    if (pixelMap == nullptr) {
+        EDMLOGE("SetScreenWatermarkImagePlugin::OnOtherServiceStart GetImageFromUrlUint8 failed");
+        return;
+    }
+    Rosen::WMError ret = Rosen::WindowManager::GetInstance().SetScreenWatermarkImage(pixelMap, WATERMARK_DISPLAY_MODE);
+    if (ret != Rosen::WMError::WM_OK) {
+        EDMLOGE("SetScreenWatermarkImagePlugin::OnOtherServiceStart SetScreenWatermarkImage failed, code: %{public}d",
+            ret);
+    }
 }
 } // namespace EDM
 } // namespace OHOS
