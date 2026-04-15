@@ -138,6 +138,7 @@ namespace EdmConstants {
         constexpr uint32_t SET_KEY_EVENTS = 31;
         constexpr uint32_t DISABLE_SUPERHUB = 36;
         constexpr uint32_t HIDE_LAUNCHER_ICON = 37;
+        constexpr uint32_t DISABLE_SECURE_ERASE = 39;
     }
 
     namespace KeepAlive {
