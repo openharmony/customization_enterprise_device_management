@@ -34,6 +34,7 @@ group("fuzztest") {
     "disableusbplugin_fuzzer:DisableUsbPluginFuzzTest",
     "disallowaddosaccountbyuserplugin_fuzzer:DisallowAddOsAccountByUserPluginFuzzTest",
     "disallowedbluetoothdevicesplugin_fuzzer:DisallowedBluetoothDevicesPluginFuzzTest",
+    "disallowedbluetoothprotocolsplugin_fuzzer:DisallowedBluetoothProtocolsPluginFuzzTest",
     "disallowedrunningbundlesplugin_fuzzer:DisallowedRunningBundlesPluginFuzzTest",
     "disallowedairplanemodeplugin_fuzzer:DisallowedAirplaneModePluginFuzzTest",
     "disallowedwifilistplugin_fuzzer:DisallowedWifiListPluginFuzzTest",
