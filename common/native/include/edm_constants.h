@@ -207,6 +207,7 @@ namespace EdmConstants {
         const char* const LABEL_DISALLOWED_POLICY_USB_SERIAL = "usbSerial";
         const char* const LABEL_DISALLOWED_POLICY_SUPERHUB = "superhub";
         const char* const LABEL_DISALLOWED_POLICY_MULTI_WINDOW = "multiWindow";
+        const char* const LABEL_DISALLOWED_POLICY_DEVICE_SUDO = "sudo";
     } // namespace Restrictions
 
     namespace SecurityManager {
@@ -476,6 +477,7 @@ namespace PolicyName {
     const char* const POLICY_DISABLED_SUPERHUB = "disabled_superhub";
     const char* const POLICY_QUERY_BUNDLE_STATS_INFOS = "query_bundle_stats_infos";
     const char* const POLICY_HIDE_LAUNCHER_ICON = "hide_launcher_icon";
+    const char* const POLICY_DISALLOWED_DEVICE_SUDO = "disallowed_device_sudo";
 } // namespace PolicyName
 } // namespace EDM
 } // namespace OHOS

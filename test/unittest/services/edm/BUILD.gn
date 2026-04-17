@@ -100,6 +100,7 @@ ohos_static_library("edmservice_static") {
     "../../../../services/edm/src/query_policy/disallow_usb_serial_query.cpp",
     "../../../../services/edm/src/query_policy/disallow_uinput_query.cpp",
     "../../../../services/edm/src/query_policy/disallow_virtual_service_query.cpp",
+    "../../../../services/edm/src/query_policy/disallowed_device_sudo_query.cpp",
     "../../../../services/edm/src/query_policy/disallowed_install_bundles_query.cpp",
     "../../../../services/edm/src/query_policy/disallowed_tethering_query.cpp",
     "../../../../services/edm/src/query_policy/disallowed_uninstall_bundles_query.cpp",

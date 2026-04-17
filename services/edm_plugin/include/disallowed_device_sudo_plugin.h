@@ -13,23 +13,20 @@
  * limitations under the License.
  */
 
-#ifndef COMMON_NATIVE_INCLUDE_RESTRICTION_FEATURE_H
-#define COMMON_NATIVE_INCLUDE_RESTRICTION_FEATURE_H
+#ifndef SERVICES_EDM_PLUGIN_INCLUDE_DISALLOWED_DEVICE_SUDO_PLUGIN_H
+#define SERVICES_EDM_PLUGIN_INCLUDE_DISALLOWED_DEVICE_SUDO_PLUGIN_H
+
+#include "basic_bool_plugin.h"
+#include "plugin_singleton.h"
 
 namespace OHOS {
 namespace EDM {
-enum class RestrictionsFeature : int32_t {
-    WIFI_P2P = 0,
-    LOCAL_INPUT = 2,
-    SUDO = 4,
-    CORE_DUMP = 6,
-};
-
-enum class RestrictionsFeatureForAccount : int32_t {
-    MULTI_WINDOW = 0,
-    SUPER_HUB = 2,
+class DisallowedDeviceSudoPlugin : public PluginSingleton<DisallowedDeviceSudoPlugin, bool>, public BasicBoolPlugin {
+public:
+    void InitPlugin(std::shared_ptr<IPluginTemplate<DisallowedDeviceSudoPlugin, bool>> ptr) override;
+    ErrCode CheckConflictPolicy(bool data, int32_t userId) override;
 };
 } // namespace EDM
 } // namespace OHOS
 
-#endif // COMMON_NATIVE_INCLUDE_RESTRICTION_FEATURE_H
+#endif // SERVICES_EDM_PLUGIN_INCLUDE_DISALLOWED_DEVICE_SUDO_PLUGIN_H
