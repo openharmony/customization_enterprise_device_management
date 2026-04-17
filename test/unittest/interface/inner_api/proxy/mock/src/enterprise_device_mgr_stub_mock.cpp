@@ -608,5 +608,24 @@ int EnterpriseDeviceMgrStubMock::InvokeSendRequestGetBundleStatsInfos(uint32_t c
     reply.WriteInt32(accountId);
     return 0;
 }
+
+int EnterpriseDeviceMgrStubMock::InvokeNetStatsInfoSendRequestOverMaxSize(uint32_t code, MessageParcel &data,
+    MessageParcel &reply, MessageOption &option)
+{
+    GTEST_LOG_(INFO) << "mock EnterpriseDeviceMgrStubMock InvokeNetStatsInfoSendRequestOverMaxSize code :" << code;
+    code_ = code;
+
+    reply.WriteInt32(ERR_OK);
+    uint32_t overMaxSize = EdmConstants::POLICIES_MAX_SIZE + 1;
+    reply.WriteUint32(overMaxSize);
+    for (uint32_t i = 1; i <= overMaxSize; i++) {
+        BundleStorageInfo info;
+        info.bundleName = "com.test.app" + std::to_string(i);
+        info.appSize = TEST_APP_SIZE * i;
+        info.dataSize = TEST_DATA_SIZE * i;
+        info.Marshalling(reply);
+    }
+    return 0;
+}
 } // namespace EDM
 } // namespace OHOS
