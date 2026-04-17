@@ -17,7 +17,6 @@
 
 #include <system_ability_definition.h>
 
-
 #include "bluetooth_protocol_policy_serializer.h"
 #include "common_fuzzer.h"
 #include "edm_constants.h"
