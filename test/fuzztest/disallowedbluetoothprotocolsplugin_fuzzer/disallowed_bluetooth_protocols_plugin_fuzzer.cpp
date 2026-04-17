@@ -17,7 +17,7 @@
 
 #include <system_ability_definition.h>
 
-#include "array_int_serializer.h"
+#include "bluetooth_protocol_policy_serializer.h"
 #include "common_fuzzer.h"
 #include "edm_constants.h"
 #include "edm_ipc_interface_code.h"
@@ -80,19 +80,15 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     }
 
     DisallowedBluetoothProtocolsPlugin plugin;
-    std::vector<int32_t> mData;
-    std::vector<int32_t> currentData;
-    std::vector<int32_t> mergeData;
-    int32_t numProtocols = CommonFuzzer::GetU32Data(data, pos, size) % 12000 + 1;
-    for (int32_t i = 0; i < numProtocols && i < size; i++) {
-        mData.push_back(CommonFuzzer::GetU32Data(data, pos, size));
-    }
+    BluetoothProtocolPolicy mData;
+    BluetoothProtocolPolicy currentData;
+    BluetoothProtocolPolicy mergeData;
     
     plugin.OnSetPolicy(mData, currentData, mergeData, WITHOUT_USERID);
     plugin.OnRemovePolicy(mData, currentData, mergeData, WITHOUT_USERID);
     
     std::string policyData;
-    ArrayIntSerializer::GetInstance()->Serialize(mData, policyData);
+    BluetoothProtocolPolicySerializer::GetInstance()->Serialize(mData, policyData);
     MessageParcel dataParcel;
     MessageParcel replyParcel;
     plugin.OnGetPolicy(policyData, dataParcel, replyParcel, WITHOUT_USERID);
