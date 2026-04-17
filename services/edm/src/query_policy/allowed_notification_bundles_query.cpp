@@ -38,8 +38,12 @@ ErrCode AllowedNotificationBundlesQuery::QueryPolicy(std::string &policyData, Me
         EDMLOGE("AllowedNotificationBundlesSerializer Deserialize error!");
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;
     }
-    reply.WriteInt32(ERR_OK);
     int32_t accountId = data.ReadInt32();
+    if (accountId < 0) {
+        EDMLOGE("AllowedNotificationBundlesQuery accountId illegal");
+        return EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED;
+    }
+    reply.WriteInt32(ERR_OK);
     for (const auto& item : policies) {
         if (item.userId == accountId) {
             std::vector<std::string> bundleNames(item.trustList.begin(), item.trustList.end());
