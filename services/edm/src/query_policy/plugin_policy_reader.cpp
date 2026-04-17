@@ -176,6 +176,7 @@
 #include "disallow_usb_serial_query.h"
 #include "disallow_uinput_query.h"
 #include "disallow_virtual_service_query.h"
+#include "disallowed_device_sudo_query.h"
 #include "disallowed_install_bundles_query.h"
 #include "disallowed_tethering_query.h"
 #include "disallowed_uninstall_bundles_query.h"
@@ -799,6 +800,9 @@ ErrCode PluginPolicyReader::GetPolicyQueryEleventh(std::shared_ptr<IPolicyQuery>
 #endif
         case EdmInterfaceCode::DISALLOW_CORE_DUMP:
             obj = std::make_shared<DisallowCoreDumpQuery>();
+            return ERR_OK;
+        case EdmInterfaceCode::DISALLOWED_DEVICE_SUDO:
+            obj = std::make_shared<DisallowedDeviceSudoQuery>();
             return ERR_OK;
         case EdmInterfaceCode::POLICY_CODE_END + EdmConstants::PolicyCode::HIDE_LAUNCHER_ICON:
 #ifndef FEATURE_PC_ONLY
