@@ -379,6 +379,10 @@ int32_t BundleManagerProxy::GetInstalledBundleStorageStatsList(AppExecFwk::Eleme
         return ret;
     }
     uint32_t size = reply.ReadUint32();
+    if (size > EdmConstants::POLICIES_MAX_SIZE) {
+        EDMLOGE("BundleManagerProxy:GetInstalledBundleStorageStatsList reply size is over max");
+        return EdmReturnErrCode::SYSTEM_ABNORMALLY;
+    }
     for (uint32_t i = 0; i < size; i++) {
         BundleStorageInfo *bundleStorageInfo = BundleStorageInfo::Unmarshalling(reply);
         if (bundleStorageInfo == nullptr) {
