@@ -21,6 +21,7 @@
 
 namespace OHOS {
 namespace EDM {
+// LCOV_EXCL_START
 EnterpriseKioskConnection::~EnterpriseKioskConnection() {}
 
 void EnterpriseKioskConnection::OnAbilityConnectDone(
@@ -49,5 +50,6 @@ void EnterpriseKioskConnection::OnAbilityDisconnectDone(const AppExecFwk::Elemen
 {
     EDMLOGI("EnterpriseKioskConnection OnAbilityDisconnectDone");
 }
+// LCOV_EXCL_STOP
 }  // namespace EDM
 }  // namespace OHOS

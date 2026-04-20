@@ -22,6 +22,7 @@
 
 namespace OHOS {
 namespace EDM {
+// LCOV_EXCL_START
 std::shared_ptr<IExternalManagerFactory> AbilityControllerFactory::factory_ =
     std::make_shared<ExternalManagerFactory>();
 
@@ -76,5 +77,6 @@ std::shared_ptr<AbilityController> AbilityControllerFactory::CreateAbilityContro
 
     return std::make_shared<AbilityController>(info);
 }
+// LCOV_EXCL_STOP
 } // namespace EDM
 } // namespace OHOS

@@ -11,13 +11,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+#####################hydra-fuzz###################
 import("//build/config/features.gni")
 import("//build/ohos.gni")
 import("//build/test.gni")
 import("../../../common/config/common.gni")
 module_output_path = "enterprise_device_management/enterprise_device_management"
 
-ohos_fuzztest("QueryTrafficStatsPluginFuzzTest") {
+##############################fuzztest##########################################
+
+ohos_fuzztest("AllowedNotificationBundlesPluginFuzzTest") {
   module_out_path = module_output_path
 
   fuzz_config_file = "." 
@@ -30,7 +33,7 @@ ohos_fuzztest("QueryTrafficStatsPluginFuzzTest") {
   ]
   sources = [
     "../common/src/common_fuzzer.cpp",
-    "query_traffic_stats_plugin_fuzzer.cpp",
+    "allowed_notification_bundles_plugin_fuzzer.cpp",
   ]
 
   include_dirs = [

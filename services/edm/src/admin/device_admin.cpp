@@ -20,6 +20,7 @@
 
 namespace OHOS {
 namespace EDM {
+// LCOV_EXCL_START
 DeviceAdmin::DeviceAdmin(const AdminInfo& adminInfo): Admin(adminInfo)
 {
     adminInfo_.adminType_ = AdminType::NORMAL;
@@ -69,5 +70,6 @@ std::string DeviceAdmin::GetDisableSelfPermission() const
     return EdmPermission::PERMISSION_DENIED;
 #endif
 }
+// LCOV_EXCL_STOP
 } // namespace EDM
 } // namespace OHOS

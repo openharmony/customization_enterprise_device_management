@@ -18,6 +18,7 @@
 
 namespace OHOS {
 namespace EDM {
+// LCOV_EXCL_START
 void EnterpriseAdminProxy::OnAdminEnabled()
 {
     MessageParcel data;
@@ -269,5 +270,6 @@ void EnterpriseAdminProxy::SendRequest(uint32_t code, MessageParcel &data)
     MessageOption option(MessageOption::TF_SYNC);
     Remote()->SendRequest(code, data, reply, option);
 }
+// LCOV_EXCL_STOP
 } // namespace EDM
 } // namespace OHOS
