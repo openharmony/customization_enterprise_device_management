@@ -17,7 +17,7 @@ group("fuzztest") {
   testonly = true
   deps = []
 
-  deps += [
+deps += [
     # deps file
     "addosaccountplugin_fuzzer:AddOsAccountPluginFuzzTest",
     "adminmanager_fuzzer:AdminManagerFuzzTest",
@@ -25,6 +25,7 @@ group("fuzztest") {
     "adminserviceinterface_fuzzer:AdminServiceInterfaceFuzzTest",
     "allowedappdistributiontypesplugin_fuzzer:AllowedAppDistributionTypesPluginFuzzTest",
     "allowedbluetoothdevicesplugin_fuzzer:AllowedBluetoothDevicesPluginFuzzTest",
+    "allowed_notification_bundles_plugin_fuzzer:AllowedNotificationBundlesPluginFuzzTest",
     "allowedrunningbundlesplugin_fuzzer:AllowedRunningBundlesPluginFuzzTest",
     "allowedusbdevicesplugin_fuzzer:AllowedUsbDevicesPluginFuzzTest",
     "allowedwifilistplugin_fuzzer:AllowedWifiListPluginFuzzTest",
@@ -55,7 +56,11 @@ group("fuzztest") {
     "manageautostartappsplugin_fuzzer:ManageAutoStartAppsPluginFuzzTest",
     "managedbrowserpolicyplugin_fuzzer:ManagedBrowserPolicyPluginFuzzTest",
     "powerpolicyplugin_fuzzer:PowerPolicyPluginFuzzTest",
+    "query_traffic_stats_plugin_fuzzer:QueryTrafficStatsPluginFuzzTest",
+    "set_ability_disable_plugin_fuzzer:SetAbilityDisablePluginFuzzTest",
+    "set_permission_managed_state_plugin_fuzzer:SetPermissionManagedStatePluginFuzzTest",
     "setbrowserpoliciesplugin_fuzzer:SetBrowserPoliciesPluginFuzzTest",
+    "snapshot_skip_plugin_fuzzer:SnapshotSkipPluginFuzzTest",
     "usbreadonlyplugin_fuzzer:UsbReadOnlyPluginFuzzTest",
     "disableusermtpclientplugin_fuzzer:DisableUserMtpClientPluginFuzzTest",
     "usercertplugin_fuzzer:UserCertPluginFuzzTest",
