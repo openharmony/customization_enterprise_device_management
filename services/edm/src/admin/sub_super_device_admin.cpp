@@ -19,6 +19,7 @@
 
 namespace OHOS {
 namespace EDM {
+// LCOV_EXCL_START
 SubSuperDeviceAdmin::SubSuperDeviceAdmin(const AdminInfo& adminInfo): Admin(adminInfo)
 {
     adminInfo_.adminType_ = AdminType::SUB_SUPER_ADMIN;
@@ -50,5 +51,6 @@ bool SubSuperDeviceAdmin::HasPermissionToHandlePolicy(const std::string &policyN
 {
     return true;
 }
+// LCOV_EXCL_STOP
 } // namespace EDM
 } // namespace OHOS

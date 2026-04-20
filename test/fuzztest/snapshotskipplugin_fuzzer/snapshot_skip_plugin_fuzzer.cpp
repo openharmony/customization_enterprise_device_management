@@ -13,17 +13,16 @@
  * limitations under the License.
  */
 
-#include "set_ability_disable_plugin_fuzzer.h"
+#include "snapshot_skip_plugin_fuzzer.h"
 
 #include <system_ability_definition.h>
 
-#define protected public
 #define private public
-#include "set_ability_disable_plugin.h"
-#undef protected
+#include "snapshot_skip_plugin.h"
 #undef private
 #include "array_string_serializer.h"
 #include "common_fuzzer.h"
+#include "edm_constants.h"
 #include "edm_ipc_interface_code.h"
 #include "func_code.h"
 #include "ienterprise_device_mgr.h"
@@ -51,10 +50,10 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
         return 0;
     }
     int32_t pos = 0;
-    int32_t stringSize = size / 8;
-    for (uint32_t operateType = static_cast<uint32_t>(FuncOperateType::SET);
-        operateType <= static_cast<uint32_t>(FuncOperateType::GET); operateType++) {
-        uint32_t code = EdmInterfaceCode::SET_ABILITY_ENABLED;
+    int32_t stringSize = size / 10;
+    for (uint32_t operateType = static_cast<uint32_t>(FuncOperateType::GET);
+        operateType <= static_cast<uint32_t>(FuncOperateType::REMOVE); operateType++) {
+        uint32_t code = EdmInterfaceCode::SNAPSHOT_SKIP;
         code = POLICY_FUNC_CODE(operateType, code);
 
         AppExecFwk::ElementName admin;
@@ -64,33 +63,28 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
         parcel.WriteInterfaceToken(IEnterpriseDeviceMgrIdl::GetDescriptor());
         parcel.WriteInt32(HAS_USERID);
         parcel.WriteInt32(USER_ID);
-        if (operateType == static_cast<uint32_t>(FuncOperateType::SET)) {
+        if (operateType) {
             parcel.WriteParcelable(&admin);
-            parcel.WriteString(CommonFuzzer::GetString(data, pos, stringSize, size));
-            parcel.WriteString(CommonFuzzer::GetString(data, pos, stringSize, size));
-            parcel.WriteBool(CommonFuzzer::GetU32Data(data) % 2);
+            std::vector<std::string> bundles;
+            bundles.push_back(CommonFuzzer::GetString(data, pos, stringSize, size));
+            parcel.WriteStringVector(bundles);
         } else {
             parcel.WriteInt32(0);
             parcel.WriteParcelable(&admin);
-            parcel.WriteString(CommonFuzzer::GetString(data, pos, stringSize, size));
-            parcel.WriteString(CommonFuzzer::GetString(data, pos, stringSize, size));
         }
         CommonFuzzer::OnRemoteRequestFuzzerTest(code, data, size, parcel);
     }
 
-    SetAbilityDisablePlugin plugin;
-    std::string adminName = CommonFuzzer::GetString(data, pos, stringSize, size);
-    std::string currentData = CommonFuzzer::GetString(data, pos, stringSize, size);
-    std::string mergeData = CommonFuzzer::GetString(data, pos, stringSize, size);
+    SnapshotSkipPlugin plugin;
+    std::vector<std::string> bundles = { CommonFuzzer::GetString(data, pos, stringSize, size) };
+    std::vector<std::string> currentData = { CommonFuzzer::GetString(data, pos, stringSize, size) };
+    std::vector<std::string> mergeData = { CommonFuzzer::GetString(data, pos, stringSize, size) };
     int32_t userId = CommonFuzzer::GetU32Data(data);
+    plugin.OnSetPolicy(bundles, currentData, mergeData, userId);
+    plugin.OnRemovePolicy(bundles, currentData, mergeData, userId);
+    
+    std::string adminName = CommonFuzzer::GetString(data, pos, stringSize, size);
     plugin.OnAdminRemove(adminName, currentData, mergeData, userId);
-
-    MessageParcel dataParcel;
-    MessageParcel reply;
-    std::string policyData;
-    dataParcel.WriteString(CommonFuzzer::GetString(data, pos, stringSize, size));
-    dataParcel.WriteString(CommonFuzzer::GetString(data, pos, stringSize, size));
-    plugin.OnGetPolicy(policyData, dataParcel, reply, userId);
     return 0;
 }
 } // namespace EDM

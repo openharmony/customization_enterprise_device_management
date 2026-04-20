@@ -66,14 +66,14 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     parcel.WriteParcelable(&admin);
     
     NetStatsNetwork networkInfo;
-    networkInfo.type = CommonFuzzer::GetU32Data(data) % 3;
+    networkInfo.type = CommonFuzzer::GetU32Data(data);
     networkInfo.startTime = CommonFuzzer::GetLong(data, pos, size);
     networkInfo.endTime = CommonFuzzer::GetLong(data, pos, size);
     networkInfo.simId = CommonFuzzer::GetU32Data(data);
     networkInfo.bundleName = CommonFuzzer::GetString(data, pos, stringSize, size);
     networkInfo.accountId = CommonFuzzer::GetU32Data(data);
     networkInfo.appIndex = CommonFuzzer::GetU32Data(data);
-    NetStatsNetwork::Marshalling(parcel, networkInfo);
+    networkInfo.Marshalling(parcel);
     
     CommonFuzzer::OnRemoteRequestFuzzerTest(code, data, size, parcel);
 
@@ -81,7 +81,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     MessageParcel dataParcel;
     MessageParcel reply;
     std::string policyData;
-    NetStatsNetwork::Marshalling(dataParcel, networkInfo);
+    networkInfo.Marshalling(dataParcel);
     int32_t userId = CommonFuzzer::GetU32Data(data);
     plugin.OnGetPolicy(policyData, dataParcel, reply, userId);
     return 0;

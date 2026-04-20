@@ -206,6 +206,7 @@ ohos_static_library("edmservice_fuzz_static") {
     "ipc:ipc_core",
     "netmanager_base:net_policy_manager_if",
     "netmanager_base:netsys_controller",
+    "netmanager_base:net_stats_manager_if",
     "relational_store:native_rdb",
     "resource_management:global_resmgr",
     "safwk:system_ability_fwk",
@@ -229,6 +230,7 @@ ohos_static_library("edmservice_fuzz_static") {
     sources += [
       "../../../services/edm_plugin/src/allowed_app_distribution_types_plugin.cpp",
       "../../../services/edm_plugin/src/allowed_install_bundles_plugin.cpp",
+      "../../../services/edm_plugin/src/allowed_notification_bundles_plugin.cpp",
       "../../../services/edm_plugin/src/bundle_install_plugin.cpp",
       "../../../services/edm_plugin/src/disable_maintenance_mode_plugin.cpp",
       "../../../services/edm_plugin/src/disallow_random_mac_address_plugin.cpp",
@@ -253,12 +255,17 @@ ohos_static_library("edmservice_fuzz_static") {
       "../../../services/edm_plugin/src/manage_user_non_stop_apps_plugin.cpp",
       "../../../services/edm_plugin/src/ntp_server_plugin.cpp",
       "../../../services/edm_plugin/src/operate_device_plugin.cpp",
+      "../../../services/edm_plugin/src/query_traffic_stats_plugin.cpp",
       "../../../services/edm_plugin/src/power_policy_plugin.cpp",
       "../../../services/edm_plugin/src/screen_off_time_plugin.cpp",
+      "../../../services/edm_plugin/src/set_ability_disable_plugin.cpp",
+      "../../../services/edm_plugin/src/set_permission_managed_state_plugin.cpp",
       "../../../services/edm_plugin/src/uninstall_plugin.cpp",
       "../../../services/edm_plugin/src/set_allowed_kiosk_apps_plugin.cpp",
+      "../../../services/edm_plugin/src/snapshot_skip_plugin.cpp",
       "../../../services/edm_plugin/src/clear_up_application_data_plugin.cpp",
       "../../../services/edm_plugin/src/utils/allowed_app_distribution_types_utils.cpp",
+      "../../../services/edm_plugin/src/utils/permission_managed_state_serializer.cpp",
     ]
 
     if (os_account_edm_enable) {
