@@ -47,7 +47,7 @@ public:
     ErrCode GetOthersMergePolicyData(const std::string &adminName, int32_t userId,
         std::string &othersMergePolicyData) override;
 
-    void OnOtherServiceStart(int32_t systemAbilityId) override{};
+    void OnOtherServiceStart(int32_t systemAbilityId) override;
 
 private:
     ErrCode SetPolicy(MessageParcel &data, WatermarkImageType &currentData,
