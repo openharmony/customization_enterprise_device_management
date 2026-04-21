@@ -66,6 +66,7 @@ group("fuzztest") {
     "setallowedkioskappsplugin_fuzzer:SetAllowedKioskAppsPluginFuzzTest",
     "setwatermarkimageplugin_fuzzer:SetWatermarkImagePluginFuzzTest",
     "getinstalledbundlestoragestatsquery_fuzzer:GetInstalledBundleStorageStatsQueryFuzzTest",
+    "managefreezeexemptedappsplugin_fuzzer:ManageFreezeExemptedAppsPluginFuzzTest",
   ]
 
   if (!enterprise_device_management_feature_pc_only) {
@@ -76,7 +77,6 @@ group("fuzztest") {
       "setapnplugin_fuzzer:SetApnPluginFuzzTest",
       "turnonoffmobiledataplugin_fuzzer:TurnOnOffMobileDataPluginFuzzTest",
       "telephonycallpolicyplugin_fuzzer:TelephonyCallPolicyPluginFuzzTest",
-      "managefreezeexemptedappsplugin_fuzzer:ManageFreezeExemptedAppsPluginFuzzTest",
       "hiddensettingsmenuplugin_fuzzer:HiddenSettingsMenuPluginFuzzTest",
     ]
   }
