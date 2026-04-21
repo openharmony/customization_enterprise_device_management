@@ -86,15 +86,8 @@ ErrCode DisallowedP2PPlugin::SetOtherModulePolicy(bool data, int32_t userId)
         EDMLOGE("DisallowedTetheringPlugin SetOtherModulePolicy WifiP2p nullptr");
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;
     }
-    auto ret = EdmReturnErrCode::SYSTEM_ABNORMALLY;
     if (data) {
-        ret = p2p->DisableP2p();
-    } else {
-        ret = p2p->EnableP2p();
-    }
-    if (ret != ERR_OK) {
-        EDMLOGE("DisallowedP2PPlugin SetOtherModulePolicy DisableP2p error.%{public}d", ret);
-        return EdmReturnErrCode::SYSTEM_ABNORMALLY;
+        p2p->RemoveGroup();
     }
     return ERR_OK;
 }
