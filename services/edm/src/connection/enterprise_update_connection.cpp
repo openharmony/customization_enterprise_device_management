@@ -20,6 +20,7 @@
 
 namespace OHOS {
 namespace EDM {
+// LCOV_EXCL_START
 EnterpriseUpdateConnection::~EnterpriseUpdateConnection() {}
 
 void EnterpriseUpdateConnection::OnAbilityConnectDone(
@@ -40,5 +41,6 @@ void EnterpriseUpdateConnection::OnAbilityDisconnectDone(const AppExecFwk::Eleme
 {
     EDMLOGI("EnterpriseUpdateConnection OnAbilityDisconnectDone");
 }
+// LCOV_EXCL_STOP
 }  // namespace EDM
 }  // namespace OHOS

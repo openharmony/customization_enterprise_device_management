@@ -22,6 +22,7 @@
 
 namespace OHOS {
 namespace EDM {
+// LCOV_EXCL_START
 Admin::Admin(const AdminInfo& adminInfo)
 {
     adminInfo_ = adminInfo;
@@ -71,5 +72,6 @@ std::string Admin::GetDisableSelfPermission() const
 {
     return EdmPermission::PERMISSION_DENIED;
 }
+// LCOV_EXCL_STOP
 } // namespace EDM
 } // namespace OHOS

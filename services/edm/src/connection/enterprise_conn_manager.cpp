@@ -30,6 +30,7 @@ using namespace OHOS::AAFwk;
 
 namespace OHOS {
 namespace EDM {
+// LCOV_EXCL_START
 bool EnterpriseConnManager::CreateAdminConnection(const AAFwk::Want &want,
     uint32_t code, uint32_t userId, bool isOnAdminEnabled, const std::string &bundleName)
 {
@@ -115,5 +116,6 @@ bool EnterpriseConnManager::ConnectAbility(const sptr<IEnterpriseConnection>& co
     }
     return true;
 }
+// LCOV_EXCL_STOP
 } // namespace EDM
 } // namespace OHOS

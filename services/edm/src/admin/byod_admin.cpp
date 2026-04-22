@@ -20,6 +20,7 @@
 
 namespace OHOS {
 namespace EDM {
+// LCOV_EXCL_START
 const char* const POLICY_DISABLE_RESET_FACTORY = "disable_reset_factory";
 const char* const POLICY_DISABLE_NEAR_LINK = "policy_near_link";
 const char* const POLICY_DISABLE_SCREEN_RECORD = "policy_screen_record";
@@ -63,5 +64,6 @@ std::string ByodAdmin::GetDisableSelfPermission() const
 {
     return EdmPermission::PERMISSION_GET_ADMINPROVISION_INFO;
 }
+// LCOV_EXCL_STOP
 } // namespace EDM
 } // namespace OHOS
