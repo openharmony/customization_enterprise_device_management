@@ -38,7 +38,7 @@ public:
         std::string permissionTag, int32_t accountId);
     int32_t GetFingerprintAuthDisallowedPolicyForAccount(AppExecFwk::ElementName *admin, int policyCode,
         bool &result, std::string permissionTag, int32_t accountId);
-    int32_t GetDisallowedPolicyForAccount(AppExecFwk::ElementName &admin, int policyCode, bool &result,
+    int32_t GetDisallowedPolicyForAccount(AppExecFwk::ElementName *admin, int policyCode, bool &result,
         std::string permissionTag, int32_t accountId);
 
     int32_t AddOrRemoveDisallowedListForAccount(const AppExecFwk::ElementName &admin, std::string feature,
