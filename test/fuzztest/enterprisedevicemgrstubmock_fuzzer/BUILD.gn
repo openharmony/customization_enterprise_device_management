@@ -72,6 +72,7 @@ ohos_static_library("edmservice_fuzz_static") {
     "../../../services/edm/src/connection/enterprise_market_connection.cpp",
     "../../../services/edm/src/connection/enterprise_update_connection.cpp",
     "../../../services/edm/src/connection/enterprise_oobe_connection.cpp",
+    "../../../services/edm/src/connection/enterprise_policy_changed_connection.cpp",
     "../../../services/edm/src/database/edm_rdb_data_manager.cpp",
     "../../../services/edm/src/database/edm_rdb_open_callback.cpp",
     "../../../services/edm/src/device_policies_storage_rdb.cpp",
@@ -339,6 +340,7 @@ ohos_static_library("edmservice_fuzz_static") {
     if (netmanager_base_edm_enable && netmanager_ext_edm_enable) {
       external_deps += [
         "netmanager_base:net_conn_manager_if",
+        "netmanager_base:net_conn_parcel",
         "netmanager_base:net_policy_manager_if",
         "netmanager_base:netsys_controller",
         "netmanager_ext:ethernet_manager_if",

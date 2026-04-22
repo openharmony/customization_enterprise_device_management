@@ -28,6 +28,7 @@
 #ifdef FEATURE_PC_ONLY
 #include "dock_info.h"
 #endif
+#include "override_interface_name.h"
 
 using namespace OHOS::EDM;
 
@@ -56,7 +57,7 @@ napi_value ApplicationManagerAddon::Init(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("addKeepAliveApps", AddKeepAliveApps),
         DECLARE_NAPI_FUNCTION("removeKeepAliveApps", RemoveKeepAliveApps),
         DECLARE_NAPI_FUNCTION("getKeepAliveApps", GetKeepAliveApps),
-        DECLARE_NAPI_FUNCTION("setAllowedKioskApps", SetAllowedKioskApps),
+        DECLARE_NAPI_FUNCTION(OverrideInterfaceName::ApplicationManager::SET_ALLOWED_KIOSK_APPS, SetAllowedKioskApps),
         DECLARE_NAPI_FUNCTION("getAllowedKioskApps", GetAllowedKioskApps),
         DECLARE_NAPI_FUNCTION("isAppKioskAllowed", IsAppKioskAllowed),
         DECLARE_NAPI_PROPERTY("KioskFeature", nKioskFeature),

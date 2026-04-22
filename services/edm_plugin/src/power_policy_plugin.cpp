@@ -19,9 +19,12 @@
 #include "edm_constants.h"
 #include "edm_data_ability_utils.h"
 #include "edm_ipc_interface_code.h"
+#include "edm_json_builder.h"
 #include "edm_log.h"
 #include "func_code_utils.h"
+#include "iextra_policy_notification.h"
 #include "iplugin_manager.h"
+#include "override_interface_name.h"
 
 namespace OHOS {
 namespace EDM {
@@ -70,6 +73,20 @@ ErrCode PowerPolicyPlugin::SetPowerPolicy(MessageParcel &data)
     }
 
     if (DealPowerSuspendPolicy(policyKey, powerPolicy, true)) {
+        std::string powerPolicyJson = EdmJsonBuilder()
+            .Add("powerPolicyAction", static_cast<uint32_t>(powerPolicy.GetPowerPolicyAction()))
+            .Add("delayTime", static_cast<uint32_t>(powerPolicy.GetDelayTime()))
+            .Build();
+        std::string policy = EdmJsonBuilder()
+            .Add("powerScene", static_cast<uint32_t>(PowerScene::TIME_OUT))
+            .AddRawJson("powerPolicy", powerPolicyJson)
+            .Build();
+        std::string params = EdmJsonBuilder()
+            .Add("item", "powerPolicy")
+            .Add("value", policy)
+            .Build();
+        IExtraPolicyNotification::GetInstance()->NotifyPolicyChanged(OverrideInterfaceName::DeviceSettings::SET_VALUE,
+            params);
         return ERR_OK;
     }
     return EdmReturnErrCode::SYSTEM_ABNORMALLY;

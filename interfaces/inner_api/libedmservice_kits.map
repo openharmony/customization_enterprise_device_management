@@ -119,6 +119,8 @@
             vtable?for?OHOS::EDM::ScreenWatermarkImageSerializer;
             OHOS::EDM::EnableSelfDeviceAdminParamSerializer::*;
             vtable?for?OHOS::EDM::EnableSelfDeviceAdminParamSerializer;
+            OHOS::EDM::PolicyChangedEvent::*;
+            OHOS::EDM::EdmJsonBuilder::*;
         };
     local:
         *;

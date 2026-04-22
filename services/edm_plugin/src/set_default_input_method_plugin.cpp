@@ -16,8 +16,11 @@
 #include "set_default_input_method_plugin.h"
 
 #include "edm_ipc_interface_code.h"
+#include "edm_json_builder.h"
+#include "iextra_policy_notification.h"
 #include "input_method_controller.h"
 #include "iplugin_manager.h"
+#include "override_interface_name.h"
 #include "string_serializer.h"
 
 namespace OHOS {
@@ -60,6 +63,12 @@ ErrCode SetDefaultInputMethodPlugin::OnSetPolicy(std::string &data)
         EDMLOGE("SetDefaultInputMethodPlugin set default input failed : %{public}d.", ret);
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;
     }
+    std::string params = EdmJsonBuilder()
+        .Add("item", "defaultInputMethod")
+        .Add("value", data)
+        .Build();
+    IExtraPolicyNotification::GetInstance()->NotifyPolicyChanged(OverrideInterfaceName::DeviceSettings::SET_VALUE,
+        params);
     return ERR_OK;
 }
 } // namespace EDM

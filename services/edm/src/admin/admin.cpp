@@ -72,6 +72,16 @@ std::string Admin::GetDisableSelfPermission() const
 {
     return EdmPermission::PERMISSION_DENIED;
 }
+
+bool Admin::HasPermissionSubscribeManagedEvents(const std::vector<uint32_t> &events) const
+{
+    return false;
+}
+
+bool Admin::ShouldNotifyPolicyChanged() const
+{
+    return false;
+}
 // LCOV_EXCL_STOP
 } // namespace EDM
 } // namespace OHOS
