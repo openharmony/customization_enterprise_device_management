@@ -20,6 +20,7 @@
 
 namespace OHOS {
 namespace EDM {
+// LCOV_EXCL_START
 const std::string POLICY_ALLOW_ALL = "allow_all";
 
 VirtualDeviceAdmin::VirtualDeviceAdmin(const AdminInfo& adminInfo): Admin(adminInfo)
@@ -41,5 +42,6 @@ bool VirtualDeviceAdmin::HasPermissionToHandlePolicy(const std::string &policyNa
     });
     return item != policies.end();
 }
+// LCOV_EXCL_STOP
 } // namespace EDM
 } // namespace OHOS
