@@ -17,11 +17,16 @@
  
 #include <memory>
 #include <regex>
-#include "edm_constants.h"
-#include "iplugin_manager.h"
-#include "func_code_utils.h"
-#include "edm_ipc_interface_code.h"
+
 #include "ethernet_client.h"
+
+#include "edm_constants.h"
+#include "edm_ipc_interface_code.h"
+#include "edm_json_builder.h"
+#include "func_code_utils.h"
+#include "iextra_policy_notification.h"
+#include "iplugin_manager.h"
+#include "override_interface_name.h"
 
 using namespace OHOS::NetManagerStandard;
 
@@ -50,7 +55,7 @@ bool SetNetworkInterfaceConfigPlugin::IpAddressIsLegal(std::string ipAddress, bo
         std::vector<std::string> tokens;
         size_t start = 0;
         size_t end = ipAddress.find(',');
-        
+
         while (end != std::string::npos) {
             std::string ip = ipAddress.substr(start, end - start);
             if (!std::regex_match(ip, std::regex(IP_PATTERN))) {
@@ -76,45 +81,50 @@ ErrCode SetNetworkInterfaceConfigPlugin::OnHandlePolicy(std::uint32_t funcCode, 
     EDMLOGI("SetNetworkInterfaceConfigPlugin::OnHandlePolicy start");
     uint32_t typeCode = FUNC_TO_OPERATE(funcCode);
     FuncOperateType type = FuncCodeUtils::ConvertOperateType(typeCode);
-    if (type == FuncOperateType::SET) {
-        std::string iface = data.ReadString();
-        int32_t setMode = data.ReadInt32();
-        std::string ipAddress = data.ReadString();
-        std::string gateway = data.ReadString();
-        std::string netMask = data.ReadString();
-        std::string dnsServers = data.ReadString();
-        
-        if (setMode != static_cast<int32_t>(IPSetMode::STATIC) && setMode != static_cast<int32_t>(IPSetMode::DHCP)) {
-            return EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED;
-        }
-        if (setMode == static_cast<int32_t>(IPSetMode::STATIC)) {
-            bool isLegal = IpAddressIsLegal(ipAddress, false) && IpAddressIsLegal(gateway, false)
-                && IpAddressIsLegal(netMask, false) && IpAddressIsLegal(dnsServers, true);
-            if (!isLegal) {
-                return EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED;
-            }
-        }
-        sptr<InterfaceConfiguration> cfg = new (std::nothrow) InterfaceConfiguration();
-        if (cfg == nullptr) {
-            EDMLOGE("new InterfaceConfiguration is null");
-            return EdmReturnErrCode::SYSTEM_ABNORMALLY;
-        }
-        cfg->mode_ = IPSetMode(setMode);
-        StaticConfiguration::ExtractNetAddrBySeparator(ipAddress, cfg->ipStatic_.ipAddrList_);
-        StaticConfiguration::ExtractNetAddrBySeparator(gateway, cfg->ipStatic_.gatewayList_);
-        StaticConfiguration::ExtractNetAddrBySeparator(gateway, cfg->ipStatic_.gatewayList_);
-        StaticConfiguration::ExtractNetAddrBySeparator(netMask, cfg->ipStatic_.netMaskList_);
-        StaticConfiguration::ExtractNetAddrBySeparator(dnsServers, cfg->ipStatic_.dnsServers_);
-        StaticConfiguration::ExtractNetAddrBySeparator(DEFAULT_IPV4_ADDR, cfg->ipStatic_.routeList_);
-
-        int32_t result = DelayedSingleton<EthernetClient>::GetInstance()->SetIfaceConfig(iface, cfg);
-        if (result != NETMANAGER_EXT_SUCCESS) {
-            EDMLOGE("SetIfaceConfig error! result:%{public}d", result);
-            return EdmReturnErrCode::ETHERNET_CONFIGURATION_FAILED;
-        }
-    } else {
+    if (type != FuncOperateType::SET) {
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;
     }
+    std::string iface = data.ReadString();
+    int32_t setMode = data.ReadInt32();
+    std::string ipAddress = data.ReadString();
+    std::string gateway = data.ReadString();
+    std::string netMask = data.ReadString();
+    std::string dnsServers = data.ReadString();
+
+    if (setMode != static_cast<int32_t>(IPSetMode::STATIC) && setMode != static_cast<int32_t>(IPSetMode::DHCP)) {
+        return EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED;
+    }
+    if (setMode == static_cast<int32_t>(IPSetMode::STATIC)) {
+        bool isLegal = IpAddressIsLegal(ipAddress, false) && IpAddressIsLegal(gateway, false)
+            && IpAddressIsLegal(netMask, false) && IpAddressIsLegal(dnsServers, true);
+        if (!isLegal) {
+            return EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED;
+        }
+    }
+    sptr<InterfaceConfiguration> cfg = new (std::nothrow) InterfaceConfiguration();
+    if (cfg == nullptr) {
+        EDMLOGE("new InterfaceConfiguration is null");
+        return EdmReturnErrCode::SYSTEM_ABNORMALLY;
+    }
+    cfg->mode_ = IPSetMode(setMode);
+    StaticConfiguration::ExtractNetAddrBySeparator(ipAddress, cfg->ipStatic_.ipAddrList_);
+    StaticConfiguration::ExtractNetAddrBySeparator(gateway, cfg->ipStatic_.gatewayList_);
+    StaticConfiguration::ExtractNetAddrBySeparator(gateway, cfg->ipStatic_.gatewayList_);
+    StaticConfiguration::ExtractNetAddrBySeparator(netMask, cfg->ipStatic_.netMaskList_);
+    StaticConfiguration::ExtractNetAddrBySeparator(dnsServers, cfg->ipStatic_.dnsServers_);
+    StaticConfiguration::ExtractNetAddrBySeparator(DEFAULT_IPV4_ADDR, cfg->ipStatic_.routeList_);
+
+    int32_t result = DelayedSingleton<EthernetClient>::GetInstance()->SetIfaceConfig(iface, cfg);
+    if (result != NETMANAGER_EXT_SUCCESS) {
+        EDMLOGE("SetIfaceConfig error! result:%{public}d", result);
+        return EdmReturnErrCode::ETHERNET_CONFIGURATION_FAILED;
+    }
+
+    std::string params = EdmJsonBuilder()
+        .Add("networkInterface", iface)
+        .Build();
+    IExtraPolicyNotification::GetInstance()->NotifyPolicyChanged(
+        OverrideInterfaceName::NetworkManager::SET_ETHERNET_CONFIG, params);
     return ERR_OK;
 }
 } // namespace EDM

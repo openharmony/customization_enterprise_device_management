@@ -16,10 +16,14 @@
 #include "set_apn_plugin.h"
  
 #include <memory>
+
 #include "edm_constants.h"
-#include "iplugin_manager.h"
-#include "func_code_utils.h"
 #include "edm_ipc_interface_code.h"
+#include "edm_json_builder.h"
+#include "func_code_utils.h"
+#include "iextra_policy_notification.h"
+#include "iplugin_manager.h"
+#include "override_interface_name.h"
 
 namespace OHOS {
 namespace EDM {
@@ -29,6 +33,22 @@ const std::set<std::string> ALL_APN_INFO_FIELD = {
     "apn", "apn_types", "auth_user",
     "proxy_ip_address", "mms_ip_address", "auth_type",
 };
+
+const std::map<std::string, std::string> FIELD_TO_KEY = {
+    { "profile_name", "apnName" },
+    { "apn_types", "type" },
+    { "auth_user", "user" },
+    { "proxy_ip_address", "proxy" },
+    { "mms_ip_address", "mmsproxy" },
+    { "auth_type", "authType" },
+    { "mcc", "mcc" },
+    { "mnc", "mnc" },
+    { "apn", "apn" }
+};
+const char* const KEY_APN_INFO = "apnInfo";
+const char* const KEY_APN_NAME = "apnName";
+const char* const KEY_APN_ID = "apnId";
+const char* const KEY_PROFILE_NAME = "profile_name";
 
 SetApnPlugin::SetApnPlugin()
 {
@@ -77,7 +97,11 @@ ErrCode SetApnPlugin::HandleAdd(MessageParcel &data)
         EDMLOGE("SetApnPlugin::HandleAdd password size over");
         return EdmReturnErrCode::PARAM_ERROR;
     }
-    return ApnUtils::ApnInsert(apnInfo, apnUtilsPassword);
+    auto ret = ApnUtils::ApnInsert(apnInfo, apnUtilsPassword);
+    if (ret == ERR_OK) {
+        NotifyPolicyChanged(OverrideInterfaceName::NetworkManager::ADD_APN, ApnUtils::ApnQuery(apnInfo), apnInfo);
+    }
+    return ret;
 }
 
 ErrCode SetApnPlugin::HandleUpdate(MessageParcel &data)
@@ -85,50 +109,67 @@ ErrCode SetApnPlugin::HandleUpdate(MessageParcel &data)
     EDMLOGI("SetApnPlugin::HandleUpdate start");
     std::string apnId;
     ApnUtilsPassword apnUtilsPassword;
-    if (data.ReadString(apnId)) {
-        if (apnId.empty()) {
-            return EdmReturnErrCode::PARAM_ERROR;
-        }
-        std::map<std::string, std::string> apnInfo = ParserApnMap(data, apnUtilsPassword);
-        if (apnInfo.size() == 0 && apnUtilsPassword.password == nullptr) {
-            return EdmReturnErrCode::PARAM_ERROR;
-        }
-        if (apnUtilsPassword.passwordSize > ApnPassword::MAX_PASSWORD_SIZE) {
-            EDMLOGE("SetApnPlugin::HandleUpdate password size over");
-            return EdmReturnErrCode::PARAM_ERROR;
-        }
-        return ApnUtils::ApnUpdate(apnInfo, apnId, apnUtilsPassword);
-    } else {
+    if (!data.ReadString(apnId)) {
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;
     }
+    if (apnId.empty()) {
+        return EdmReturnErrCode::PARAM_ERROR;
+    }
+    std::map<std::string, std::string> apnInfo = ParserApnMap(data, apnUtilsPassword);
+    if (apnInfo.size() == 0 && apnUtilsPassword.password == nullptr) {
+        return EdmReturnErrCode::PARAM_ERROR;
+    }
+    if (apnUtilsPassword.passwordSize > ApnPassword::MAX_PASSWORD_SIZE) {
+        EDMLOGE("SetApnPlugin::HandleUpdate password size over");
+        return EdmReturnErrCode::PARAM_ERROR;
+    }
+    auto ret = ApnUtils::ApnUpdate(apnInfo, apnId, apnUtilsPassword);
+    if (ret == ERR_OK) {
+        auto info = ConvertToJsKey(apnInfo);
+        std::string params = EdmJsonBuilder()
+            .Add(KEY_APN_INFO, info)
+            .Add(KEY_APN_ID, apnId)
+            .Build();
+        IExtraPolicyNotification::GetInstance()->NotifyPolicyChanged(OverrideInterfaceName::NetworkManager::UPDATE_APN,
+            params);
+    }
+    return ret;
 }
 
 ErrCode SetApnPlugin::HandleSetPrefer(MessageParcel &data)
 {
     EDMLOGI("SetApnPlugin::HandleSetPrefer start");
     std::string apnId;
-    if (data.ReadString(apnId)) {
-        if (apnId.empty()) {
-            return EdmReturnErrCode::PARAM_ERROR;
-        }
-        return ApnUtils::ApnSetPrefer(apnId);
-    } else {
+    if (!data.ReadString(apnId)) {
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;
     }
+    if (apnId.empty()) {
+        return EdmReturnErrCode::PARAM_ERROR;
+    }
+    auto ret = ApnUtils::ApnSetPrefer(apnId);
+    if (ret == ERR_OK) {
+        auto apnInfo = ApnUtils::ApnQuery(apnId);
+        NotifyPolicyChanged(OverrideInterfaceName::NetworkManager::SET_PREFERRED_APN, {apnId}, apnInfo);
+    }
+    return ret;
 }
 
 ErrCode SetApnPlugin::HandleRemove(MessageParcel &data)
 {
     EDMLOGI("SetApnPlugin::HandleRemove start");
     std::string apnId;
-    if (data.ReadString(apnId)) {
-        if (apnId.empty()) {
-            return EdmReturnErrCode::PARAM_ERROR;
-        }
-        return ApnUtils::ApnDelete(apnId);
-    } else {
+    if (!data.ReadString(apnId)) {
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;
     }
+    if (apnId.empty()) {
+        return EdmReturnErrCode::PARAM_ERROR;
+    }
+    auto apnInfo = ApnUtils::ApnQuery(apnId);
+    auto ret = ApnUtils::ApnDelete(apnId);
+    if (ret == ERR_OK) {
+        NotifyPolicyChanged(OverrideInterfaceName::NetworkManager::DELETE_APN, {apnId}, apnInfo);
+    }
+    return ret;
 }
 
 std::map<std::string, std::string> SetApnPlugin::ParserApnMap(MessageParcel &data, ApnUtilsPassword &apnPassword)
@@ -231,6 +272,31 @@ ErrCode SetApnPlugin::QueryId(MessageParcel &data, MessageParcel &reply)
         reply.WriteString(ele);
     }
     return ERR_OK;
+}
+
+void SetApnPlugin::NotifyPolicyChanged(const std::string &functionName, const std::vector<std::string> &apnIds,
+    std::map<std::string, std::string> &apnInfo)
+{
+    EdmJsonBuilder jsonBuilder = EdmJsonBuilder();
+    if (!apnIds.empty()) {
+        jsonBuilder.Add(KEY_APN_ID, apnIds[apnIds.size() - 1]);
+    }
+    if (apnInfo.find(KEY_PROFILE_NAME) != apnInfo.end()) {
+        jsonBuilder.Add(KEY_APN_NAME, apnInfo[KEY_PROFILE_NAME]);
+    }
+    IExtraPolicyNotification::GetInstance()->NotifyPolicyChanged(functionName, jsonBuilder.Build());
+}
+
+std::map<std::string, std::string> SetApnPlugin::ConvertToJsKey(std::map<std::string, std::string> &apniInfo)
+{
+    std::map<std::string, std::string> results;
+    for (const auto &[key, value] : FIELD_TO_KEY) {
+        auto it = apniInfo.find(key);
+        if (it != apniInfo.end()) {
+            results[value] = it->second;
+        }
+    }
+    return results;
 }
 } // namespace EDM
 } // namespace OHOS

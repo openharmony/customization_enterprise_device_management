@@ -20,6 +20,7 @@
 
 #include "enterprise_admin_extension.h"
 #include "js_runtime.h"
+#include "policy_changed_event.h"
 #include "policy_struct.h"
 #include "key_code.h"
 
@@ -95,9 +96,11 @@ public:
 
     void OnDeviceBootCompleted();
 
+    void OnAdminPolicyChanged(const PolicyChangedEvent &policyChangedEvent);
+
 private:
     napi_value CallObjectMethod(const char* name, napi_value* argv, size_t argc);
-    
+
     void BindContext(napi_env env, napi_value obj);
 
     void GetSrcPath(std::string& srcPath);
@@ -109,6 +112,8 @@ private:
     napi_value CreateResultObject(napi_env env, int32_t success);
 
     napi_value CreateKeyEventInfoObject(napi_env env, const OHOS::EDM::KeyEvent &keyEventInfo);
+
+    napi_value CreatePolicyChangedEvent(napi_env env, const PolicyChangedEvent &policyChangedEvent);
 
     bool ParseKeyEventInfo(const std::string &jsonString, OHOS::EDM::KeyEvent &keyEventInfo);
 

@@ -16,15 +16,19 @@
 #include "set_allowed_kiosk_apps_plugin.h"
 
 #include "ability_manager_client.h"
-#include "array_string_serializer.h"
 #include "bundle_mgr_interface.h"
-#include "edm_ipc_interface_code.h"
-#include "edm_sys_manager.h"
-#include "iplugin_manager.h"
-#include "ipolicy_manager.h"
 #include "session_manager_lite.h"
 #include "system_ability_definition.h"
 #include "notification_helper.h"
+
+#include "array_string_serializer.h"
+#include "edm_ipc_interface_code.h"
+#include "edm_json_builder.h"
+#include "edm_sys_manager.h"
+#include "iextra_policy_notification.h"
+#include "iplugin_manager.h"
+#include "ipolicy_manager.h"
+#include "override_interface_name.h"
 
 namespace OHOS {
 namespace EDM {
@@ -76,6 +80,11 @@ ErrCode SetAllowedKioskAppsPlugin::OnSetPolicy(std::vector<std::string> &data,
         SetKioskAppsToWms(emptyBundleNames);
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;
     }
+    std::string params = EdmJsonBuilder()
+        .Add("appIdentifiers", data)
+        .Build();
+    IExtraPolicyNotification::GetInstance()->NotifyPolicyChanged(
+        OverrideInterfaceName::ApplicationManager::SET_ALLOWED_KIOSK_APPS, params);
     currentData = afterData;
     mergeData = afterData;
     return ERR_OK;

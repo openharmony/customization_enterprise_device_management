@@ -18,8 +18,11 @@
 #include "battery_utils.h"
 #include "edm_data_ability_utils.h"
 #include "edm_ipc_interface_code.h"
+#include "edm_json_builder.h"
 #include "edm_os_account_manager_impl.h"
+#include "iextra_policy_notification.h"
 #include "iplugin_manager.h"
+#include "override_interface_name.h"
 #include "string_serializer.h"
 
 namespace OHOS {
@@ -72,6 +75,12 @@ ErrCode SetEyeComfortModePlugin::OnSetPolicy(std::string &data)
             EDMLOGE("SetEyeComfortModePlugin::set eyecomfort failed : %{public}d.", code);
             return EdmReturnErrCode::SYSTEM_ABNORMALLY;
         }
+        std::string params = EdmJsonBuilder()
+            .Add("item", "eyeComfort")
+            .Add("value", data)
+            .Build();
+        IExtraPolicyNotification::GetInstance()->NotifyPolicyChanged(OverrideInterfaceName::DeviceSettings::SET_VALUE,
+            params);
         return ERR_OK;
     }
     return EdmReturnErrCode::PARAM_ERROR;

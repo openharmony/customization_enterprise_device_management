@@ -28,6 +28,7 @@ public:
     bool IsAllowedAcrossAccountSetPolicy() const override;
     bool HasPermissionToCallServiceCode(uint32_t interfaceCode) const override;
     bool HasPermissionToHandlePolicy(const std::string &policyName, FuncOperateType operateType) const override;
+    bool HasPermissionSubscribeManagedEvents(const std::vector<uint32_t> &events) const override;
 };
 } // namespace EDM
 } // namespace OHOS
