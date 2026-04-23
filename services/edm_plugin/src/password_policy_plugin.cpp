@@ -12,15 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <regex>
 
 #include "password_policy_plugin.h"
 
+#include <regex>
+
+#include "user_auth_client.h"
+
 #include "edm_ipc_interface_code.h"
+#include "edm_json_builder.h"
+#include "iextra_policy_notification.h"
 #include "iplugin_manager.h"
 #include "ipolicy_manager.h"
+#include "override_interface_name.h"
 #include "password_policy_utils.h"
-#include "user_auth_client.h"
 
 namespace OHOS {
 namespace EDM {
@@ -61,6 +66,16 @@ ErrCode PasswordPolicyPlugin::OnSetPolicy(PasswordPolicy &policy, PasswordPolicy
         EDMLOGE("PasswordPolicyPlugin set policy failed. UpdatePasswordPolicy error.");
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;
     }
+    std::string passwordPolicyJson = EdmJsonBuilder()
+        .Add("complexityRegex", policy.complexityReg)
+        .Add("validityPeriod", policy.validityPeriod)
+        .Add("additionalDescription", policy.additionalDescription)
+        .Build();
+    std::string params = EdmJsonBuilder()
+        .AddRawJson("policy", passwordPolicyJson)
+        .Build();
+    IExtraPolicyNotification::GetInstance()->NotifyPolicyChanged(
+        OverrideInterfaceName::SecurityManager::SET_PASSWORD_POLICY, params);
     return ERR_OK;
 }
 

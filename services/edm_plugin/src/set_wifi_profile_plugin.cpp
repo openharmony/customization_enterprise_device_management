@@ -17,12 +17,17 @@
 
 #include <system_ability_definition.h>
 
+#include "wifi_device.h"
+
 #include "edm_constants.h"
 #include "edm_ipc_interface_code.h"
+#include "edm_json_builder.h"
 #include "edm_utils.h"
-#include "wifi_device.h"
-#include "wifi_device_config_serializer.h"
+#include "func_code_utils.h"
+#include "iextra_policy_notification.h"
 #include "iplugin_manager.h"
+#include "override_interface_name.h"
+#include "wifi_device_config_serializer.h"
 
 namespace OHOS {
 namespace EDM {
@@ -68,6 +73,15 @@ ErrCode SetWifiProfilePlugin::OnSetPolicy(Wifi::WifiDeviceConfig &config)
         EDMLOGE("SetWifiProfilePlugin ConnectToDevice ret %{public}d", ret);
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;
     }
+    std::string profileJson = EdmJsonBuilder()
+        .Add("ssid", config.ssid)
+        .Add("bssid", config.bssid)
+        .Build();
+    std::string params = EdmJsonBuilder()
+        .AddRawJson("profile", profileJson)
+        .Build();
+    IExtraPolicyNotification::GetInstance()->NotifyPolicyChanged(
+        OverrideInterfaceName::WifiManager::SET_WIFI_PROFILE_SYNC, params);
     return ERR_OK;
 }
 } // namespace EDM

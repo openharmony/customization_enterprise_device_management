@@ -69,6 +69,8 @@ public:
     void OnStartupGuideCompleted(int32_t type) override;
 
     void OnDeviceBootCompleted() override;
+
+    void OnAdminPolicyChanged(const PolicyChangedEvent &policyChangedEvent) override;
 private:
     void SendRequest(uint32_t code, MessageParcel &data);
 };

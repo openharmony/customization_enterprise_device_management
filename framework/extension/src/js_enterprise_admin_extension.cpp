@@ -526,12 +526,12 @@ bool JsEnterpriseAdminExtension::ParseKeyEventInfo(const std::string &jsonString
         EDMLOGE("Failed to parse JSON string");
         return false;
     }
-    
+
     cJSON *actionTime = cJSON_GetObjectItem(root, "actionTime");
     cJSON *keyCode = cJSON_GetObjectItem(root, "keyCode");
     cJSON *keyAction = cJSON_GetObjectItem(root, "keyAction");
     cJSON *keyItems = cJSON_GetObjectItem(root, "keyItems");
-    
+
     if (!cJSON_IsNumber(actionTime) || !cJSON_IsNumber(keyCode) || !cJSON_IsNumber(keyAction) ||
         !cJSON_IsArray(keyItems)) {
         EDMLOGE("Invalid JSON structure");
@@ -578,7 +578,7 @@ napi_value JsEnterpriseAdminExtension::CreateKeyEventInfoObject(napi_env env, co
     napi_value nActionTime = nullptr;
     NAPI_CALL(env, napi_create_int64(env, keyEventInfo.actionTime, &nActionTime));
     NAPI_CALL(env, napi_set_named_property(env, nKeyEventInfo, "actionTime", nActionTime));
-    
+
     napi_value nKeyCode = nullptr;
     NAPI_CALL(env, napi_create_int32(env, keyEventInfo.keyCode, &nKeyCode));
     NAPI_CALL(env, napi_set_named_property(env, nKeyEventInfo, "keyCode", nKeyCode));
@@ -655,6 +655,17 @@ void JsEnterpriseAdminExtension::OnDeviceBootCompleted()
     handler_->PostTask(task);
 }
 
+void JsEnterpriseAdminExtension::OnAdminPolicyChanged(const PolicyChangedEvent &policyChangedEvent)
+{
+    EDMLOGI("JsEnterpriseAdminExtension::OnAdminPolicyChanged");
+    auto task = [policyChangedEvent, this]() {
+        auto env = jsRuntime_.GetNapiEnv();
+        napi_value argv[] = { CreatePolicyChangedEvent(env, policyChangedEvent) };
+        CallObjectMethod("onAdminPolicyChanged", argv, JS_NAPI_ARGC_ONE);
+    };
+    handler_->PostTask(task);
+}
+
 napi_value JsEnterpriseAdminExtension::CreateUpdateInfoObject(napi_env env, const UpdateInfo &updateInfo)
 {
     napi_value nSystemUpdateInfo = nullptr;
@@ -698,6 +709,34 @@ napi_value JsEnterpriseAdminExtension::CreateResultObject(napi_env env, int32_t 
     napi_value nResult = nullptr;
     NAPI_CALL(env, napi_create_int32(env, success, &nResult));
     return nResult;
+}
+
+napi_value JsEnterpriseAdminExtension::CreatePolicyChangedEvent(napi_env env,
+    const PolicyChangedEvent &policyChangedEvent)
+{
+    napi_value nPolicyChangedEvent = nullptr;
+    NAPI_CALL(env, napi_create_object(env, &nPolicyChangedEvent));
+
+    napi_value nBundleName = nullptr;
+    NAPI_CALL(env, napi_create_string_utf8(env, policyChangedEvent.GetAdminName().c_str(), NAPI_AUTO_LENGTH,
+        &nBundleName));
+    NAPI_CALL(env, napi_set_named_property(env, nPolicyChangedEvent, "bundleName", nBundleName));
+
+    napi_value nFunctionName = nullptr;
+    NAPI_CALL(env, napi_create_string_utf8(env, policyChangedEvent.GetInterfaceName().c_str(), NAPI_AUTO_LENGTH,
+        &nFunctionName));
+    NAPI_CALL(env, napi_set_named_property(env, nPolicyChangedEvent, "functionName", nFunctionName));
+
+    napi_value nParameters = nullptr;
+    NAPI_CALL(env, napi_create_string_utf8(env, policyChangedEvent.GetParameters().c_str(), NAPI_AUTO_LENGTH,
+        &nParameters));
+    NAPI_CALL(env, napi_set_named_property(env, nPolicyChangedEvent, "parameters", nParameters));
+
+    napi_value nTime = nullptr;
+    NAPI_CALL(env, napi_create_int64(env, policyChangedEvent.GetTimestamp(), &nTime));
+    NAPI_CALL(env, napi_set_named_property(env, nPolicyChangedEvent, "time", nTime));
+
+    return nPolicyChangedEvent;
 }
 
 napi_value JsEnterpriseAdminExtension::CallObjectMethod(const char* name, napi_value* argv, size_t argc)

@@ -21,6 +21,7 @@
 #endif
 #include "edm_log.h"
 #include "napi_edm_adapter.h"
+#include "override_interface_name.h"
 
 using namespace OHOS::EDM;
 
@@ -34,7 +35,7 @@ napi_value AccountManagerAddon::Init(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("disallowOsAccountAddition", DisallowAddOsAccount),
         DECLARE_NAPI_FUNCTION("isOsAccountAdditionDisallowed", IsAddOsAccountDisallowed),
         DECLARE_NAPI_FUNCTION("addOsAccountAsync", AddOsAccountAsync),
-        DECLARE_NAPI_FUNCTION("setDomainAccountPolicy", SetDomainAccountPolicy),
+        DECLARE_NAPI_FUNCTION(OverrideInterfaceName::AccountManager::SET_DOMAIN_ACCOUNT_POLICY, SetDomainAccountPolicy),
         DECLARE_NAPI_FUNCTION("getDomainAccountPolicy", GetDomainAccountPolicy),
     };
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(property) / sizeof(property[0]), property));

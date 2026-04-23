@@ -16,12 +16,15 @@
 #include "domain_filter_rule_plugin.h"
 
 #include "edm_ipc_interface_code.h"
+#include "edm_json_builder.h"
 #include "edm_log.h"
 #include "func_code_utils.h"
 #include "domain_filter_rule_serializer.h"
+#include "iextra_policy_notification.h"
 #include "iptables_manager.h"
 #include "iplugin_manager.h"
 #include "iptables_factory.h"
+#include "override_interface_name.h"
 
 using namespace OHOS::EDM::IPTABLES;
 
@@ -49,7 +52,12 @@ ErrCode DomainFilterRulePlugin::OnSetPolicy(IPTABLES::DomainFilterRuleParcel &ru
     if (!iptablesManager->HasInit()) {
         iptablesManager->Init();
     }
-    return iptablesManager->AddDomainFilterRule(ruleParcel);
+    auto ret = iptablesManager->AddDomainFilterRule(ruleParcel);
+    if (ret == ERR_OK) {
+        IExtraPolicyNotification::GetInstance()->NotifyPolicyChanged(
+            OverrideInterfaceName::NetworkManager::ADD_DOMAIN_FILTER_RULE, GetParams(rule));
+    }
+    return ret;
 }
 
 ErrCode DomainFilterRulePlugin::OnRemovePolicy(IPTABLES::DomainFilterRuleParcel &ruleParcel)
@@ -61,7 +69,25 @@ ErrCode DomainFilterRulePlugin::OnRemovePolicy(IPTABLES::DomainFilterRuleParcel 
     if (!iptablesManager->HasInit()) {
         iptablesManager->Init();
     }
-    return iptablesManager->RemoveDomainFilterRules(ruleParcel);
+    auto ret = iptablesManager->RemoveDomainFilterRules(ruleParcel);
+    if (ret == ERR_OK) {
+        IExtraPolicyNotification::GetInstance()->NotifyPolicyChanged(
+            OverrideInterfaceName::NetworkManager::REMOVE_DOMAIN_FILTER_RULE, GetParams(rule));
+    }
+    return ret;
+}
+
+std::string DomainFilterRulePlugin::GetParams(IPTABLES::DomainFilterRule rule)
+{
+    std::string domainFilterRuleJson = EdmJsonBuilder()
+        .Add("domainName", std::get<DOMAIN_DOMAINNAME_IND>(rule))
+        .Add("appUid", std::get<DOMAIN_APPUID_IND>(rule))
+        .Add("action", static_cast<int32_t>(std::get<DOMAIN_ACTION_IND>(rule)))
+        .Add("direction", static_cast<int32_t>(std::get<DOMAIN_DIRECTION_IND>(rule)))
+        .Add("family", static_cast<int32_t>(std::get<DOMAIN_FAMILY_IND>(rule)))
+        .Add("logType", static_cast<int32_t>(std::get<DOMAIN_LOGTYPE_IND>(rule)))
+        .Build();
+    return EdmJsonBuilder().AddRawJson("domainFilterRule", domainFilterRuleJson).Build();
 }
 
 ErrCode DomainFilterRulePlugin::OnGetPolicy(std::string &policyData, MessageParcel &data, MessageParcel &reply,

@@ -70,6 +70,12 @@ std::string DeviceAdmin::GetDisableSelfPermission() const
     return EdmPermission::PERMISSION_DENIED;
 #endif
 }
+
+bool DeviceAdmin::HasPermissionSubscribeManagedEvents(const std::vector<uint32_t> &events) const
+{
+    auto iter = std::find(events.begin(), events.end(), static_cast<uint32_t>(ManagedEvent::POLICIES_CHANGED));
+    return iter == events.end();
+}
 // LCOV_EXCL_STOP
 } // namespace EDM
 } // namespace OHOS
