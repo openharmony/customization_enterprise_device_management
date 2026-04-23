@@ -1631,26 +1631,32 @@ napi_value ApplicationManagerAddon::RemoveHideLauncherIcon(napi_env env, napi_ca
 napi_value ApplicationManagerAddon::AddOrRemoveHideLauncherIcon(napi_env env, napi_callback_info info, bool isAdd)
 {
 #ifndef FEATURE_PC_ONLY
-    AddonMethodSign addonMethodSign;
-    addonMethodSign.name = "AddOrRemoveHideLauncherIcon";
-    addonMethodSign.argsType = {EdmAddonCommonType::ELEMENT, EdmAddonCommonType::ARRAY_STRING,
-        EdmAddonCommonType::USERID};
-    addonMethodSign.methodAttribute = MethodAttribute::HANDLE;
-    addonMethodSign.argsConvert = {nullptr, nullptr, nullptr};
-    addonMethodSign.apiVersionTag = EdmConstants::PERMISSION_TAG_VERSION_23;
-    AdapterAddonData adapterAddonData{};
-    if (JsObjectToData(env, info, addonMethodSign, &adapterAddonData) == nullptr) {
+    size_t argc = ARGS_SIZE_TWO;
+    napi_value argv[ARGS_SIZE_TWO] = {nullptr};
+    napi_value thisArg = nullptr;
+    void *data = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisArg, &data));
+    ASSERT_AND_THROW_PARAM_ERROR_AFTER_API24(env, argc >= ARGS_SIZE_TWO, "parameter count error");
+    OHOS::AppExecFwk::ElementName elementName;
+    ASSERT_AND_THROW_PARAM_ERROR_AFTER_API24(env, ParseElementName(env, elementName, argv[ARR_INDEX_ZERO]),
+        "element name param error");
+    std::vector<std::string> bundleNames;
+    ASSERT_AND_THROW_PARAM_ERROR_AFTER_API24(env, ParseStringArray(env, bundleNames, argv[ARR_INDEX_ONE]),
+        "bundleNames param error");
+    int32_t userId = 0;
+    if (FAILED(AccountSA::OsAccountManager::GetOsAccountLocalIdFromProcess(userId))) {
+        napi_throw(env, CreateError(env, EdmReturnErrCode::SYSTEM_ABNORMALLY, AFTER_API24_FLAG));
         return nullptr;
     }
-    int32_t retCode = ApplicationManagerProxy::GetApplicationManagerProxy()->
-        AddOrRemoveHideLauncherIcon(adapterAddonData.data, isAdd);
-    if (FAILED(retCode)) {
-        napi_throw(env, CreateError(env, retCode));
+    int32_t ret = ApplicationManagerProxy::GetApplicationManagerProxy()->AddOrRemoveHideLauncherIcon(
+        elementName, userId, bundleNames, isAdd);
+    if (FAILED(ret)) {
+        napi_throw(env, CreateError(env, ret, AFTER_API24_FLAG));
     }
     return nullptr;
 #else
-    EDMLOGW("ApplicationManagerAddon::AddOrRemoveDockApp Unsupported Capabilities.");
-    napi_throw(env, CreateError(env, EdmReturnErrCode::INTERFACE_UNSUPPORTED));
+    EDMLOGW("ApplicationManagerAddon::AddOrRemoveHideLauncherIcon Unsupported Capabilities.");
+    napi_throw(env, CreateError(env, EdmReturnErrCode::INTERFACE_UNSUPPORTED, AFTER_API24_FLAG));
     return nullptr;
 #endif
 }
@@ -1659,21 +1665,26 @@ napi_value ApplicationManagerAddon::GetHideLauncherIcon(napi_env env, napi_callb
 {
 #ifndef FEATURE_PC_ONLY
     EDMLOGI("NAPI_GetHideLauncherIcon called");
-    AddonMethodSign addonMethodSign;
-    addonMethodSign.name = "GetHideLauncherIcon";
-    addonMethodSign.argsType = {EdmAddonCommonType::ELEMENT_NULL, EdmAddonCommonType::USERID};
-    addonMethodSign.methodAttribute = MethodAttribute::GET;
-    addonMethodSign.argsConvert = {nullptr, nullptr};
-    addonMethodSign.apiVersionTag = EdmConstants::PERMISSION_TAG_VERSION_23;
-    AdapterAddonData adapterAddonData{};
-    if (JsObjectToData(env, info, addonMethodSign, &adapterAddonData) == nullptr) {
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value argv[ARGS_SIZE_ONE] = {nullptr};
+    napi_value thisArg = nullptr;
+    void *data = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisArg, &data));
+    ASSERT_AND_THROW_PARAM_ERROR_AFTER_API24(env, argc >= ARGS_SIZE_ONE, "parameter count error");
+    bool hasAdmin = false;
+    OHOS::AppExecFwk::ElementName elementName;
+    ASSERT_AND_THROW_PARAM_ERROR_AFTER_API24(env, CheckGetPolicyAdminParam(env, argv[ARR_INDEX_ZERO], hasAdmin,
+        elementName), "param admin need be null or want");
+    int32_t userId = 0;
+    if (FAILED(AccountSA::OsAccountManager::GetOsAccountLocalIdFromProcess(userId))) {
+        napi_throw(env, CreateError(env, EdmReturnErrCode::SYSTEM_ABNORMALLY, AFTER_API24_FLAG));
         return nullptr;
     }
     std::vector<std::string> bundleNames;
-    int32_t retCode = ApplicationManagerProxy::GetApplicationManagerProxy()->GetHideLauncherIcon(adapterAddonData.data,
-        bundleNames);
+    int32_t retCode = ApplicationManagerProxy::GetApplicationManagerProxy()->GetHideLauncherIcon(
+        hasAdmin ? &elementName : nullptr, userId, bundleNames);
     if (FAILED(retCode)) {
-        napi_throw(env, CreateError(env, retCode));
+        napi_throw(env, CreateError(env, retCode, AFTER_API24_FLAG));
         return nullptr;
     }
     napi_value result = nullptr;
@@ -1685,8 +1696,8 @@ napi_value ApplicationManagerAddon::GetHideLauncherIcon(napi_env env, napi_callb
     }
     return result;
 #else
-    EDMLOGW("ApplicationManagerAddon::AddOrRemoveDockApp Unsupported Capabilities.");
-    napi_throw(env, CreateError(env, EdmReturnErrCode::INTERFACE_UNSUPPORTED));
+    EDMLOGW("ApplicationManagerAddon::GetHideLauncherIcon Unsupported Capabilities.");
+    napi_throw(env, CreateError(env, EdmReturnErrCode::INTERFACE_UNSUPPORTED, AFTER_API24_FLAG));
     return nullptr;
 #endif
 }
