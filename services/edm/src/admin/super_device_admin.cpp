@@ -71,6 +71,17 @@ std::string SuperDeviceAdmin::GetDisableSelfPermission() const
 {
     return EdmPermission::PERMISSION_ENTERPRISE_DEACTIVATE_DEVICE_ADMIN;
 }
+
+bool SuperDeviceAdmin::HasPermissionSubscribeManagedEvents(const std::vector<uint32_t> &events) const
+{
+    return true;
+}
+
+bool SuperDeviceAdmin::ShouldNotifyPolicyChanged() const
+{
+    auto events = adminInfo_.managedEvents_;
+    return std::find(events.begin(), events.end(), ManagedEvent::POLICIES_CHANGED) != events.end();
+}
 // LCOV_EXCL_STOP
 } // namespace EDM
 } // namespace OHOS

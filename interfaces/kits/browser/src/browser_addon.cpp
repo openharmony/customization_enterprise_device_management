@@ -20,6 +20,7 @@
 #include "edm_constants.h"
 #include "edm_log.h"
 #include "napi_edm_adapter.h"
+#include "override_interface_name.h"
 #include "securec.h"
 
 using namespace OHOS::EDM;
@@ -29,7 +30,7 @@ napi_value BrowserAddon::Init(napi_env env, napi_value exports)
     napi_property_descriptor property[] = {
         DECLARE_NAPI_FUNCTION("setPolicies", SetPolicies),
         DECLARE_NAPI_FUNCTION("getPolicies", GetPolicies),
-        DECLARE_NAPI_FUNCTION("setPolicySync", SetPolicy),
+        DECLARE_NAPI_FUNCTION(OverrideInterfaceName::Browser::SET_POLICY_SYNC, SetPolicy),
         DECLARE_NAPI_FUNCTION("getPoliciesSync", GetPoliciesSync),
         DECLARE_NAPI_FUNCTION("setManagedBrowserPolicy", SetManagedBrowserPolicy),
         DECLARE_NAPI_FUNCTION("getManagedBrowserPolicy", GetManagedBrowserPolicy),

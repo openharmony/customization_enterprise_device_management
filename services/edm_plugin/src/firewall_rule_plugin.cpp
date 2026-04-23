@@ -16,12 +16,15 @@
 #include "firewall_rule_plugin.h"
 
 #include "edm_ipc_interface_code.h"
+#include "edm_json_builder.h"
 #include "edm_log.h"
 #include "func_code_utils.h"
 #include "firewall_rule_serializer.h"
+#include "iextra_policy_notification.h"
 #include "iptables_manager.h"
 #include "iplugin_manager.h"
 #include "iptables_factory.h"
+#include "override_interface_name.h"
 
 using namespace OHOS::EDM::IPTABLES;
 
@@ -49,7 +52,12 @@ ErrCode FirewallRulePlugin::OnSetPolicy(IPTABLES::FirewallRuleParcel &ruleParcel
     if (!iptablesManager->HasInit()) {
         iptablesManager->Init();
     }
-    return iptablesManager->AddFirewallRule(ruleParcel);
+    auto ret = iptablesManager->AddFirewallRule(ruleParcel);
+    if (ret == ERR_OK) {
+        IExtraPolicyNotification::GetInstance()->NotifyPolicyChanged(
+            OverrideInterfaceName::NetworkManager::ADD_FIREWALL_RULE, GetParams(rule));
+    }
+    return ret;
 }
 
 ErrCode FirewallRulePlugin::OnRemovePolicy(IPTABLES::FirewallRuleParcel &ruleParcel)
@@ -61,7 +69,29 @@ ErrCode FirewallRulePlugin::OnRemovePolicy(IPTABLES::FirewallRuleParcel &rulePar
     if (!iptablesManager->HasInit()) {
         iptablesManager->Init();
     }
-    return iptablesManager->RemoveFirewallRule(ruleParcel);
+    auto ret = iptablesManager->RemoveFirewallRule(ruleParcel);
+    if (ret == ERR_OK) {
+        IExtraPolicyNotification::GetInstance()->NotifyPolicyChanged(
+            OverrideInterfaceName::NetworkManager::REMOVE_FIREWALL_RULE, GetParams(rule));
+    }
+    return ret;
+}
+
+std::string FirewallRulePlugin::GetParams(IPTABLES::FirewallRule rule)
+{
+    std::string firewallRuleJson = EdmJsonBuilder()
+        .Add("srcAddr", std::get<FIREWALL_SRCADDR_IND>(rule))
+        .Add("destAddr", std::get<FIREWALL_DESTADDR_IND>(rule))
+        .Add("srcPort", std::get<FIREWALL_SRCPORT_IND>(rule))
+        .Add("destPort", std::get<FIREWALL_DESTPORT_IND>(rule))
+        .Add("appUid", std::get<FIREWALL_APPUID_IND>(rule))
+        .Add("direction", static_cast<int32_t>(std::get<FIREWALL_DICECTION_IND>(rule)))
+        .Add("action", static_cast<int32_t>(std::get<FIREWALL_ACTION_IND>(rule)))
+        .Add("protocol", static_cast<int32_t>(std::get<FIREWALL_PROT_IND>(rule)))
+        .Add("family", static_cast<int32_t>(std::get<FIREWALL_FAMILY_IND>(rule)))
+        .Add("logType", static_cast<int32_t>(std::get<FIREWALL_LOGTYPE_IND>(rule)))
+        .Build();
+    return EdmJsonBuilder().AddRawJson("firewallRule", firewallRuleJson).Build();
 }
 
 ErrCode FirewallRulePlugin::OnGetPolicy(std::string &policyData, MessageParcel &data, MessageParcel &reply,

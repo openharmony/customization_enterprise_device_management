@@ -56,6 +56,8 @@ private:
     ErrCode MergeBrowserPolicy(const AdminValueItemsMap &adminValues, std::string &policyData);
     bool AddBrowserPolicyToRoot(cJSON* root, const cJSON* adminPolicy);
     ErrCode UpdateCurrentAndMergePolicy(cJSON* currentPolicies, cJSON* mergePolicies, HandlePolicyData &policyData);
+    void NotifyPolicyChanged(ErrCode ret, const std::string &appid, const std::string &policyName,
+        const std::string &policyValue);
 };
 } // namespace EDM
 } // namespace OHOS
