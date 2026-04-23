@@ -456,6 +456,7 @@ namespace PolicyName {
         "install_local_enterprise_app_enabled_for_account";
     const char* const POLICY_SET_SWITCH_STATUS = "set_switch_status";
     const char* const POLICY_BUNDLE_STORAGE_STATS = "bundle_storage_stats";
+    const char* const POLICY_GET_APPLICATION_WINDOW_STATES = "get_application_window_states";
     // closed-source
     const char* const POLICY_GET_DEVICE_ENCRYPTION_STATUS = "get_device_encryption_status";
     const char* const POLICY_GET_DISPLAY_VERSION = "get_display_version";
