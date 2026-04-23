@@ -87,6 +87,7 @@ ohos_unittest("EdmPluginTest") {
     "./src/set_ability_disable_plugin_test.cpp",
     "./src/set_floating_navigation_plugin_test.cpp",
     "./src/install_enterprise_re_signature_certificate_plugin_test.cpp",
+    "./src/get_application_window_states_plugin_test.cpp",
   ]
 
   configs = [
@@ -536,6 +537,8 @@ ohos_static_library("edm_all_plugin_static") {
     "../../../../services/edm_plugin/src/set_ability_disable_plugin.cpp",
     "../../../../services/edm_plugin/src/install_enterprise_re_signature_certificate_plugin.cpp",
     "../../../../services/edm_plugin/src/set_floating_navigation_plugin.cpp",
+    "../../../../services/edm_plugin/src/get_application_window_states_plugin.cpp",
+    "../../../../interfaces/inner_api/application_manager/src/window_state_info.cpp",
   ]
 
   configs = [ "../../../../common/config:coverage_flags" ]

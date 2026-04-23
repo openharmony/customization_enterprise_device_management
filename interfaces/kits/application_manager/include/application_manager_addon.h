@@ -89,6 +89,7 @@ public:
     static napi_value AddHideLauncherIcon(napi_env env, napi_callback_info info);
     static napi_value RemoveHideLauncherIcon(napi_env env, napi_callback_info info);
     static napi_value GetHideLauncherIcon(napi_env env, napi_callback_info info);
+    static napi_value GetApplicationWindowStates(napi_env env, napi_callback_info info);
 
 private:
     static napi_value AddOrRemoveDisallowedRunningBundles(napi_env env, napi_callback_info info,
@@ -119,6 +120,8 @@ private:
     static void JoinParcelData(MessageParcel &parcelData, int32_t userId,
         OHOS::AppExecFwk::ElementName &elementName, std::vector<OHOS::EDM::EdmElementName> autoStartApps);
     static bool ParseNetworkInfo(napi_env env, NetStatsNetwork &networkInfo, napi_value args);
+    static void ConvertWindowStateInfoVectorToJs(napi_env env, const std::vector<WindowStateInfo> &windowStateInfos,
+        napi_value &nWindowStateInfos);
     static void NativeQueryTrafficStats(napi_env env, void *data);
     static void NativeQueryTrafficStatsComplete(napi_env env, napi_status status, void *data);
 #ifdef FEATURE_PC_ONLY

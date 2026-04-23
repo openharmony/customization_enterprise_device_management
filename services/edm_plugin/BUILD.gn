@@ -107,6 +107,8 @@ ohos_shared_library("device_core_plugin") {
       "./src/utils/battery_utils.cpp",
       "./src/set_allowed_kiosk_apps_plugin.cpp",
       "./src/install_enterprise_re_signature_certificate_plugin.cpp",
+      "../../interfaces/inner_api/application_manager/src/window_state_info.cpp",
+      "./src/get_application_window_states_plugin.cpp",
     ]
 
     if (enterprise_device_management_feature_pc_only) {
