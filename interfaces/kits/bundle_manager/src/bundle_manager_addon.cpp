@@ -107,6 +107,7 @@ napi_value BundleManagerAddon::Init(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("getDisallowedUninstallBundles", GetDisallowedUninstallBundles),
         DECLARE_NAPI_FUNCTION("uninstall", Uninstall),
         DECLARE_NAPI_FUNCTION("install", Install),
+        DECLARE_NAPI_FUNCTION("installForResult", InstallForResult),
         DECLARE_NAPI_FUNCTION("addAllowedInstallBundlesSync", AddAllowedInstallBundlesSync),
         DECLARE_NAPI_FUNCTION("removeAllowedInstallBundlesSync", RemoveAllowedInstallBundlesSync),
         DECLARE_NAPI_FUNCTION("getAllowedInstallBundlesSync", GetAllowedInstallBundlesSync),
@@ -200,6 +201,31 @@ napi_value BundleManagerAddon::Install(napi_env env, napi_callback_info info)
 {
 #ifdef BUNDLE_FRAMEWORK_EDM_ENABLE
     EDMLOGI("NAPI_Install called");
+    return InstallCommon(env, info, "NativeInstall", NativeInstall, true);
+#else
+    EDMLOGW("BundleManagerAddon::Install Unsupported Capabilities.");
+    napi_throw(env, CreateError(env, EdmReturnErrCode::INTERFACE_UNSUPPORTED));
+    return nullptr;
+#endif
+}
+
+napi_value BundleManagerAddon::InstallForResult(napi_env env, napi_callback_info info)
+{
+#ifdef BUNDLE_FRAMEWORK_EDM_ENABLE
+    EDMLOGI("NAPI_InstallForResult called");
+    return InstallCommon(env, info, "NativeInstallForResult", NativeInstallForResult, false);
+#else
+    EDMLOGW("BundleManagerAddon::InstallForResult Unsupported Capabilities.");
+    napi_throw(env, CreateError(env, EdmReturnErrCode::INTERFACE_UNSUPPORTED));
+    return nullptr;
+#endif
+}
+
+napi_value BundleManagerAddon::InstallCommon(napi_env env, napi_callback_info info, const std::string &funcName,
+    napi_async_execute_callback execute, bool isSupportCallback)
+{
+#ifdef BUNDLE_FRAMEWORK_EDM_ENABLE
+    EDMLOGI("NAPI_InstallCommon called, funcName: %{public}s", funcName.c_str());
     size_t argc = ARGS_SIZE_FOUR;
     napi_value argv[ARGS_SIZE_FOUR] = {nullptr};
     napi_value thisArg = nullptr;
@@ -212,7 +238,7 @@ napi_value BundleManagerAddon::Install(napi_env env, napi_callback_info info)
     }
     std::unique_ptr<AsyncInstallCallbackInfo> callbackPtr{asyncCallbackInfo};
     ASSERT_AND_THROW_PARAM_ERROR(env, argc >= ARGS_SIZE_TWO, "Parameter count error");
-    if (!CheckAndParseInstallParamType(env, argc, argv, asyncCallbackInfo)) {
+    if (!CheckAndParseInstallParamType(env, argc, argv, asyncCallbackInfo, isSupportCallback)) {
         if (asyncCallbackInfo->callback != nullptr) {
             NAPI_CALL(env, napi_delete_reference(env, asyncCallbackInfo->callback));
         }
@@ -220,12 +246,11 @@ napi_value BundleManagerAddon::Install(napi_env env, napi_callback_info info)
         return nullptr;
     }
 
-    napi_value asyncWorkReturn =
-        HandleAsyncWork(env, asyncCallbackInfo, "NativeInstall", NativeInstall, NativeVoidCallbackComplete);
+    napi_value asyncWorkReturn = HandleAsyncWork(env, asyncCallbackInfo, funcName, execute, NativeVoidCallbackComplete);
     callbackPtr.release();
     return asyncWorkReturn;
 #else
-    EDMLOGW("BundleManagerAddon::Install Unsupported Capabilities.");
+    EDMLOGW("BundleManagerAddon::InstallCommon Unsupported Capabilities.");
     napi_throw(env, CreateError(env, EdmReturnErrCode::INTERFACE_UNSUPPORTED));
     return nullptr;
 #endif
@@ -233,8 +258,18 @@ napi_value BundleManagerAddon::Install(napi_env env, napi_callback_info info)
 
 void BundleManagerAddon::NativeInstall(napi_env env, void *data)
 {
+    NativeInstallCommon(env, data, false);
+}
+
+void BundleManagerAddon::NativeInstallForResult(napi_env env, void *data)
+{
+    NativeInstallCommon(env, data, true);
+}
+
+void BundleManagerAddon::NativeInstallCommon(napi_env env, void *data, bool isInstallForResult)
+{
 #ifdef BUNDLE_FRAMEWORK_EDM_ENABLE
-    EDMLOGI("NAPI_NativeInstall called");
+    EDMLOGI("NAPI_NativeInstallCommon called, isInstallForResult: %{public}d", isInstallForResult);
     if (data == nullptr) {
         EDMLOGE("data is nullptr");
         return;
@@ -248,7 +283,11 @@ void BundleManagerAddon::NativeInstall(napi_env env, void *data)
 
     asyncCallbackInfo->ret = proxy->Install(asyncCallbackInfo->elementName, asyncCallbackInfo->hapFilePaths,
         asyncCallbackInfo->installParam, asyncCallbackInfo->innerCodeMsg);
-    EDMLOGI("NAPI_NativeInstall asyncCallbackInfo->ret : %{public}d", asyncCallbackInfo->ret);
+    EDMLOGI("NAPI_NativeInstallCommon Install asyncCallbackInfo->ret : %{public}d", asyncCallbackInfo->ret);
+
+    if (!isInstallForResult && asyncCallbackInfo->ret != ERR_OK) {
+        asyncCallbackInfo->ret = EdmReturnErrCode::APPLICATION_INSTALL_FAILED;
+    }
 #endif
 }
 
@@ -394,7 +433,7 @@ bool BundleManagerAddon::jsObjectToInstallParam(napi_env env, napi_value object,
 }
 
 bool BundleManagerAddon::CheckAndParseInstallParamType(napi_env env, size_t argc, napi_value *argv,
-    AsyncInstallCallbackInfo *asyncCallbackInfo)
+    AsyncInstallCallbackInfo *asyncCallbackInfo, bool isSupportCallback)
 {
     ASSERT_AND_THROW_PARAM_ERROR(env, ParseElementName(env, asyncCallbackInfo->elementName, argv[ARR_INDEX_ZERO]),
         "Parameter want error");
@@ -406,6 +445,10 @@ bool BundleManagerAddon::CheckAndParseInstallParamType(napi_env env, size_t argc
     bool hasCallback = argc <= ARGS_SIZE_FOUR ? MatchValueType(env, argv[argc - 1], napi_function) :
                                                 MatchValueType(env, argv[ARR_INDEX_THREE], napi_function);
     if (hasCallback) {
+        if (!isSupportCallback) {
+            EDMLOGE("CheckAndParseInstallParamType Error: Do not support callback");
+            return false;
+        }
         ASSERT_AND_THROW_PARAM_ERROR(env,
             ParseCallback(env, asyncCallbackInfo->callback,
                 argc <= ARGS_SIZE_FOUR ? argv[argc - 1] : argv[ARGS_SIZE_THREE]),
