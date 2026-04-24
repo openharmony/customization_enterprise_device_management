@@ -1262,6 +1262,216 @@ HWTEST_F(ApplicationManagerProxyTest, TestGetDockAppsFail, TestSize.Level1)
     ASSERT_EQ(ret, EdmReturnErrCode::ADMIN_INACTIVE);
 }
 #endif
+
+#ifndef FEATURE_PC_ONLY
+/**
+ * @tc.name: TestAddHideLauncherIconSuc
+ * @tc.desc: Test AddOrRemoveHideLauncherIcon success func when isAdd is true.
+ * @tc.type: FUNC
+ */
+HWTEST_F(ApplicationManagerProxyTest, TestAddHideLauncherIconSuc, TestSize.Level1)
+{
+    OHOS::AppExecFwk::ElementName admin;
+    admin.SetBundleName(ADMIN_PACKAGENAME);
+    std::vector<std::string> bundleNames = {"com.test.app1", "com.test.app2"};
+    int32_t userId = DEFAULT_USER_ID;
+    bool isAdd = true;
+
+    EXPECT_CALL(*object_, SendRequest(_, _, _, _))
+        .Times(1)
+        .WillOnce(Invoke(object_.GetRefPtr(), &EnterpriseDeviceMgrStubMock::InvokeSendRequestSetPolicy));
+    int32_t ret = applicationManagerProxy_->AddOrRemoveHideLauncherIcon(admin, userId, bundleNames, isAdd);
+    ASSERT_EQ(ret, ERR_OK);
+}
+
+/**
+ * @tc.name: TestAddHideLauncherIconFail
+ * @tc.desc: Test AddOrRemoveHideLauncherIcon without enable edm service func.
+ * @tc.type: FUNC
+ */
+HWTEST_F(ApplicationManagerProxyTest, TestAddHideLauncherIconFail, TestSize.Level1)
+{
+    Utils::SetEdmServiceDisable();
+    OHOS::AppExecFwk::ElementName admin;
+    admin.SetBundleName(ADMIN_PACKAGENAME);
+    std::vector<std::string> bundleNames = {"com.test.app1"};
+    int32_t userId = DEFAULT_USER_ID;
+    bool isAdd = true;
+
+    int32_t ret = applicationManagerProxy_->AddOrRemoveHideLauncherIcon(admin, userId, bundleNames, isAdd);
+    ASSERT_EQ(ret, EdmReturnErrCode::ADMIN_INACTIVE);
+}
+
+/**
+ * @tc.name: TestRemoveHideLauncherIconSuc
+ * @tc.desc: Test AddOrRemoveHideLauncherIcon success func when isAdd is false.
+ * @tc.type: FUNC
+ */
+HWTEST_F(ApplicationManagerProxyTest, TestRemoveHideLauncherIconSuc, TestSize.Level1)
+{
+    OHOS::AppExecFwk::ElementName admin;
+    admin.SetBundleName(ADMIN_PACKAGENAME);
+    std::vector<std::string> bundleNames = {"com.test.app1", "com.test.app2"};
+    int32_t userId = DEFAULT_USER_ID;
+    bool isAdd = false;
+
+    EXPECT_CALL(*object_, SendRequest(_, _, _, _))
+        .Times(1)
+        .WillOnce(Invoke(object_.GetRefPtr(), &EnterpriseDeviceMgrStubMock::InvokeSendRequestSetPolicy));
+    int32_t ret = applicationManagerProxy_->AddOrRemoveHideLauncherIcon(admin, userId, bundleNames, isAdd);
+    ASSERT_EQ(ret, ERR_OK);
+}
+
+/**
+ * @tc.name: TestRemoveHideLauncherIconFail
+ * @tc.desc: Test AddOrRemoveHideLauncherIcon without enable edm service func when isAdd is false.
+ * @tc.type: FUNC
+ */
+HWTEST_F(ApplicationManagerProxyTest, TestRemoveHideLauncherIconFail, TestSize.Level1)
+{
+    Utils::SetEdmServiceDisable();
+    OHOS::AppExecFwk::ElementName admin;
+    admin.SetBundleName(ADMIN_PACKAGENAME);
+    std::vector<std::string> bundleNames = {"com.test.app1"};
+    int32_t userId = DEFAULT_USER_ID;
+    bool isAdd = false;
+
+    int32_t ret = applicationManagerProxy_->AddOrRemoveHideLauncherIcon(admin, userId, bundleNames, isAdd);
+    ASSERT_EQ(ret, EdmReturnErrCode::ADMIN_INACTIVE);
+}
+
+/**
+ * @tc.name: TestAddHideLauncherIconEmptyBundleNamesSuc
+ * @tc.desc: Test AddOrRemoveHideLauncherIcon with empty bundleNames.
+ * @tc.type: FUNC
+ */
+HWTEST_F(ApplicationManagerProxyTest, TestAddHideLauncherIconEmptyBundleNamesSuc, TestSize.Level1)
+{
+    OHOS::AppExecFwk::ElementName admin;
+    admin.SetBundleName(ADMIN_PACKAGENAME);
+    std::vector<std::string> bundleNames; // empty vector
+    int32_t userId = DEFAULT_USER_ID;
+    bool isAdd = true;
+
+    EXPECT_CALL(*object_, SendRequest(_, _, _, _))
+        .Times(1)
+        .WillOnce(Invoke(object_.GetRefPtr(), &EnterpriseDeviceMgrStubMock::InvokeSendRequestSetPolicy));
+    int32_t ret = applicationManagerProxy_->AddOrRemoveHideLauncherIcon(admin, userId, bundleNames, isAdd);
+    ASSERT_EQ(ret, ERR_OK);
+}
+
+/**
+ * @tc.name: TestGetHideLauncherIconWithAdminSuc
+ * @tc.desc: Test GetHideLauncherIcon success func with admin.
+ * @tc.type: FUNC
+ */
+HWTEST_F(ApplicationManagerProxyTest, TestGetHideLauncherIconWithAdminSuc, TestSize.Level1)
+{
+    OHOS::AppExecFwk::ElementName admin;
+    admin.SetBundleName(ADMIN_PACKAGENAME);
+    int32_t userId = DEFAULT_USER_ID;
+    std::vector<std::string> bundleNames;
+
+    EXPECT_CALL(*object_, SendRequest(_, _, _, _))
+        .Times(1)
+        .WillOnce(Invoke(object_.GetRefPtr(), &EnterpriseDeviceMgrStubMock::InvokeArrayStringSendRequestGetPolicy));
+    int32_t ret = applicationManagerProxy_->GetHideLauncherIcon(&admin, userId, bundleNames);
+    ASSERT_EQ(ret, ERR_OK);
+    ASSERT_EQ(bundleNames.size(), 1);
+    ASSERT_EQ(bundleNames[0], RETURN_STRING);
+}
+
+/**
+ * @tc.name: TestGetHideLauncherIconWithAdminFail
+ * @tc.desc: Test GetHideLauncherIcon without enable edm service func with admin.
+ * @tc.type: FUNC
+ */
+HWTEST_F(ApplicationManagerProxyTest, TestGetHideLauncherIconWithAdminFail, TestSize.Level1)
+{
+    Utils::SetEdmServiceDisable();
+    OHOS::AppExecFwk::ElementName admin;
+    admin.SetBundleName(ADMIN_PACKAGENAME);
+    int32_t userId = DEFAULT_USER_ID;
+    std::vector<std::string> bundleNames;
+
+    int32_t ret = applicationManagerProxy_->GetHideLauncherIcon(&admin, userId, bundleNames);
+    ASSERT_EQ(ret, EdmReturnErrCode::ADMIN_INACTIVE);
+}
+
+/**
+ * @tc.name: TestGetHideLauncherIconWithoutAdminSuc
+ * @tc.desc: Test GetHideLauncherIcon success func without admin (admin is nullptr).
+ * @tc.type: FUNC
+ */
+HWTEST_F(ApplicationManagerProxyTest, TestGetHideLauncherIconWithoutAdminSuc, TestSize.Level1)
+{
+    int32_t userId = DEFAULT_USER_ID;
+    std::vector<std::string> bundleNames;
+
+    EXPECT_CALL(*object_, SendRequest(_, _, _, _))
+        .Times(1)
+        .WillOnce(Invoke(object_.GetRefPtr(), &EnterpriseDeviceMgrStubMock::InvokeArrayStringSendRequestGetPolicy));
+    int32_t ret = applicationManagerProxy_->GetHideLauncherIcon(nullptr, userId, bundleNames);
+    ASSERT_EQ(ret, ERR_OK);
+    ASSERT_EQ(bundleNames.size(), 1);
+    ASSERT_EQ(bundleNames[0], RETURN_STRING);
+}
+
+/**
+ * @tc.name: TestGetHideLauncherIconWithoutAdminFail
+ * @tc.desc: Test GetHideLauncherIcon without enable edm service func without admin.
+ * @tc.type: FUNC
+ */
+HWTEST_F(ApplicationManagerProxyTest, TestGetHideLauncherIconWithoutAdminFail, TestSize.Level1)
+{
+    Utils::SetEdmServiceDisable();
+    int32_t userId = DEFAULT_USER_ID;
+    std::vector<std::string> bundleNames;
+
+    int32_t ret = applicationManagerProxy_->GetHideLauncherIcon(nullptr, userId, bundleNames);
+    ASSERT_EQ(ret, EdmReturnErrCode::ADMIN_INACTIVE);
+}
+
+/**
+ * @tc.name: TestGetHideLauncherIconReplyFail
+ * @tc.desc: Test GetHideLauncherIcon when reply returns error.
+ * @tc.type: FUNC
+ */
+HWTEST_F(ApplicationManagerProxyTest, TestGetHideLauncherIconReplyFail, TestSize.Level1)
+{
+    OHOS::AppExecFwk::ElementName admin;
+    admin.SetBundleName(ADMIN_PACKAGENAME);
+    int32_t userId = DEFAULT_USER_ID;
+    std::vector<std::string> bundleNames;
+
+    EXPECT_CALL(*object_, SendRequest(_, _, _, _))
+        .Times(1)
+        .WillOnce(Invoke(object_.GetRefPtr(), &EnterpriseDeviceMgrStubMock::InvokeSendRequestGetErrPolicy));
+    int32_t ret = applicationManagerProxy_->GetHideLauncherIcon(&admin, userId, bundleNames);
+    ASSERT_EQ(ret, EdmReturnErrCode::SYSTEM_ABNORMALLY);
+}
+
+/**
+ * @tc.name: TestAddHideLauncherIconReplyFail
+ * @tc.desc: Test AddOrRemoveHideLauncherIcon when reply returns error.
+ * @tc.type: FUNC
+ */
+HWTEST_F(ApplicationManagerProxyTest, TestAddHideLauncherIconReplyFail, TestSize.Level1)
+{
+    OHOS::AppExecFwk::ElementName admin;
+    admin.SetBundleName(ADMIN_PACKAGENAME);
+    std::vector<std::string> bundleNames = {"com.test.app1"};
+    int32_t userId = DEFAULT_USER_ID;
+    bool isAdd = true;
+
+    EXPECT_CALL(*object_, SendRequest(_, _, _, _))
+        .Times(1)
+        .WillOnce(Invoke(object_.GetRefPtr(), &EnterpriseDeviceMgrStubMock::InvokeSendRequestGetErrPolicy));
+    int32_t ret = applicationManagerProxy_->AddOrRemoveHideLauncherIcon(admin, userId, bundleNames, isAdd);
+    ASSERT_EQ(ret, EdmReturnErrCode::SYSTEM_ABNORMALLY);
+}
+#endif
+
 } // namespace TEST
 } // namespace EDM
 } // namespace OHOS
