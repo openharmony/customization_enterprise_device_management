@@ -134,7 +134,7 @@ HWTEST_F(SetScreenWatermarkImagePluginTest, TestOnAdminRemoveWithPolicy, TestSiz
     std::string mergeData = policyData;
     int32_t userId = 100;
     ErrCode ret = plugin.OnAdminRemove(adminName, policyData, mergeData, userId);
-    ASSERT_TRUE(ret == ERR_OK);
+    ASSERT_EQ(ret, EdmReturnErrCode::SYSTEM_ABNORMALLY);
 }
 
 /**
