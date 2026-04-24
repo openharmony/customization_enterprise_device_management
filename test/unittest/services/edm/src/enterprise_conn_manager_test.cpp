@@ -155,6 +155,57 @@ HWTEST_F(EnterpriseConnManagerTest, TestOobeConnectAbility, TestSize.Level1)
         DEFAULT_USERID, 0);
     EXPECT_TRUE(!ret);
 }
+
+/**
+ * @tc.name: TestPolicyChangedConnectAbility
+ * @tc.desc: Test EnterpriseConnManager::CreatePolicyChangedConnection func.
+ * @tc.type: FUNC
+ */
+HWTEST_F(EnterpriseConnManagerTest, TestPolicyChangedConnectAbility, TestSize.Level1)
+{
+    std::string bundleName{"com.edm.test.demo"};
+    std::string abilityName{"com.edm.test.demo.Ability"};
+    AAFwk::Want connectWant;
+    connectWant.SetElementName(bundleName, abilityName);
+    PolicyChangedEvent policyChangedEvent("setPasswordPolicy", "com.edm.test.admin", "{}", 1234567890);
+    std::shared_ptr<EnterpriseConnManager> manager = DelayedSingleton<EnterpriseConnManager>::GetInstance();
+    bool ret = manager->CreatePolicyChangedConnection(connectWant, policyChangedEvent, DEFAULT_USERID);
+    EXPECT_TRUE(!ret);
+}
+
+/**
+ * @tc.name: TestPolicyChangedConnectAbility_EmptyPolicyChangedEvent
+ * @tc.desc: Test EnterpriseConnManager::CreatePolicyChangedConnection func with empty PolicyChangedEvent.
+ * @tc.type: FUNC
+ */
+HWTEST_F(EnterpriseConnManagerTest, TestPolicyChangedConnectAbility_EmptyPolicyChangedEvent, TestSize.Level1)
+{
+    std::string bundleName{"com.edm.test.demo"};
+    std::string abilityName{"com.edm.test.demo.Ability"};
+    AAFwk::Want connectWant;
+    connectWant.SetElementName(bundleName, abilityName);
+    PolicyChangedEvent emptyEvent("", "", "", 0);
+    std::shared_ptr<EnterpriseConnManager> manager = DelayedSingleton<EnterpriseConnManager>::GetInstance();
+    bool ret = manager->CreatePolicyChangedConnection(connectWant, emptyEvent, DEFAULT_USERID);
+    EXPECT_TRUE(!ret);
+}
+
+/**
+ * @tc.name: TestPolicyChangedConnectAbility_DifferentUserId
+ * @tc.desc: Test EnterpriseConnManager::CreatePolicyChangedConnection func with different userId.
+ * @tc.type: FUNC
+ */
+HWTEST_F(EnterpriseConnManagerTest, TestPolicyChangedConnectAbility_DifferentUserId, TestSize.Level1)
+{
+    std::string bundleName{"com.edm.test.demo"};
+    std::string abilityName{"com.edm.test.demo.Ability"};
+    AAFwk::Want connectWant;
+    connectWant.SetElementName(bundleName, abilityName);
+    PolicyChangedEvent policyChangedEvent("addFirewallRule", "com.edm.test.admin", "{\"rule\":\"test\"}", 9876543210);
+    std::shared_ptr<EnterpriseConnManager> manager = DelayedSingleton<EnterpriseConnManager>::GetInstance();
+    bool ret = manager->CreatePolicyChangedConnection(connectWant, policyChangedEvent, 200);
+    EXPECT_TRUE(!ret);
+}
 } // namespace TEST
 } // namespace EDM
 } // namespace OHOS

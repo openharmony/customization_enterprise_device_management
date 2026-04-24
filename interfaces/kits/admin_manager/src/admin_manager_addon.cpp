@@ -1128,6 +1128,10 @@ void AdminManager::CreateManagedEventObject(napi_env env, napi_value value)
     NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env, static_cast<uint32_t>(ManagedEvent::BUNDLE_UPDATED),
         &nBundleUpdated));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "MANAGED_EVENT_BUNDLE_UPDATED", nBundleUpdated));
+    napi_value nPolicyChanged;
+    NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env, static_cast<uint32_t>(ManagedEvent::POLICIES_CHANGED),
+        &nPolicyChanged));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "MANAGED_EVENT_POLICIES_CHANGED", nPolicyChanged));
 }
 
 void AdminManager::CreateRunningModeObject(napi_env env, napi_value value)

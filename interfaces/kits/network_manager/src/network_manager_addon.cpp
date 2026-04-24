@@ -19,6 +19,7 @@
 #include "edm_log.h"
 #include "iptables_utils.h"
 #include "network_address.h"
+#include "override_interface_name.h"
 
 using namespace OHOS::EDM;
 using namespace OHOS::EDM::IPTABLES;
@@ -175,12 +176,12 @@ napi_value NetworkManagerAddon::Init(napi_env env, napi_value exports)
 std::vector<napi_property_descriptor> NetworkManagerAddon::InitOne()
 {
     std::vector<napi_property_descriptor> property = {
-        DECLARE_NAPI_FUNCTION("addFirewallRule", AddFirewallRule),
-        DECLARE_NAPI_FUNCTION("removeFirewallRule", RemoveFirewallRule),
+        DECLARE_NAPI_FUNCTION(OverrideInterfaceName::NetworkManager::ADD_FIREWALL_RULE, AddFirewallRule),
+        DECLARE_NAPI_FUNCTION(OverrideInterfaceName::NetworkManager::REMOVE_FIREWALL_RULE, RemoveFirewallRule),
         DECLARE_NAPI_FUNCTION("getFirewallRules", GetFirewallRules),
 
-        DECLARE_NAPI_FUNCTION("addDomainFilterRule", AddDomainFilterRule),
-        DECLARE_NAPI_FUNCTION("removeDomainFilterRule", RemoveDomainFilterRule),
+        DECLARE_NAPI_FUNCTION(OverrideInterfaceName::NetworkManager::ADD_DOMAIN_FILTER_RULE, AddDomainFilterRule),
+        DECLARE_NAPI_FUNCTION(OverrideInterfaceName::NetworkManager::REMOVE_DOMAIN_FILTER_RULE, RemoveDomainFilterRule),
         DECLARE_NAPI_FUNCTION("getDomainFilterRules", GetDomainFilterRules),
 
         DECLARE_NAPI_FUNCTION("setGlobalProxy", SetGlobalHttpProxy),
@@ -190,18 +191,19 @@ std::vector<napi_property_descriptor> NetworkManagerAddon::InitOne()
         DECLARE_NAPI_FUNCTION("getMacSync", GetMacSync),
         DECLARE_NAPI_FUNCTION("setNetworkInterfaceDisabledSync", SetNetworkInterfaceDisabledSync),
         DECLARE_NAPI_FUNCTION("isNetworkInterfaceDisabledSync", IsNetworkInterfaceDisabledSync),
-        DECLARE_NAPI_FUNCTION("setGlobalProxySync", SetGlobalHttpProxySync),
+        DECLARE_NAPI_FUNCTION(OverrideInterfaceName::NetworkManager::SET_GLOBAL_PROXY_SYNC, SetGlobalHttpProxySync),
         DECLARE_NAPI_FUNCTION("getGlobalProxySync", GetGlobalHttpProxySync),
-        DECLARE_NAPI_FUNCTION("setGlobalProxyForAccount", SetGlobalHttpProxyForAccountSync),
+        DECLARE_NAPI_FUNCTION(OverrideInterfaceName::NetworkManager::SET_GLOBAL_PROXY_FOR_ACCOUNT,
+            SetGlobalHttpProxyForAccountSync),
         DECLARE_NAPI_FUNCTION("getGlobalProxyForAccount", GetGlobalHttpProxyForAccountSync),
         DECLARE_NAPI_FUNCTION("turnOnMobileData", TurnOnMobileData),
         DECLARE_NAPI_FUNCTION("turnOffMobileData", TurnOffMobileData),
-        DECLARE_NAPI_FUNCTION("addApn", AddApn),
-        DECLARE_NAPI_FUNCTION("deleteApn", DeleteApn),
-        DECLARE_NAPI_FUNCTION("updateApn", UpdateApn),
-        DECLARE_NAPI_FUNCTION("setPreferredApn", SetPreferApn),
+        DECLARE_NAPI_FUNCTION(OverrideInterfaceName::NetworkManager::ADD_APN, AddApn),
+        DECLARE_NAPI_FUNCTION(OverrideInterfaceName::NetworkManager::DELETE_APN, DeleteApn),
+        DECLARE_NAPI_FUNCTION(OverrideInterfaceName::NetworkManager::UPDATE_APN, UpdateApn),
+        DECLARE_NAPI_FUNCTION(OverrideInterfaceName::NetworkManager::SET_PREFERRED_APN, SetPreferApn),
         DECLARE_NAPI_FUNCTION("queryApn", QueryApn),
-        DECLARE_NAPI_FUNCTION("setEthernetConfig", SetEthernetConfig),
+        DECLARE_NAPI_FUNCTION(OverrideInterfaceName::NetworkManager::SET_ETHERNET_CONFIG, SetEthernetConfig),
     };
 
     return property;

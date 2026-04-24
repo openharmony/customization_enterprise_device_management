@@ -46,6 +46,9 @@ private:
     ErrCode QueryInfo(MessageParcel &data, MessageParcel &reply);
     std::map<std::string, std::string> ParserApnMap(MessageParcel &data, ApnUtilsPassword &apnUtilsPassword);
     void GenerateApnMap(std::map<std::string, std::string> &apnInfo, MessageParcel &reply);
+    std::map<std::string, std::string> ConvertToJsKey(std::map<std::string, std::string> &apniInfo);
+    void NotifyPolicyChanged(const std::string &functionName, const std::vector<std::string> &apnIds,
+        std::map<std::string, std::string> &apnInfo);
 };
 } // namespace EDM
 } // namespace OHOS

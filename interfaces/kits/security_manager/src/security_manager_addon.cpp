@@ -17,14 +17,17 @@
 
 #include <fcntl.h>
 #include <fstream>
+
 #include "cJSON.h"
+#include "pixel_map_napi.h"
+
 #include "cjson_check.h"
 #include "clipboard_policy.h"
 #include "device_settings_proxy.h"
 #include "edm_constants.h"
 #include "edm_log.h"
-#include "pixel_map_napi.h"
 #include "managed_policy.h"
+#include "override_interface_name.h"
 
 using namespace OHOS::EDM;
 
@@ -42,7 +45,7 @@ napi_value SecurityManagerAddon::Init(napi_env env, napi_value exports)
     napi_property_descriptor property[] = {
         DECLARE_NAPI_FUNCTION("getSecurityPatchTag", GetSecurityPatchTag),
         DECLARE_NAPI_FUNCTION("getDeviceEncryptionStatus", GetDeviceEncryptionStatus),
-        DECLARE_NAPI_FUNCTION("setPasswordPolicy", SetPasswordPolicy),
+        DECLARE_NAPI_FUNCTION(OverrideInterfaceName::SecurityManager::SET_PASSWORD_POLICY, SetPasswordPolicy),
         DECLARE_NAPI_FUNCTION("getPasswordPolicy", GetPasswordPolicy),
         DECLARE_NAPI_FUNCTION("getSecurityStatus", GetSecurityStatus),
         DECLARE_NAPI_FUNCTION("installUserCertificate", InstallUserCertificate),
@@ -60,8 +63,10 @@ napi_value SecurityManagerAddon::Init(napi_env env, napi_value exports)
         DECLARE_NAPI_PROPERTY("PermissionManagedState", nPermissionManagedState),
         DECLARE_NAPI_FUNCTION("setExternalSourceExtensionsPolicy", SetExternalSourceExtensionsPolicy),
         DECLARE_NAPI_FUNCTION("getExternalSourceExtensionsPolicy", GetExternalSourceExtensionsPolicy),
-        DECLARE_NAPI_FUNCTION("installEnterpriseReSignatureCertificate", InstallEnterpriseReSignatureCertificate),
-        DECLARE_NAPI_FUNCTION("uninstallEnterpriseReSignatureCertificate", UninstallEnterpriseReSignatureCertificate),
+        DECLARE_NAPI_FUNCTION(OverrideInterfaceName::SecurityManager::INSTALL_ENTERPRISE_RE_SIGNATURE_CERTIFICATE,
+            InstallEnterpriseReSignatureCertificate),
+        DECLARE_NAPI_FUNCTION(OverrideInterfaceName::SecurityManager::UNINSTALL_ENTERPRISE_RE_SIGNATURE_CERTIFICATE,
+            UninstallEnterpriseReSignatureCertificate),
         DECLARE_NAPI_FUNCTION("setScreenLockDisabledForAccount", SetScreenLockDisabledForAccount),
         DECLARE_NAPI_FUNCTION("isScreenLockDisabledForAccount", IsScreenLockDisabledForAccount),
     };

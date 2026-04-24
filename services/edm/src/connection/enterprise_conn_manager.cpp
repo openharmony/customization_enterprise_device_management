@@ -25,6 +25,7 @@
 #include "extension_manager_client.h"
 #include "extension_manager_proxy.h"
 #include "managed_event.h"
+#include "enterprise_policy_changed_connection.h"
 
 using namespace OHOS::AAFwk;
 
@@ -100,6 +101,14 @@ bool EnterpriseConnManager::CreateOobeConnection(const AAFwk::Want &want, uint32
 {
     sptr<IEnterpriseConnection> connection(
         new (std::nothrow)EnterpriseOobeConnection(want, code, userId, type));
+    return ConnectAbility(connection);
+}
+
+bool EnterpriseConnManager::CreatePolicyChangedConnection(const AAFwk::Want &want,
+    const PolicyChangedEvent &policyChangedEvent, int32_t userId)
+{
+    sptr<IEnterpriseConnection> connection(
+        new (std::nothrow)EnterprisePolicyChangedConnection(want, policyChangedEvent, userId));
     return ConnectAbility(connection);
 }
 

@@ -19,13 +19,14 @@
 #include "edm_constants.h"
 #include "edm_log.h"
 #include "napi_edm_adapter.h"
+#include "override_interface_name.h"
 
 using namespace OHOS::EDM;
 
 void SystemManagerAddon::AddFunctionsToExports(napi_env env, napi_value exports)
 {
     napi_property_descriptor desc[] = {
-        DECLARE_NAPI_FUNCTION("setNTPServer", SetNTPServer),
+        DECLARE_NAPI_FUNCTION(OverrideInterfaceName::SystemManager::SET_NTP_SERVER, SetNTPServer),
         DECLARE_NAPI_FUNCTION("getNTPServer", GetNTPServer),
         DECLARE_NAPI_FUNCTION("setOtaUpdatePolicy", SetOTAUpdatePolicy),
         DECLARE_NAPI_FUNCTION("getOtaUpdatePolicy", GetOTAUpdatePolicy),
