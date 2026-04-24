@@ -41,6 +41,14 @@ namespace EDM {
             return ret;                                                    \
         }                                                                    \
     } while (0)
+    #define ASSERT_AND_THROW_PARAM_ERROR_AFTER_API24(env, assertion, message)               \
+    do {                                                                       \
+        if (!(assertion)) {                                                    \
+            napi_throw((env), CreateErrorAfterApi24((env), (EdmReturnErrCode::PARAM_ERROR), (message)));    \
+            napi_value ret = nullptr;                                      \
+            return ret;                                                    \
+        }                                                                    \
+    } while (0)
 } // namespace EDM
 } // namespace OHOS
 

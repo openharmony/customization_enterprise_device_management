@@ -733,19 +733,39 @@ bool ApplicationManagerProxy::ParseBundleStatsInfos(MessageParcel &reply,
 }
 
 #ifndef FEATURE_PC_ONLY
-int32_t ApplicationManagerProxy::AddOrRemoveHideLauncherIcon(MessageParcel &data, bool isAdd)
+int32_t ApplicationManagerProxy::AddOrRemoveHideLauncherIcon(const AppExecFwk::ElementName &admin, int32_t userId,
+    const std::vector<std::string> &bundleNames, bool isAdd)
 {
     EDMLOGD("ApplicationManagerProxy::AddOrRemoveHideLauncherIcon");
+    MessageParcel data;
+    data.WriteInterfaceToken(DESCRIPTOR);
+    data.WriteInt32(HAS_USERID);
+    data.WriteInt32(userId);
+    data.WriteParcelable(&admin);
+    data.WriteString(EdmConstants::PERMISSION_TAG_VERSION_23);
+    data.WriteStringVector(bundleNames);
     FuncOperateType operateType = isAdd ? FuncOperateType::SET : FuncOperateType::REMOVE;
     std::uint32_t funcCode = POLICY_FUNC_CODE((std::uint32_t)operateType,
         EdmInterfaceCode::POLICY_CODE_END + EdmConstants::PolicyCode::HIDE_LAUNCHER_ICON);
     return EnterpriseDeviceMgrProxy::GetInstance()->HandleDevicePolicy(funcCode, data);
 }
 
-int32_t ApplicationManagerProxy::GetHideLauncherIcon(MessageParcel &data, std::vector<std::string> &bundleNames)
+int32_t ApplicationManagerProxy::GetHideLauncherIcon(const AppExecFwk::ElementName *admin, int32_t userId,
+    std::vector<std::string> &bundleNames)
 {
     EDMLOGD("ApplicationManagerProxy::GetHideLauncherIcon");
+    MessageParcel data;
     MessageParcel reply;
+    data.WriteInterfaceToken(DESCRIPTOR);
+    data.WriteInt32(HAS_USERID);
+    data.WriteInt32(userId);
+    data.WriteString(EdmConstants::PERMISSION_TAG_VERSION_23);
+    if (admin != nullptr) {
+        data.WriteInt32(HAS_ADMIN);
+        data.WriteParcelable(admin);
+    } else {
+        data.WriteInt32(WITHOUT_ADMIN);
+    }
     EnterpriseDeviceMgrProxy::GetInstance()->GetPolicy(
         EdmInterfaceCode::POLICY_CODE_END + EdmConstants::PolicyCode::HIDE_LAUNCHER_ICON, data, reply);
     int32_t ret = ERR_INVALID_VALUE;
