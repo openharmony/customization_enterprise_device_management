@@ -90,8 +90,10 @@ public:
     int32_t GetApplicationWindowStates(const AppExecFwk::ElementName &admin, std::string &bundleName, int32_t appIndex,
         std::vector<WindowStateInfo> &windowStateInfos);
 #ifndef FEATURE_PC_ONLY
-    int32_t AddOrRemoveHideLauncherIcon(MessageParcel &data, bool isAdd);
-    int32_t GetHideLauncherIcon(MessageParcel &data, std::vector<std::string> &bundleNames);
+    int32_t AddOrRemoveHideLauncherIcon(const AppExecFwk::ElementName &admin, int32_t userId,
+        const std::vector<std::string> &bundleNames, bool isAdd);
+    int32_t GetHideLauncherIcon(const AppExecFwk::ElementName *admin, int32_t userId,
+        std::vector<std::string> &bundleNames);
 #endif
 private:
     static std::shared_ptr<ApplicationManagerProxy> instance_;

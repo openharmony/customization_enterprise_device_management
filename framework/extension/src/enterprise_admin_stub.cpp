@@ -19,6 +19,7 @@
 #include <ipc_skeleton.h>
 
 #include "edm_log.h"
+#include "policy_changed_event.h"
 
 namespace OHOS {
 namespace EDM {
@@ -108,6 +109,9 @@ int32_t EnterpriseAdminStub::CallFuncByCodeFirst(uint32_t code, MessageParcel& d
             return ERR_NONE;
         case COMMAND_ON_BUNDLE_UPDATED:
             OnBundleUpdatedInner(data, reply);
+            return ERR_NONE;
+        case COMMAND_ON_POLICIES_CHANGED:
+            OnAdminPolicyChangedInner(data, reply);
             return ERR_NONE;
         default:
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
@@ -259,6 +263,14 @@ void EnterpriseAdminStub::OnDeviceAdminDisabledInner(MessageParcel& data, Messag
     EDMLOGI("EnterpriseAdminStub::OnDeviceAdminDisabledInner");
     std::string bundleName = data.ReadString();
     OnDeviceAdminDisabled(bundleName);
+}
+
+void EnterpriseAdminStub::OnAdminPolicyChangedInner(MessageParcel& data, MessageParcel& reply)
+{
+    EDMLOGI("EnterpriseAdminStub::OnAdminPolicyChangedInner");
+    PolicyChangedEvent event;
+    PolicyChangedEvent::Unmarshalling(data, event);
+    OnAdminPolicyChanged(event);
 }
 
 int32_t EnterpriseAdminStub::OnRemoteRequest(uint32_t code, MessageParcel& data, MessageParcel& reply,

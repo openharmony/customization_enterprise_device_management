@@ -36,6 +36,11 @@ public:
         return ERR_OK;
     }
 
+    virtual bool NotifyPolicyChanged(const std::string &interfaceName, const std::string &parameters)
+    {
+        return true;
+    }
+
     static IExtraPolicyNotification* instance_;
 };
 

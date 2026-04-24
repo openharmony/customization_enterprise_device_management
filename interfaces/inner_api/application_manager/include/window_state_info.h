@@ -40,8 +40,8 @@ class WindowStateInfoHandle {
 public:
     static bool ReadWindowStateInfoVector(MessageParcel &reply, std::vector<WindowStateInfo> &windowStateInfos);
     static bool ReadWindowStateInfo(MessageParcel &reply, WindowStateInfo &windowStateInfo);
-    static bool WriteWindowStateInfoVector(MessageParcel &data, const std::vector<WindowStateInfo> &windowStateInfos);
-    static bool WriteWindowStateInfo(MessageParcel &data, const WindowStateInfo &windowState);
+    static bool WriteWindowStateInfoVector(MessageParcel &data, const std::vector<WindowStateInfo> windowStateInfos);
+    static bool WriteWindowStateInfo(MessageParcel &data, const WindowStateInfo windowState);
 };
 } // namespace EDM
 } // namespace OHOS

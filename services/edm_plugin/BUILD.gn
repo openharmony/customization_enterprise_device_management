@@ -122,7 +122,7 @@ ohos_shared_library("device_core_plugin") {
       "./src/disallow_core_dump_plugin.cpp",
       ]
     }
-    
+
     if (os_account_edm_enable) {
       external_deps += [
         "graphic_2d:librender_service_base",
@@ -197,7 +197,7 @@ ohos_shared_library("device_core_plugin") {
       external_deps += [ "screenlock_mgr:screenlock_client" ]
       sources += [ "./src/lock_screen_plugin.cpp" ]
     }
-    
+
     if (screenlock_mgr_edm_enable && !enterprise_device_management_feature_pc_only) {
       sources += [ "./src/disable_screen_lock_plugin.cpp" ]
     }
@@ -343,6 +343,7 @@ ohos_shared_library("communication_plugin") {
       defines += [ "NET_MANAGER_BASE_EDM_ENABLE" ]
       external_deps += [
         "netmanager_base:net_conn_manager_if",
+        "netmanager_base:net_conn_parcel",
         "netmanager_base:net_policy_manager_if",
         "netmanager_base:net_stats_manager_if",
         "netmanager_base:netsys_controller",

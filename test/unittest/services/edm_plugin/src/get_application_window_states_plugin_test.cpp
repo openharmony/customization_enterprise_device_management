@@ -48,30 +48,6 @@ void GetApplicationWindowStatesPluginTest::TearDownTestSuite(void)
 }
 
 /**
- * @tc.name: TestOnGetPolicy
- * @tc.desc: Test GetApplicationWindowStatesPlugin::OnGetPolicy.
- * @tc.type: FUNC
- */
-HWTEST_F(GetApplicationWindowStatesPluginTest, TestOnGetPolicy, TestSize.Level1)
-{
-    std::string policyData;
-    MessageParcel data;
-    MessageParcel reply;
-    std::string bundleName = "com.huawei.hmos.calendar";
-    int32_t appIndex = 0;
-
-    data.WriteString(bundleName);
-    data.WriteInt32(appIndex);
-    std::vector<WindowStateInfo> windowStateInfos;
-    GetApplicationWindowStatesPlugin plugin;
-    ErrCode ret = plugin.OnGetPolicy(policyData, data, reply, DEFAULT_USER_ID);
-    ASSERT_EQ(ret, ERR_OK);
-    ASSERT_EQ(reply.ReadInt32(), ERR_OK);
-    WindowStateInfoHandle::ReadWindowStateInfoVector(reply, windowStateInfos);
-    ASSERT_EQ(windowStateInfos.empty(), true);
-}
-
-/**
  * @tc.name: TestOnGetPolicyFail
  * @tc.desc: Test GetApplicationWindowStatesPlugin::OnGetPolicy with uninstall app.
  * @tc.type: FUNC

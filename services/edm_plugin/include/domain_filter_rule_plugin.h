@@ -33,6 +33,9 @@ public:
     ErrCode OnRemovePolicy(IPTABLES::DomainFilterRuleParcel &ruleParcel);
 
     ErrCode OnGetPolicy(std::string &value, MessageParcel &data, MessageParcel &reply, int32_t userId) override;
+
+private:
+    std::string GetParams(IPTABLES::DomainFilterRule rule);
 };
 } // namespace EDM
 } // namespace OHOS

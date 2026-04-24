@@ -20,9 +20,12 @@
 #include "domain_account_policy.h"
 #include "edm_constants.h"
 #include "edm_ipc_interface_code.h"
+#include "edm_json_builder.h"
 #include "edm_log.h"
 #include "func_code_utils.h"
+#include "iextra_policy_notification.h"
 #include "iplugin_manager.h"
+#include "override_interface_name.h"
 
 namespace OHOS {
 namespace EDM {
@@ -75,6 +78,21 @@ ErrCode SetDomainAccountPolicyPlugin::SetPolicy(MessageParcel &data)
         EDMLOGE("SetDomainAccountPolicyPlugin SetAccountPolicy error");
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;
     }
+    std::string domainAccountInfoJson = EdmJsonBuilder()
+        .Add("domain", domainAccountInfo.domain_)
+        .Add("accountName", domainAccountInfo.accountName_)
+        .Build();
+    std::string policyJson = EdmJsonBuilder()
+        .Add("authenticationValidityPeriod", domainAccountPolicy.authenticationValidityPeriod)
+        .Add("passwordValidityPeriod", domainAccountPolicy.passwordValidityPeriod)
+        .Add("passwordExpirationNotification", domainAccountPolicy.passwordExpirationNotification)
+        .Build();
+    std::string params = EdmJsonBuilder()
+        .AddRawJson("domainAccountInfo", domainAccountInfoJson)
+        .AddRawJson("policy", policyJson)
+        .Build();
+    IExtraPolicyNotification::GetInstance()->NotifyPolicyChanged(
+        OverrideInterfaceName::AccountManager::SET_DOMAIN_ACCOUNT_POLICY, params);
     return ERR_OK;
 }
 

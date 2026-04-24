@@ -403,7 +403,7 @@ HWTEST_F(RestrictionsProxyTest, TestGetDisallowedPolicyForAccountSuc, TestSize.L
         .Times(1)
         .WillOnce(Invoke(object_.GetRefPtr(), &EnterpriseDeviceMgrStubMock::InvokeBoolSendRequestGetPolicy));
     bool result = true;
-    int32_t ret = proxy_->GetDisallowedPolicyForAccount(admin,
+    int32_t ret = proxy_->GetDisallowedPolicyForAccount(&admin,
         EdmInterfaceCode::DISABLE_USER_MTP_CLIENT, result, WITHOUT_PERMISSION_TAG, 100);
     ASSERT_TRUE(ret == ERR_OK);
     ASSERT_TRUE(result);
@@ -420,9 +420,26 @@ HWTEST_F(RestrictionsProxyTest, TestGetDisallowedPolicyForAccountFail, TestSize.
     AppExecFwk::ElementName admin;
     admin.SetBundleName(ADMIN_PACKAGENAME);
     bool result = false;
-    int32_t ret = proxy_->GetDisallowedPolicyForAccount(admin,
+    int32_t ret = proxy_->GetDisallowedPolicyForAccount(&admin,
         EdmInterfaceCode::DISABLE_USER_MTP_CLIENT, result, WITHOUT_PERMISSION_TAG, 100);
     ASSERT_TRUE(ret == EdmReturnErrCode::ADMIN_INACTIVE);
+}
+
+/**
+ * @tc.name: TestGetDisallowedPolicyForAccountNullptr
+ * @tc.desc: Test GetDisallowedPolicyForAccount func with nullptr admin.
+ * @tc.type: FUNC
+ */
+HWTEST_F(RestrictionsProxyTest, TestGetDisallowedPolicyForAccountNullptr, TestSize.Level1)
+{
+    EXPECT_CALL(*object_, SendRequest(_, _, _, _))
+        .Times(1)
+        .WillOnce(Invoke(object_.GetRefPtr(), &EnterpriseDeviceMgrStubMock::InvokeBoolSendRequestGetPolicy));
+    bool result = false;
+    int32_t ret = proxy_->GetDisallowedPolicyForAccount(nullptr,
+        EdmInterfaceCode::DISABLE_USER_MTP_CLIENT, result, WITHOUT_PERMISSION_TAG, 100);
+    ASSERT_TRUE(ret == ERR_OK);
+    ASSERT_TRUE(result);
 }
 
 /**

@@ -16,11 +16,14 @@
 #include "global_proxy_plugin.h"
 
 #include "edm_ipc_interface_code.h"
+#include "edm_json_builder.h"
 #include "edm_log.h"
 #include "func_code_utils.h"
 #include "http_proxy_serializer.h"
-#include "net_conn_client.h"
+#include "iextra_policy_notification.h"
 #include "iplugin_manager.h"
+#include "net_conn_client.h"
+#include "override_interface_name.h"
 
 namespace OHOS {
 namespace EDM {
@@ -40,7 +43,28 @@ ErrCode GlobalProxyPlugin::OnSetPolicy(NetManagerStandard::HttpProxy &httpProxy)
 {
     int32_t ret = NetManagerStandard::NetConnClient::GetInstance().SetGlobalHttpProxy(httpProxy);
     EDMLOGI("GlobalProxyPlugin::SetGlobalHttpProxy set result = %{public}d", ret);
-    return ret == ERR_OK ? ERR_OK : EdmReturnErrCode::SYSTEM_ABNORMALLY;
+    if (ret != ERR_OK) {
+        return EdmReturnErrCode::SYSTEM_ABNORMALLY;
+    }
+    std::string interfaceName = OverrideInterfaceName::NetworkManager::SET_GLOBAL_PROXY_SYNC;
+    std::string host = httpProxy.GetHost();
+    auto port = httpProxy.GetPort();
+    auto exclusionList = httpProxy.GetExclusionList();
+    std::vector<std::string> exclusionVec(exclusionList.begin(), exclusionList.end());
+    auto userId = httpProxy.GetUserId();
+    std::string httpProxyJson = EdmJsonBuilder()
+        .Add("host", host)
+        .Add("port", port)
+        .Add("exclusionList", exclusionVec)
+        .Build();
+    EdmJsonBuilder &jsonBuilder = EdmJsonBuilder()
+        .AddRawJson("httpProxy", httpProxyJson);
+    if (userId != -1) {
+        interfaceName = OverrideInterfaceName::NetworkManager::SET_GLOBAL_PROXY_FOR_ACCOUNT;
+        jsonBuilder.Add("accountId", userId);
+    }
+    IExtraPolicyNotification::GetInstance()->NotifyPolicyChanged(interfaceName, jsonBuilder.Build());
+    return ERR_OK;
 }
 
 ErrCode GlobalProxyPlugin::OnGetPolicy(std::string &policyData, MessageParcel &data, MessageParcel &reply,

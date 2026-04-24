@@ -15,15 +15,19 @@
 
 #include "set_browser_policies_plugin.h"
 
+#include "common_event_manager.h"
+#include "common_event_support.h"
+#include "want.h"
+
 #include "bundle_manager_utils.h"
 #include "cjson_check.h"
 #include "cjson_serializer.h"
-#include "common_event_manager.h"
-#include "common_event_support.h"
 #include "edm_ipc_interface_code.h"
-#include "map_string_serializer.h"
-#include "want.h"
+#include "edm_json_builder.h"
+#include "iextra_policy_notification.h"
 #include "iplugin_manager.h"
+#include "map_string_serializer.h"
+#include "override_interface_name.h"
 
 static constexpr int32_t SET_POLICY_PARAM_NUM = 3;
 static constexpr int32_t SET_POLICY_APPID_INDEX = 0;
@@ -100,7 +104,22 @@ ErrCode SetBrowserPoliciesPlugin::OnHandlePolicy(std::uint32_t funcCode, Message
     ErrCode ret = UpdateCurrentAndMergePolicy(currentPolicies, mergePolicies, policyData);
     cJSON_Delete(currentPolicies);
     cJSON_Delete(mergePolicies);
+    NotifyPolicyChanged(ret, appid, policyName, policyValue);
     return ret;
+}
+
+void SetBrowserPoliciesPlugin::NotifyPolicyChanged(ErrCode ret, const std::string &appid, const std::string &policyName,
+    const std::string &policyValue)
+{
+    if (ret == ERR_OK) {
+        std::string params = EdmJsonBuilder()
+            .Add("appId", appid)
+            .Add("policyName", policyName)
+            .Add("policyValue", policyValue)
+            .Build();
+        IExtraPolicyNotification::GetInstance()->NotifyPolicyChanged(OverrideInterfaceName::Browser::SET_POLICY_SYNC,
+            params);
+    }
 }
 
 ErrCode SetBrowserPoliciesPlugin::UpdateCurrentAndMergePolicy(cJSON* currentPolicies, cJSON* mergePolicies,

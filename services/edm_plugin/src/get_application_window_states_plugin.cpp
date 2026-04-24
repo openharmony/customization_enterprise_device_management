@@ -37,7 +37,7 @@ void GetApplicationWindowStatesPlugin::InitPlugin(std::shared_ptr<IPluginTemplat
     EDMLOGI("GetApplicationWindowStatesPlugin InitPlugin...");
     ptr->InitAttribute(EdmInterfaceCode::GET_APPLICATION_WINDOW_STATES,
         PolicyName::POLICY_GET_APPLICATION_WINDOW_STATES,
-        EdmPermission::PERMISSION_ENTERPRISE_GET_APPLICATION_WINDOW_STATES,
+        EdmPermission::PERMISSION_ENTERPRISE_MANAGE_APPLICATION,
         IPlugin::PermissionType::SUPER_DEVICE_ADMIN, false);
     ptr->SetSerializer(StringSerializer::GetInstance());
 }
@@ -50,9 +50,9 @@ ErrCode GetApplicationWindowStatesPlugin::OnGetPolicy(std::string &policyData, M
     int32_t appIndex = data.ReadInt32();
     int32_t currentUserId = GetCurrentUserId();
     auto bundleMgr = std::make_shared<EdmBundleManagerImpl>();
-    if (!bundleMgr->isBundleInstalled(bundleName, currentUserId, appIndex)) {
+    if (!bundleMgr->IsBundleInstalled(bundleName, currentUserId, appIndex)) {
         EDMLOGE("GetApplicationWindowStatesPlugin GetApplicationWindowStates failed");
-        return PARAMETER_VERIFICATION_FAILED;
+        return EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED;
     }
     auto wmsProxy = OHOS::Rosen::SessionManagerLite::GetInstance().GetSceneSessionManagerLiteProxy();
     if (wmsProxy == nullptr) { //LCOV_EXCL_BR_LINE
@@ -63,8 +63,8 @@ ErrCode GetApplicationWindowStatesPlugin::OnGetPolicy(std::string &policyData, M
     appInfo.bundleName = bundleName;
     appInfo.appIndex = appIndex;
     std::vector<Rosen::AppWindowShowingInfo> windowInfos;
-    OHOS::Rosen::WMError ret = wmsProxy->GetApplicationWindowShowingInfosByBundleName(appInfo, windowInfos);
-    if (ret != OHOS::Rosen::WMError::WM_OK) {
+    OHOS::Rosen::WMError ret = wmsProxy->GetAppWindowShowingInfosByBundleName(appInfo, windowInfos);
+    if (ret != OHOS::Rosen::WMError::WM_OK) { //LCOV_EXCL_BR_LINE
         EDMLOGE("GetApplicationWindowStatesPlugin GetApplicationWindowStates failed, ret: %{public}d", ret);
         return EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED;
     }
@@ -74,11 +74,10 @@ ErrCode GetApplicationWindowStatesPlugin::OnGetPolicy(std::string &policyData, M
         windowInfo.windowId = item.persistentId;
         uint32_t state = item.sessionState;
         if (state > static_cast<uint32_t>(WindowState::BACKGROUND)) {
-            EDMLOGE(" GetApplicationWindowStates failed, invalid window state: %{public}d",
-                state);
+            EDMLOGE(" GetApplicationWindowStates failed, invalid window state: %{public}d", state);
             return EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED;
         }
-        windowInfo.state = WindowState(item.sessionState);
+        windowInfo.state = WindowState(state);
         windowInfo.isOnDock = item.isShowOnDock;
         windowInfo.name = item.windowName;
         windowStateInfos.emplace_back(windowInfo);

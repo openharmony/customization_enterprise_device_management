@@ -158,7 +158,7 @@ int32_t RestrictionsProxy::GetFingerprintAuthDisallowedPolicyForAccount(AppExecF
     return ERR_OK;
 }
 
-int32_t RestrictionsProxy::GetDisallowedPolicyForAccount(AppExecFwk::ElementName &admin, int policyCode, bool &result,
+int32_t RestrictionsProxy::GetDisallowedPolicyForAccount(AppExecFwk::ElementName *admin, int policyCode, bool &result,
     std::string permissionTag, int32_t accountId)
 {
     EDMLOGD("RestrictionsProxy::GetDisallowedPolicyForAccount");
@@ -168,8 +168,12 @@ int32_t RestrictionsProxy::GetDisallowedPolicyForAccount(AppExecFwk::ElementName
     data.WriteInt32(HAS_USERID);
     data.WriteInt32(accountId);
     data.WriteString(permissionTag);
-    data.WriteInt32(HAS_ADMIN);
-    data.WriteParcelable(&admin);
+    if (admin != nullptr) {
+        data.WriteInt32(HAS_ADMIN);
+        data.WriteParcelable(admin);
+    } else {
+        data.WriteInt32(WITHOUT_ADMIN);
+    }
     EnterpriseDeviceMgrProxy::GetInstance()->GetPolicy(policyCode, data, reply);
     int32_t ret = ERR_INVALID_VALUE;
     reply.ReadInt32(ret);
