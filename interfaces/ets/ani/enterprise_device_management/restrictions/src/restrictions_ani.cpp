@@ -163,7 +163,7 @@ OHOS::ErrCode RestrictionsAni::NativeGetDisallowedPolicyForAccount(bool hasAdmin
         if (!hasAdmin) {
             return EdmReturnErrCode::PARAM_ERROR;
         }
-        return proxy->GetDisallowedPolicyForAccount(elementName, ipcCode, disallow, permissionTag, accountId);
+        return proxy->GetDisallowedPolicyForAccount(&elementName, ipcCode, disallow, permissionTag, accountId);
     }
 }
 } // namespace EDM
