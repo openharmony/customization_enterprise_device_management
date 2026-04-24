@@ -24,6 +24,15 @@ namespace OHOS {
 namespace EDM {
 namespace TEST {
 constexpr int32_t DEFAULT_USER_ID = 100;
+constexpr int32_t BEGIN_POLICY_CODE = 10;
+constexpr int32_t END_POLICY_CODE = 33;
+
+void PluginTemplateTest::SetUpTestSuite()
+{
+    for (int32_t i = BEGIN_POLICY_CODE; i <= END_POLICY_CODE; i++) {
+        PluginManager::deviceCoreSoCodes_.push_back(i);
+    }
+}
 /**
  * @tc.name: TestTemplate
  * @tc.desc: Test PluginTemplate init.
