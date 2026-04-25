@@ -732,6 +732,31 @@ bool ApplicationManagerProxy::ParseBundleStatsInfos(MessageParcel &reply,
     return true;
 }
 
+int32_t ApplicationManagerProxy::GetApplicationWindowStates(const AppExecFwk::ElementName &admin,
+    std::string &bundleName, int32_t appIndex, std::vector<WindowStateInfo> &windowStateInfos)
+{
+    EDMLOGI("ApplicationManagerProxy::GetApplicationWindowStates");
+    auto proxy = EnterpriseDeviceMgrProxy::GetInstance();
+    MessageParcel data;
+    MessageParcel reply;
+    data.WriteInterfaceToken(DESCRIPTOR);
+    data.WriteInt32(WITHOUT_USERID);
+    data.WriteString(WITHOUT_PERMISSION_TAG);
+    data.WriteInt32(HAS_ADMIN);
+    data.WriteParcelable(&admin);
+    data.WriteString(bundleName);
+    data.WriteInt32(appIndex);
+    proxy->GetPolicy(EdmInterfaceCode::GET_APPLICATION_WINDOW_STATES, data, reply);
+    int32_t ret = ERR_INVALID_VALUE;
+    bool blRes = reply.ReadInt32(ret) && (ret == ERR_OK);
+    if (!blRes) {
+        EDMLOGW("EnterpriseDeviceMgrProxy::GetPolicy fail. %{public}d", ret);
+        return ret;
+    }
+    WindowStateInfoHandle::ReadWindowStateInfoVector(reply, windowStateInfos);
+    return ERR_OK;
+}
+
 #ifndef FEATURE_PC_ONLY
 int32_t ApplicationManagerProxy::AddOrRemoveHideLauncherIcon(const AppExecFwk::ElementName &admin, int32_t userId,
     const std::vector<std::string> &bundleNames, bool isAdd)
