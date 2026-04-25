@@ -835,6 +835,7 @@ ohos_static_library("edm_all_plugin_static") {
 
 if (os_account_edm_enable && enterprise_device_management_feature_pc_only) {
     sources += [
+      "../../../../services/edm_plugin/src/disallowed_device_sudo_plugin.cpp",
       "../../../../services/edm_plugin/src/disable_sudo_plugin.cpp"
     ]
     defines += [

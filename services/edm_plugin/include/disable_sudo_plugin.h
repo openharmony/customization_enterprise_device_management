@@ -27,7 +27,8 @@ public:
     ErrCode OnAdminRemove(const std::string &adminName, bool &data, bool &mergeData, int32_t userId);
 
 private:
-     ErrCode SetSudoPolicy(bool policy, int32_t userId);
+    ErrCode SetSudoPolicy(bool policy, int32_t userId);
+    ErrCode HasConflictPolicy();
 };
 } // namespace EDM
 } // namespace OHOS
