@@ -85,6 +85,7 @@ public:
     static napi_value GetDisallowedUninstallBundles(napi_env env, napi_callback_info info);
     static napi_value Uninstall(napi_env env, napi_callback_info info);
     static napi_value Install(napi_env env, napi_callback_info info);
+    static napi_value InstallForResult(napi_env env, napi_callback_info info);
     static napi_value AddAllowedInstallBundlesSync(napi_env env, napi_callback_info info);
     static napi_value RemoveAllowedInstallBundlesSync(napi_env env, napi_callback_info info);
     static napi_value GetAllowedInstallBundlesSync(napi_env env, napi_callback_info info);
@@ -116,6 +117,10 @@ private:
     static void NativeUninstall(napi_env env, void *data);
     static void NativeUninstallCallbackComplete(napi_env env, napi_status status, void *data);
     static void NativeInstall(napi_env env, void *data);
+    static void NativeInstallForResult(napi_env env, void *data);
+    static napi_value InstallCommon(napi_env env, napi_callback_info info, const std::string &funcName,
+        napi_async_execute_callback execute, bool isSupportCallback);
+    static void NativeInstallCommon(napi_env env, void *data, bool isInstallForResult);
     static void NativeGetInstalledBundleList(napi_env env, void *data);
     static void NativeGetInstalledBundleListComplete(napi_env env, napi_status status, void *data);
     static bool CheckAddInstallBundlesParamType(napi_env env, size_t argc, napi_value *argv, bool &hasCallback,
@@ -130,7 +135,7 @@ private:
         napi_value &result);
 #ifdef BUNDLE_FRAMEWORK_EDM_ENABLE
     static bool CheckAndParseInstallParamType(napi_env env, size_t argc, napi_value *argv,
-        AsyncInstallCallbackInfo *asyncCallbackInfo);
+        AsyncInstallCallbackInfo *asyncCallbackInfo, bool isSupportCallback);
     static bool jsObjectToInstallParam(napi_env env, napi_value object, OHOS::AppExecFwk::InstallParam &installParam);
     static bool ParseParameters(napi_env env, napi_value object, std::map<std::string, std::string> &parameters);
     static void ConvertVectorBundleToJs(napi_env env, const std::vector<EdmBundleInfo> &bundleVector,
