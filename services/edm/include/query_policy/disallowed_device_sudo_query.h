@@ -13,25 +13,25 @@
  * limitations under the License.
  */
 
-#ifndef COMMON_NATIVE_INCLUDE_RESTRICTION_FEATURE_H
-#define COMMON_NATIVE_INCLUDE_RESTRICTION_FEATURE_H
+#ifndef CUSTOMIZATION_ENTERPRISE_DEVICE_MANAGEMENT_DISALLOWED_DEVICE_SUDO_QUERY_H
+#define CUSTOMIZATION_ENTERPRISE_DEVICE_MANAGEMENT_DISALLOWED_DEVICE_SUDO_QUERY_H
+
+#include "ipolicy_query.h"
 
 namespace OHOS {
 namespace EDM {
-enum class RestrictionsFeature : int32_t {
-    WIFI_P2P = 0,
-    LOCAL_INPUT = 2,
-    SUDO = 4,
-    CORE_DUMP = 6,
-    SECURE_ERASE = 8,
-};
 
-enum class RestrictionsFeatureForAccount : int32_t {
-    MULTI_WINDOW = 0,
-    DISTRIBUTED_TRANSMISSION = 1,
-    SUPER_HUB = 2,
+class DisallowedDeviceSudoQuery : public IPolicyQuery {
+public:
+    ~DisallowedDeviceSudoQuery() override = default;
+
+    std::string GetPolicyName() override;
+
+    std::string GetPermission(IPlugin::PermissionType, const std::string &permissionTag) override;
+
+    ErrCode QueryPolicy(std::string &policyData, MessageParcel &data, MessageParcel &reply, int32_t userId) override;
 };
 } // namespace EDM
 } // namespace OHOS
 
-#endif // COMMON_NATIVE_INCLUDE_RESTRICTION_FEATURE_H
+#endif //CUSTOMIZATION_ENTERPRISE_DEVICE_MANAGEMENT_DISALLOWED_DEVICE_SUDO_QUERY_H
