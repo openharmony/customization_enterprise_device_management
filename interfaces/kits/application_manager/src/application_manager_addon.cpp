@@ -80,10 +80,10 @@ napi_value ApplicationManagerAddon::Init(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("getAllowedNotificationBundles", GetAllowedNotificationBundles),
         DECLARE_NAPI_FUNCTION("queryTrafficStats", QueryTrafficStats),
         DECLARE_NAPI_FUNCTION("queryBundleStatsInfos", QueryBundleStatsInfos),
+        DECLARE_NAPI_FUNCTION("getApplicationWindowStates", GetApplicationWindowStates),
     };
     std::vector<napi_property_descriptor> propertyOne = InitOne();
     property.insert(property.end(), propertyOne.begin(), propertyOne.end());
-    
     NAPI_CALL(env, napi_define_properties(env, exports, property.size(), property.data()));
     return exports;
 }
@@ -1495,6 +1495,70 @@ void ApplicationManagerAddon::ConvertDockInfoVectorToJs(napi_env env, const std:
     }
 }
 #endif
+
+napi_value ApplicationManagerAddon::GetApplicationWindowStates(napi_env env, napi_callback_info info)
+{
+    EDMLOGI("NAPI_GetApplicationWindowStates called");
+    size_t argc = ARGS_SIZE_THREE;
+    napi_value argv[ARGS_SIZE_THREE] = {nullptr};
+    napi_value thisArg = nullptr;
+    void *data = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisArg, &data));
+    ASSERT_AND_THROW_PARAM_ERROR(env, argc >= ARGS_SIZE_THREE, "parameter count error");
+    bool hasAdmin = MatchValueType(env, argv[ARR_INDEX_ZERO], napi_object);
+    ASSERT_AND_THROW_PARAM_ERROR(env, hasAdmin, "The first parameter must be want.");
+    OHOS::AppExecFwk::ElementName elementName;
+    ASSERT_AND_THROW_PARAM_ERROR(env, ParseElementName(env, elementName, argv[ARR_INDEX_ZERO]),
+        "Parameter elementName error");
+    std::string bundleName;
+    ASSERT_AND_THROW_PARAM_ERROR(env, ParseString(env, bundleName, argv[ARR_INDEX_ONE]),
+        "Parameter bundleName error");
+    int32_t appIndex = 0;
+    ASSERT_AND_THROW_PARAM_ERROR(env, ParseInt(env, appIndex, argv[ARR_INDEX_TWO]),
+        "Parameter appIndex error");
+
+    EDMLOGD("EnableAdmin: elementName.bundlename %{public}s, elementName.abilityname:%{public}s",
+        elementName.GetBundleName().c_str(), elementName.GetAbilityName().c_str());
+    auto applicationManagerProxy = ApplicationManagerProxy::GetApplicationManagerProxy();
+    int32_t ret = 0;
+    std::vector<WindowStateInfo> windowStateInfos;
+    ret = applicationManagerProxy->GetApplicationWindowStates(elementName, bundleName, appIndex, windowStateInfos);
+    if (FAILED(ret)) {
+        napi_throw(env, CreateError(env, ret, AFTER_API24_FLAG));
+        return nullptr;
+    }
+    napi_value nWindowStateInfos;
+    NAPI_CALL(env, napi_create_array(env, &nWindowStateInfos));
+    ConvertWindowStateInfoVectorToJs(env, windowStateInfos, nWindowStateInfos);
+    return nWindowStateInfos;
+}
+
+void ApplicationManagerAddon::ConvertWindowStateInfoVectorToJs(napi_env env,
+    const std::vector<WindowStateInfo> &windowStateInfos, napi_value &nWindowStateInfos)
+{
+    EDMLOGD("ConvertWindowStateInfoVectorToJs size: %{public}zu", windowStateInfos.size());
+    size_t idx = 0;
+    for (const auto &stateInfo : windowStateInfos) {
+        napi_value obj = nullptr;
+        NAPI_CALL_RETURN_VOID(env, napi_create_object(env, &obj));
+        napi_value windowId;
+        NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, stateInfo.windowId, &windowId));
+        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, obj, "windowId", windowId));
+        napi_value state;
+        NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env, static_cast<uint32_t>(stateInfo.state), &state));
+        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, obj, "state", state));
+        napi_value isOnDock;
+        NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, stateInfo.isOnDock, &isOnDock));
+        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, obj, "isOnDock", isOnDock));
+        napi_value name;
+        NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, stateInfo.name.c_str(),
+            NAPI_AUTO_LENGTH, &name));
+        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, obj, "name", name));
+
+        napi_set_element(env, nWindowStateInfos, idx, obj);
+        idx++;
+    }
+}
 
 napi_value ApplicationManagerAddon::QueryTrafficStats(napi_env env, napi_callback_info info)
 {
