@@ -41,12 +41,11 @@ public:
         std::string &othersMergePolicyData) override {return ERR_OK;};
 
 private:
-    static ErrCode InstallEnterpriseReSignatureCertificate(MessageParcel &data);
-    static ErrCode UninstallEnterpriseReSignatureCertificate(MessageParcel &data);
-    static ErrCode CheckParamVaild(std::string certificateAlias, int32_t fd, int32_t accountId);
-    static ErrCode GetBundleInstaller(
-        sptr<AppExecFwk::IBundleInstaller> &iBundleInstaller, const std::string &methodName);
-    static sptr<AppExecFwk::IBundleMgr> GetIBundleManager();
+    ErrCode InstallEnterpriseReSignatureCertificate(MessageParcel &data);
+    ErrCode UninstallEnterpriseReSignatureCertificate(MessageParcel &data);
+    ErrCode CheckParamVaild(std::string certificateAlias, int32_t fd, int32_t accountId);
+    ErrCode GetBundleInstaller(sptr<AppExecFwk::IBundleInstaller> &iBundleInstaller, const std::string &methodName);
+    sptr<AppExecFwk::IBundleMgr> GetIBundleManager();
 };
 } // namespace EDM
 } // namespace OHOS

@@ -23,10 +23,12 @@ enum class RestrictionsFeature : int32_t {
     LOCAL_INPUT = 2,
     SUDO = 4,
     CORE_DUMP = 6,
+    SECURE_ERASE = 8,
 };
 
 enum class RestrictionsFeatureForAccount : int32_t {
     MULTI_WINDOW = 0,
+    DISTRIBUTED_TRANSMISSION = 1,
     SUPER_HUB = 2,
 };
 } // namespace EDM

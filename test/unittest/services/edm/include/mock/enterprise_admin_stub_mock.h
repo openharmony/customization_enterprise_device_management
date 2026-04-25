@@ -78,6 +78,8 @@ public:
 
     void OnBundleUpdated(const std::string &bundleName, int32_t accountId) override {}
 
+    void OnAdminPolicyChanged(const PolicyChangedEvent &policyChangedEvent) override {}
+
     uint32_t code_ = 0;
 };
 } // namespace EDM

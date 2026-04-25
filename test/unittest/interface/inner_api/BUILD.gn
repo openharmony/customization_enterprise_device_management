@@ -32,6 +32,8 @@ ohos_unittest("EdmInnerApiUnitTest") {
     "./common/domain_account_policy_test.cpp",
     "./common/ent_info_test.cpp",
     "./common/iext_info_manager_test.cpp",
+    "./common/json_builder_test.cpp",
+    "./common/policy_changed_event_test.cpp",
     "./proxy/bundle_storage_info_test.cpp",
   ]
 

@@ -171,6 +171,7 @@
 #include "disable_set_biometrics_and_screenLock_query.h"
 #include "disable_set_device_name_query.h"
 #include "disallow_distributed_transmission_query.h"
+#include "disallow_distributed_transmission_full_query.h"
 #include "disallow_modify_datetime_query.h"
 #include "disallow_unmute_device_query.h"
 #include "disallow_usb_serial_query.h"
@@ -552,6 +553,9 @@ ErrCode PluginPolicyReader::GetPolicyQuerySixth(std::shared_ptr<IPolicyQuery> &o
     switch (code) {
         case EdmInterfaceCode::DISALLOWED_DISTRIBUTED_TRANSMISSION:
             obj = std::make_shared<DisallowDistributedTransmissionQuery>();
+            return ERR_OK;
+        case EdmInterfaceCode::DISALLOWED_DISTRIBUTED_TRANSMISSION_FULL:
+            obj = std::make_shared<DisallowDistributedTransmissionFullQuery>();
             return ERR_OK;
         case EdmInterfaceCode::DISALLOWED_NOTIFICATION:
 #ifdef NOTIFICATION_EDM_ENABLE

@@ -713,6 +713,23 @@ HWTEST_F(BundleManagerProxyTest, TestGetInstalledBundleStorageStatsListReplyErro
     ErrCode ret = bundleManagerProxy->GetInstalledBundleStorageStatsList(admin, bundles, 100, result);
     ASSERT_TRUE(ret == EdmReturnErrCode::SYSTEM_ABNORMALLY);
 }
+
+/**
+ * @tc.name: TestGetInstalledBundleStorageStatsListReplyOverMaxSize
+ * @tc.desc: Test GetInstalledBundleStorageStatsList with over max size
+ * @tc.type: FUNC
+ */
+HWTEST_F(BundleManagerProxyTest, TestGetInstalledBundleStorageStatsListReplyOverMaxSize, TestSize.Level1)
+{
+    OHOS::AppExecFwk::ElementName admin;
+    std::vector<std::string> bundles = {ADMIN_PACKAGENAME};
+    std::vector<BundleStorageInfo> result;
+    EXPECT_CALL(*object_, SendRequest(_, _, _, _))
+        .Times(1)
+        .WillOnce(Invoke(object_.GetRefPtr(), &EnterpriseDeviceMgrStubMock::InvokeNetStatsInfoSendRequestOverMaxSize));
+    ErrCode ret = bundleManagerProxy->GetInstalledBundleStorageStatsList(admin, bundles, 100, result);
+    ASSERT_TRUE(ret == EdmReturnErrCode::SYSTEM_ABNORMALLY);
+}
 } // namespace TEST
 } // namespace EDM
 } // namespace OHOS

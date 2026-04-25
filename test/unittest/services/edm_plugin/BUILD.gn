@@ -57,6 +57,7 @@ ohos_unittest("EdmPluginTest") {
     "./src/disable_set_device_name_plugin_test.cpp",
     "./src/disallow_export_recovery_key_plugin_test.cpp",
     "./src/disallow_open_file_boost_plugin_test.cpp",
+    "./src/disallow_distributed_transmission_full_plugin_test.cpp",
     "./src/disallow_distributed_transmission_plugin_test.cpp",
     "./src/disallow_modify_datetime_plugin_test.cpp",
     "./src/disallowed_policy_plugin_test.cpp",
@@ -149,6 +150,7 @@ ohos_unittest("EdmPluginTest") {
       "./src/disallow_add_os_account_by_user_plugin_test.cpp",
       "./src/operate_device_plugin_test.cpp",
       "./src/disallow_modify_wallpaper_plugin_test.cpp",
+      "./src/set_screen_watermark_image_plugin_test.cpp",
     ]
     defines += [ "OS_ACCOUNT_EDM_ENABLE" ]
   }
@@ -158,15 +160,12 @@ ohos_unittest("EdmPluginTest") {
       "./src/allowed_running_bundles_plugin_test.cpp",
       "./src/disallowed_running_bundles_plugin_test.cpp",
       "./src/manage_auto_start_apps_plugin_test.cpp",
+      "./src/manage_freeze_exempted_apps_plugin_test.cpp",
       "./src/manage_keep_alive_apps_plugin_test.cpp",
       "./src/manage_user_non_stop_apps_plugin_test.cpp",
       "./src/utils/manage_keep_alive_apps_serializer_test.cpp",
       "./src/utils/manage_auto_start_apps_serializer_test.cpp",
     ]
-  }
-
-  if (ability_runtime_edm_enable && !enterprise_device_management_feature_pc_only) {
-    sources += [ "./src/manage_freeze_exempted_apps_plugin_test.cpp" ]
   }
 
   if (screenlock_mgr_edm_enable) {
@@ -498,6 +497,7 @@ ohos_static_library("edm_all_plugin_static") {
     "../../../../services/edm_plugin/src/disable_set_device_name_plugin.cpp",
     "../../../../services/edm_plugin/src/disallow_export_recovery_key_plugin.cpp",
     "../../../../services/edm_plugin/src/disallow_open_file_boost_plugin.cpp",
+    "../../../../services/edm_plugin/src/disallow_distributed_transmission_full_plugin.cpp",
     "../../../../services/edm_plugin/src/disallow_distributed_transmission_plugin.cpp",
     "../../../../services/edm_plugin/src/disallow_modify_datetime_plugin.cpp",
     "../../../../services/edm_plugin/src/disallow_unmute_device_plugin.cpp",
@@ -602,6 +602,7 @@ ohos_static_library("edm_all_plugin_static") {
     external_deps += [
       "os_account:libaccountkits",
       "os_account:os_account_innerkits",
+      "window_manager:libdm",
     ]
     sources += [
       "../../../../services/edm_plugin/src/add_os_account_plugin.cpp",
@@ -609,6 +610,7 @@ ohos_static_library("edm_all_plugin_static") {
       "../../../../services/edm_plugin/src/disallow_add_local_account_plugin.cpp",
       "../../../../services/edm_plugin/src/disallow_add_os_account_by_user_plugin.cpp",
       "../../../../services/edm_plugin/src/set_watermark_image_plugin.cpp",
+      "../../../../services/edm_plugin/src/set_screen_watermark_image_plugin.cpp",
       "../../../../services/edm_plugin/src/disallow_modify_wallpaper_plugin.cpp",
     ]
     defines += [ "OS_ACCOUNT_EDM_ENABLE" ]
@@ -659,6 +661,7 @@ ohos_static_library("edm_all_plugin_static") {
   if (netmanager_base_edm_enable && netmanager_ext_edm_enable) {
     external_deps += [
       "netmanager_base:net_conn_manager_if",
+      "netmanager_base:net_conn_parcel",
       "netmanager_base:net_policy_manager_if",
       "netmanager_base:net_stats_manager_if",
       "netmanager_base:netsys_controller",

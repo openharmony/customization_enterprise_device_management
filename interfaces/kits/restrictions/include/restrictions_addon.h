@@ -62,12 +62,12 @@ private:
     static void NativeSetPolicyDisabled(napi_env env, void *data);
     static void NativeIsPolicyDisabled(napi_env env, void *data);
     static void SetPolicyDisabledCommon(AddonMethodSign &addonMethodSign, int policyCode);
-    static OHOS::ErrCode NativeGetDisallowedPolicyForAccount(bool hasAdmin, AppExecFwk::ElementName &elementName,
-        std::uint32_t ipcCode, int32_t accountId, bool &disallow);
+    static OHOS::ErrCode NativeGetDisallowedPolicyForAccount(AppExecFwk::ElementName *elementName,
+        std::uint32_t ipcCode, int32_t accountId, bool &disallow, int32_t isAfterApi24);
     static OHOS::ErrCode GetInterfaceCodeAndFeature(napi_env env, napi_value value,
         std::string &feature, uint32_t &ipcCode, int32_t &isAfterApi24);
     static OHOS::ErrCode GetInterfaceCodeAndFeatureForAccount(napi_env env, napi_value value,
-        std::string &feature, uint32_t &ipcCode);
+        std::string &feature, uint32_t &ipcCode, int32_t &isAfterApi24);
     static void CreateFeatureForDeviceObject(napi_env env, napi_value value);
     static void CreateFeatureForAccountObject(napi_env env, napi_value value);
     static std::shared_ptr<RestrictionsProxy> restrictionsProxy_;

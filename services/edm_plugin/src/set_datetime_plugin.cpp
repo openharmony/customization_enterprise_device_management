@@ -15,10 +15,14 @@
 
 #include "set_datetime_plugin.h"
 
-#include "edm_ipc_interface_code.h"
-#include "long_serializer.h"
 #include "time_service_client.h"
+
+#include "edm_ipc_interface_code.h"
+#include "edm_json_builder.h"
+#include "iextra_policy_notification.h"
 #include "iplugin_manager.h"
+#include "long_serializer.h"
+#include "override_interface_name.h"
 
 namespace OHOS {
 namespace EDM {
@@ -47,6 +51,12 @@ ErrCode SetDateTimePlugin::OnSetPolicy(int64_t &data)
 {
     EDMLOGD("SetDateTimePlugin OnSetPolicy");
     MiscServices::TimeServiceClient::GetInstance()->SetTime(data);
+    std::string params = EdmJsonBuilder()
+        .Add("item", "dateTime")
+        .Add("value", std::to_string(data))
+        .Build();
+    IExtraPolicyNotification::GetInstance()->NotifyPolicyChanged(OverrideInterfaceName::DeviceSettings::SET_VALUE,
+        params);
     return ERR_OK;
 }
 } // namespace EDM

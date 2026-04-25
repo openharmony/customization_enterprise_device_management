@@ -14,13 +14,15 @@
  */
 #include "wifi_manager_addon.h"
 
+#include "securec.h"
+
 #include "edm_constants.h"
 #include "edm_log.h"
-#include "message_parcel_utils.h"
-#include "securec.h"
 #include "edm_utils.h"
-
+#include "message_parcel_utils.h"
 #include "napi_edm_adapter.h"
+#include "override_interface_name.h"
+
 using namespace OHOS::EDM;
 
 void WifiManagerAddon::CreateWifiSecurityTypeObject(napi_env env, napi_value value)
@@ -159,7 +161,7 @@ napi_value WifiManagerAddon::Init(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("setWifiDisabled", SetWifiDisabled),
         DECLARE_NAPI_FUNCTION("isWifiDisabled", IsWifiDisabled),
         DECLARE_NAPI_FUNCTION("isWifiActiveSync", IsWifiActiveSync),
-        DECLARE_NAPI_FUNCTION("setWifiProfileSync", SetWifiProfileSync),
+        DECLARE_NAPI_FUNCTION(OverrideInterfaceName::WifiManager::SET_WIFI_PROFILE_SYNC, SetWifiProfileSync),
         DECLARE_NAPI_FUNCTION("addAllowedWifiList", AddAllowedWifiList),
         DECLARE_NAPI_FUNCTION("removeAllowedWifiList", RemoveAllowedWifiList),
         DECLARE_NAPI_FUNCTION("getAllowedWifiList", GetAllowedWifiList),

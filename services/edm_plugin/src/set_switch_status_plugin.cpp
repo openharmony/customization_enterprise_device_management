@@ -15,17 +15,21 @@
  
 #include "set_switch_status_plugin.h"
 
-#include "edm_ipc_interface_code.h"
-#include "external_manager_factory.h"
-#include "iadmin_manager.h"
-#include "iedm_bluetooth_manager.h"
-#include "ipc_skeleton.h"
-#include "iplugin_manager.h"
-#include "parameters.h"
-#include "wifi_device.h"
 #ifdef NFC_EDM_ENABLE
 #include "nfc_controller.h"
 #endif
+#include "parameters.h"
+#include "wifi_device.h"
+
+#include "edm_ipc_interface_code.h"
+#include "edm_json_builder.h"
+#include "external_manager_factory.h"
+#include "iadmin_manager.h"
+#include "iedm_bluetooth_manager.h"
+#include "iextra_policy_notification.h"
+#include "ipc_skeleton.h"
+#include "iplugin_manager.h"
+#include "override_interface_name.h"
 
 namespace OHOS {
 namespace EDM {
@@ -78,6 +82,14 @@ ErrCode SetSwitchStatusPlugin::OnSetPolicy(SwitchParam &param, MessageParcel &re
     reply.WriteInt32(ret);
     if (ret == EdmReturnErrCode::INTERFACE_UNSUPPORTED) {
         SwitchParamSerializer::GetInstance()->WritePolicy(reply, param);
+    }
+    if (ret == ERR_OK) {
+        std::string params = EdmJsonBuilder()
+            .Add("key", static_cast<int32_t>(param.key))
+            .Add("status", static_cast<int32_t>(param.status))
+            .Build();
+        IExtraPolicyNotification::GetInstance()->NotifyPolicyChanged(
+            OverrideInterfaceName::DeviceSettings::SET_SWITCH_STATUS, params);
     }
     return ret;
 }

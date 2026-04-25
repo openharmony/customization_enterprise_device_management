@@ -21,15 +21,19 @@
 #include <sys/stat.h>
 #include <system_ability_definition.h>
 
+#include "bundle_mgr_proxy.h"
+
 #include "edm_constants.h"
 #include "edm_ipc_interface_code.h"
+#include "edm_json_builder.h"
 #include "edm_log.h"
+#include "edm_os_account_manager_impl.h"
+#include "edm_sys_manager.h"
 #include "func_code_utils.h"
+#include "iextra_policy_notification.h"
 #include "iplugin_manager.h"
 #include "ipolicy_manager.h"
-#include "bundle_mgr_proxy.h"
-#include "edm_sys_manager.h"
-#include "edm_os_account_manager_impl.h"
+#include "override_interface_name.h"
 
 namespace OHOS {
 namespace EDM {
@@ -150,6 +154,12 @@ ErrCode InstallEnterpriseReSignatureCertificatePlugin::InstallEnterpriseReSignat
         return EdmReturnErrCode::CERTIFICATE_IS_INVALID;
     }
     close(fd);
+    std::string params = EdmJsonBuilder()
+        .Add("certificateAlias", certificateAlias)
+        .Add("accountId", accountId)
+        .Build();
+    IExtraPolicyNotification::GetInstance()->NotifyPolicyChanged(
+        OverrideInterfaceName::SecurityManager::INSTALL_ENTERPRISE_RE_SIGNATURE_CERTIFICATE, params);
     return ERR_OK;
 }
 
@@ -181,6 +191,12 @@ ErrCode InstallEnterpriseReSignatureCertificatePlugin::UninstallEnterpriseReSign
         EDMLOGE("UninstallEnterpriseReSignatureCertificate: failed uninstallRet: %{public}d", uninstallRet);
         return EdmReturnErrCode::CERTIFICATE_NOT_EXIST;
     }
+    std::string params = EdmJsonBuilder()
+        .Add("certificateAlias", certificateAlias)
+        .Add("accountId", accountId)
+        .Build();
+    IExtraPolicyNotification::GetInstance()->NotifyPolicyChanged(
+        OverrideInterfaceName::SecurityManager::UNINSTALL_ENTERPRISE_RE_SIGNATURE_CERTIFICATE, params);
     return ERR_OK;
 }
 } // namespace EDM

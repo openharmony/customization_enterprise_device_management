@@ -24,6 +24,7 @@
 
 namespace OHOS {
 namespace EDM {
+// LCOV_EXCL_START
 EnterpriseAdminConnection::~EnterpriseAdminConnection() {}
 
 void EnterpriseAdminConnection::SetIsOnAdminEnabled(bool isOnAdminEnabled)
@@ -115,5 +116,6 @@ void EnterpriseAdminConnection::CreateLogDirIfNeed(const std::string &bundleName
     }
 }
 #endif
+// LCOV_EXCL_STOP
 }  // namespace EDM
 }  // namespace OHOS

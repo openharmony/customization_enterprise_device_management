@@ -190,6 +190,121 @@ HWTEST_F(AdminTest, TestVirtualDeviceAdminWithAllowAllPolicy, TestSize.Level1)
     EXPECT_EQ(admin->HasPermissionToHandlePolicy(PolicyName::POLICY_DISABLED_BLUETOOTH, FuncOperateType::SET), true);
     EXPECT_EQ(admin->HasPermissionToHandlePolicy(PolicyName::POLICY_DISABLE_USB, FuncOperateType::SET), true);
 }
+
+/**
+ * @tc.name: TestAdmin_ShouldNotifyPolicyChanged_ReturnFalse
+ * @tc.desc: Test Admin::ShouldNotifyPolicyChanged returns false.
+ * @tc.type: FUNC
+ */
+HWTEST_F(AdminTest, TestAdmin_ShouldNotifyPolicyChanged_ReturnFalse, TestSize.Level1)
+{
+    AdminInfo adminInfo = {.parentAdminName_ = TEST_BUNDLE_NAME, .adminType_ = AdminType::ENT};
+    std::shared_ptr<Admin> admin = std::make_shared<Admin>(adminInfo);
+    EXPECT_EQ(admin->ShouldNotifyPolicyChanged(), false);
+}
+
+/**
+ * @tc.name: TestSuperDeviceAdmin_ShouldNotifyPolicyChanged_WithPolicyChangedEvent
+ * @tc.desc: Test SuperDeviceAdmin::ShouldNotifyPolicyChanged returns true when managedEvents contains POLICIES_CHANGED.
+ * @tc.type: FUNC
+ */
+HWTEST_F(AdminTest, TestSuperDeviceAdmin_ShouldNotifyPolicyChanged_WithPolicyChangedEvent, TestSize.Level1)
+{
+    AdminInfo adminInfo;
+    adminInfo.managedEvents_ = {ManagedEvent::POLICIES_CHANGED};
+    std::shared_ptr<Admin> admin = std::make_shared<SuperDeviceAdmin>(adminInfo);
+    EXPECT_EQ(admin->ShouldNotifyPolicyChanged(), true);
+}
+
+/**
+ * @tc.name: TestSuperDeviceAdmin_ShouldNotifyPolicyChanged_WithoutPolicyChangedEvent_ReturnFalse
+ * @tc.desc: Test SuperDeviceAdmin::ShouldNotifyPolicyChanged when managedEvents does not contain POLICIES_CHANGED.
+ * @tc.type: FUNC
+ */
+HWTEST_F(AdminTest, TestSuperDeviceAdmin_ShouldNotifyPolicyChanged_WithoutPolicyChangedEvent_ReturnFalse,
+    TestSize.Level1)
+{
+    AdminInfo adminInfo;
+    adminInfo.managedEvents_ = {ManagedEvent::BUNDLE_ADDED, ManagedEvent::BUNDLE_REMOVED};
+    std::shared_ptr<Admin> admin = std::make_shared<SuperDeviceAdmin>(adminInfo);
+    EXPECT_EQ(admin->ShouldNotifyPolicyChanged(), false);
+}
+
+/**
+ * @tc.name: TestSuperDeviceAdmin_ShouldNotifyPolicyChanged_EmptyManagedEvents_ReturnFalse
+ * @tc.desc: Test SuperDeviceAdmin::ShouldNotifyPolicyChanged returns false when managedEvents is empty.
+ * @tc.type: FUNC
+ */
+HWTEST_F(AdminTest, TestSuperDeviceAdmin_ShouldNotifyPolicyChanged_EmptyManagedEvents_ReturnFalse, TestSize.Level1)
+{
+    AdminInfo adminInfo;
+    adminInfo.managedEvents_ = {};
+    std::shared_ptr<Admin> admin = std::make_shared<SuperDeviceAdmin>(adminInfo);
+    EXPECT_EQ(admin->ShouldNotifyPolicyChanged(), false);
+}
+
+/**
+ * @tc.name: TestSuperDeviceAdmin_ShouldNotifyPolicyChanged_MultipleEvents_ReturnTrue
+ * @tc.desc: Test SuperDeviceAdmin::ShouldNotifyPolicyChanged when managedEvents contains multiple events.
+ * @tc.type: FUNC
+ */
+HWTEST_F(AdminTest, TestSuperDeviceAdmin_ShouldNotifyPolicyChanged_MultipleEvents_ReturnTrue, TestSize.Level1)
+{
+    AdminInfo adminInfo;
+    adminInfo.managedEvents_ = {ManagedEvent::BUNDLE_ADDED, ManagedEvent::BUNDLE_REMOVED,
+        ManagedEvent::USER_ADDED, ManagedEvent::POLICIES_CHANGED};
+    std::shared_ptr<Admin> admin = std::make_shared<SuperDeviceAdmin>(adminInfo);
+    EXPECT_EQ(admin->ShouldNotifyPolicyChanged(), true);
+}
+
+/**
+ * @tc.name: TestByodAdmin_ShouldNotifyPolicyChanged_ReturnFalse
+ * @tc.desc: Test ByodAdmin::ShouldNotifyPolicyChanged returns false (inherits from Admin).
+ * @tc.type: FUNC
+ */
+HWTEST_F(AdminTest, TestByodAdmin_ShouldNotifyPolicyChanged_ReturnFalse, TestSize.Level1)
+{
+    AdminInfo adminInfo;
+    std::shared_ptr<Admin> admin = std::make_shared<ByodAdmin>(adminInfo);
+    EXPECT_EQ(admin->ShouldNotifyPolicyChanged(), false);
+}
+
+/**
+ * @tc.name: TestDeviceAdmin_ShouldNotifyPolicyChanged_ReturnFalse
+ * @tc.desc: Test DeviceAdmin::ShouldNotifyPolicyChanged returns false (inherits from Admin).
+ * @tc.type: FUNC
+ */
+HWTEST_F(AdminTest, TestDeviceAdmin_ShouldNotifyPolicyChanged_ReturnFalse, TestSize.Level1)
+{
+    AdminInfo adminInfo;
+    std::shared_ptr<Admin> admin = std::make_shared<DeviceAdmin>(adminInfo);
+    EXPECT_EQ(admin->ShouldNotifyPolicyChanged(), false);
+}
+
+/**
+ * @tc.name: TestSubSuperDeviceAdmin_ShouldNotifyPolicyChanged_ReturnFalse
+ * @tc.desc: Test SubSuperDeviceAdmin::ShouldNotifyPolicyChanged returns false (inherits from Admin).
+ * @tc.type: FUNC
+ */
+HWTEST_F(AdminTest, TestSubSuperDeviceAdmin_ShouldNotifyPolicyChanged_ReturnFalse, TestSize.Level1)
+{
+    AdminInfo adminInfo = {.parentAdminName_ = TEST_BUNDLE_NAME, .adminType_ = AdminType::ENT};
+    std::shared_ptr<Admin> admin = std::make_shared<SubSuperDeviceAdmin>(adminInfo);
+    EXPECT_EQ(admin->ShouldNotifyPolicyChanged(), false);
+}
+
+/**
+ * @tc.name: TestVirtualDeviceAdmin_ShouldNotifyPolicyChanged_ReturnFalse
+ * @tc.desc: Test VirtualDeviceAdmin::ShouldNotifyPolicyChanged returns false (inherits from Admin).
+ * @tc.type: FUNC
+ */
+HWTEST_F(AdminTest, TestVirtualDeviceAdmin_ShouldNotifyPolicyChanged_ReturnFalse, TestSize.Level1)
+{
+    AdminInfo adminInfo = {.parentAdminName_ = TEST_BUNDLE_NAME,
+        .accessiblePolicies_ = {PolicyName::POLICY_DISABLED_BLUETOOTH}, .adminType_ = AdminType::ENT};
+    std::shared_ptr<Admin> admin = std::make_shared<VirtualDeviceAdmin>(adminInfo);
+    EXPECT_EQ(admin->ShouldNotifyPolicyChanged(), false);
+}
 } // namespace TEST
 } // namespace EDM
 } // namespace OHOS

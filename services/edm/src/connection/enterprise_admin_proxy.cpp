@@ -18,6 +18,7 @@
 
 namespace OHOS {
 namespace EDM {
+// LCOV_EXCL_START
 void EnterpriseAdminProxy::OnAdminEnabled()
 {
     MessageParcel data;
@@ -263,11 +264,24 @@ void EnterpriseAdminProxy::OnDeviceBootCompleted()
     SendRequest(COMMAND_ON_DEVICE_BOOT_COMPLETED, data);
 }
 
+void EnterpriseAdminProxy::OnAdminPolicyChanged(const PolicyChangedEvent &policyChangedEvent)
+{
+    MessageParcel data;
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
+        EDMLOGE("EnterpriseAdminProxy::%{public}s write descriptor failed!", __func__);
+        return;
+    }
+    policyChangedEvent.Marshalling(data);
+    EDMLOGI("EnterpriseAdminProxy proxy OnAdminPolicyChanged");
+    SendRequest(COMMAND_ON_POLICIES_CHANGED, data);
+}
+
 void EnterpriseAdminProxy::SendRequest(uint32_t code, MessageParcel &data)
 {
     MessageParcel reply;
     MessageOption option(MessageOption::TF_SYNC);
     Remote()->SendRequest(code, data, reply, option);
 }
+// LCOV_EXCL_STOP
 } // namespace EDM
 } // namespace OHOS

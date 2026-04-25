@@ -15,10 +15,14 @@
 
 #include "ntp_server_plugin.h"
 
-#include "edm_ipc_interface_code.h"
-#include "string_serializer.h"
 #include "parameters.h"
+
+#include "edm_ipc_interface_code.h"
+#include "edm_json_builder.h"
+#include "iextra_policy_notification.h"
 #include "iplugin_manager.h"
+#include "override_interface_name.h"
+#include "string_serializer.h"
 
 namespace OHOS {
 namespace EDM {
@@ -38,7 +42,15 @@ void NTPServerPlugin::InitPlugin(std::shared_ptr<IPluginTemplate<NTPServerPlugin
 ErrCode NTPServerPlugin::OnSetPolicy(std::string &value)
 {
     EDMLOGI("NTPServerPlugin OnSetPolicy");
-    return system::SetParameter(KEY_NTP_SERVER, value) ? ERR_OK : EdmReturnErrCode::SYSTEM_ABNORMALLY;
+    if (system::SetParameter(KEY_NTP_SERVER, value)) {
+        std::string params = EdmJsonBuilder()
+            .Add("server", value)
+            .Build();
+        IExtraPolicyNotification::GetInstance()->NotifyPolicyChanged(
+            OverrideInterfaceName::SystemManager::SET_NTP_SERVER, params);
+        return ERR_OK;
+    }
+    return EdmReturnErrCode::SYSTEM_ABNORMALLY;
 }
 } // namespace EDM
 } // namespace OHOS

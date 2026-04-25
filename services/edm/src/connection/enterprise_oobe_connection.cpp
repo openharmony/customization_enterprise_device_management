@@ -20,6 +20,7 @@
 
 namespace OHOS {
 namespace EDM {
+// LCOV_EXCL_START
 EnterpriseOobeConnection::~EnterpriseOobeConnection() {}
 
 void EnterpriseOobeConnection::OnAbilityConnectDone(
@@ -50,5 +51,6 @@ void EnterpriseOobeConnection::OnAbilityDisconnectDone(const AppExecFwk::Element
 {
     EDMLOGI("EnterpriseOobeConnection OnAbilityDisconnectDone");
 }
+// LCOV_EXCL_STOP
 }  // namespace EDM
 }  // namespace OHOS

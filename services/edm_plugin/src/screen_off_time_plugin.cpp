@@ -18,8 +18,11 @@
 #include "battery_utils.h"
 #include "edm_data_ability_utils.h"
 #include "edm_ipc_interface_code.h"
+#include "edm_json_builder.h"
+#include "iextra_policy_notification.h"
 #include "int_serializer.h"
 #include "iplugin_manager.h"
+#include "override_interface_name.h"
 
 namespace OHOS {
 namespace EDM {
@@ -87,6 +90,12 @@ ErrCode ScreenOffTimePlugin::OnSetPolicy(int32_t &data)
             return EdmReturnErrCode::SYSTEM_ABNORMALLY;
         }
 #endif
+        std::string params = EdmJsonBuilder()
+            .Add("item", "screenOff")
+            .Add("value", std::to_string(data))
+            .Build();
+        IExtraPolicyNotification::GetInstance()->NotifyPolicyChanged(OverrideInterfaceName::DeviceSettings::SET_VALUE,
+            params);
         return ERR_OK;
     }
     return EdmReturnErrCode::PARAM_ERROR;
