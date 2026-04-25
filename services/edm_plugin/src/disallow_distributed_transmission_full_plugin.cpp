@@ -62,7 +62,7 @@ ErrCode DisallowDistributedTransmissionFullPlugin::OnSetPolicy(
     ErrCode ret = SetDistributedTransmissionFullPolicy(data, userId);
     if (FAILED(ret)) {
         EDMLOGE("DisallowDistributedTransmissionFullPlugin::OnSetPolicy Failed, ret: %{public}d", ret);
-        return EdmReturnErrCode::SYSTEM_ABNORMALLY;
+        return EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED;
     }
     currentData = data;
     mergeData = data;
