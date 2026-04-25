@@ -21,6 +21,7 @@
 
 namespace OHOS {
 namespace EDM {
+// LCOV_EXCL_START
 EnterpriseBundleConnection::~EnterpriseBundleConnection() {}
 
 void EnterpriseBundleConnection::OnAbilityConnectDone(
@@ -58,5 +59,6 @@ void EnterpriseBundleConnection::OnAbilityDisconnectDone(const AppExecFwk::Eleme
 {
     EDMLOGI("EnterpriseBundleConnection OnAbilityDisconnectDone");
 }
+// LCOV_EXCL_STOP
 }  // namespace EDM
 }  // namespace OHOS

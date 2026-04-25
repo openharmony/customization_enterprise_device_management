@@ -20,6 +20,7 @@
 
 #include "enterprise_admin_stub.h"
 #include "js_enterprise_admin_extension.h"
+#include "policy_changed_event.h"
 
 namespace OHOS {
 namespace EDM {
@@ -75,6 +76,8 @@ public:
     void OnStartupGuideCompleted(int32_t type) override;
 
     void OnDeviceBootCompleted() override;
+
+    void OnAdminPolicyChanged(const PolicyChangedEvent &policyChangedEvent) override;
 private:
     std::weak_ptr<JsEnterpriseAdminExtension> extension_;
 };

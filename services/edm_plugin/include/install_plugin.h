@@ -37,6 +37,7 @@ private:
 
     ErrCode InstallParamInit(InstallParam &param, MessageParcel &reply, AppExecFwk::InstallParam &installParam,
         std::vector<std::string> &realPaths);
+    ErrCode HandleInstallResult(int32_t resultCode, std::string errorMessage, MessageParcel &reply);
 };
 } // namespace EDM
 } // namespace OHOS

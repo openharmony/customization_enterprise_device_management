@@ -31,6 +31,7 @@
 #include "enterprise_update_connection.h"
 #include "enterprise_oobe_connection.h"
 #include "ienterprise_connection.h"
+#include "policy_changed_event.h"
 #include "singleton.h"
 
 namespace OHOS {
@@ -53,6 +54,8 @@ public:
     bool CreateKeyEventConnection(const AAFwk::Want &want, uint32_t code, uint32_t userId,
         const std::string &keyEvent);
     bool CreateOobeConnection(const AAFwk::Want &want, uint32_t code, uint32_t userId, int32_t type);
+    bool CreatePolicyChangedConnection(const AAFwk::Want &want, const PolicyChangedEvent &policyChangedEvent,
+        int32_t userId);
 private:
     bool ConnectAbility(const sptr<IEnterpriseConnection>& connection);
 };

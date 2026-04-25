@@ -83,6 +83,8 @@ private:
     void OnStartupGuideCompletedInner(MessageParcel& data, MessageParcel& reply);
 
     void OnDeviceBootCompletedInner(MessageParcel& data, MessageParcel& reply);
+
+    void OnAdminPolicyChangedInner(MessageParcel& data, MessageParcel& reply);
 };
 } // namespace EDM
 } // namespace OHOS

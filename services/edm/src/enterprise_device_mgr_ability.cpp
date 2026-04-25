@@ -425,6 +425,7 @@ void EnterpriseDeviceMgrAbility::AddOnAddSystemAbilityFuncMapSecond()
             that->CallOnOtherServiceStart(EdmInterfaceCode::SNAPSHOT_SKIP);
             that->CallOnOtherServiceStart(EdmInterfaceCode::ALLOWED_KIOSK_APPS, WINDOW_MANAGER_SERVICE_ID);
             that->CallOnOtherServiceStart(EdmInterfaceCode::MANAGE_USER_NON_STOP_APPS, WINDOW_MANAGER_SERVICE_ID);
+            that->CallOnOtherServiceStart(EdmInterfaceCode::SCREEN_WATERMARK_IMAGE);
         };
     addSystemAbilityFuncMap_[RES_SCHED_SYS_ABILITY_ID] =
         [](EnterpriseDeviceMgrAbility* that, int32_t systemAbilityId, const std::string &deviceId) {
@@ -2542,6 +2543,9 @@ ErrCode EnterpriseDeviceMgrAbility::VerifyManagedEvent(const AppExecFwk::Element
     if (events.empty()) {
         return EdmReturnErrCode::MANAGED_EVENTS_INVALID;
     }
+    if (!adminItem->HasPermissionSubscribeManagedEvents(events)) {
+        return EdmReturnErrCode::ADMIN_EDM_PERMISSION_DENIED;
+    }
     auto iter =
         std::find_if(events.begin(), events.end(), [this](uint32_t event) { return !CheckManagedEvent(event); });
     if (iter != std::end(events)) {
@@ -2553,7 +2557,7 @@ ErrCode EnterpriseDeviceMgrAbility::VerifyManagedEvent(const AppExecFwk::Element
 bool EnterpriseDeviceMgrAbility::CheckManagedEvent(uint32_t event)
 {
     if (event >= static_cast<uint32_t>(ManagedEvent::BUNDLE_ADDED) &&
-        event <= static_cast<uint32_t>(ManagedEvent::BUNDLE_UPDATED)) {
+        event <= static_cast<uint32_t>(ManagedEvent::POLICIES_CHANGED)) {
         return true;
     }
     return false;

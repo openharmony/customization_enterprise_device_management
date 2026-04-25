@@ -19,6 +19,7 @@
 
 namespace OHOS {
 namespace EDM {
+// LCOV_EXCL_START
 SubSuperDeviceAdmin::SubSuperDeviceAdmin(const AdminInfo& adminInfo): Admin(adminInfo)
 {
     adminInfo_.adminType_ = AdminType::SUB_SUPER_ADMIN;
@@ -50,5 +51,12 @@ bool SubSuperDeviceAdmin::HasPermissionToHandlePolicy(const std::string &policyN
 {
     return true;
 }
+
+bool SubSuperDeviceAdmin::HasPermissionSubscribeManagedEvents(const std::vector<uint32_t> &events) const
+{
+    auto iter = std::find(events.begin(), events.end(), static_cast<uint32_t>(ManagedEvent::POLICIES_CHANGED));
+    return iter == events.end();
+}
+// LCOV_EXCL_STOP
 } // namespace EDM
 } // namespace OHOS

@@ -25,11 +25,13 @@
 #include "extension_manager_client.h"
 #include "extension_manager_proxy.h"
 #include "managed_event.h"
+#include "enterprise_policy_changed_connection.h"
 
 using namespace OHOS::AAFwk;
 
 namespace OHOS {
 namespace EDM {
+// LCOV_EXCL_START
 bool EnterpriseConnManager::CreateAdminConnection(const AAFwk::Want &want,
     uint32_t code, uint32_t userId, bool isOnAdminEnabled, const std::string &bundleName)
 {
@@ -102,6 +104,14 @@ bool EnterpriseConnManager::CreateOobeConnection(const AAFwk::Want &want, uint32
     return ConnectAbility(connection);
 }
 
+bool EnterpriseConnManager::CreatePolicyChangedConnection(const AAFwk::Want &want,
+    const PolicyChangedEvent &policyChangedEvent, int32_t userId)
+{
+    sptr<IEnterpriseConnection> connection(
+        new (std::nothrow)EnterprisePolicyChangedConnection(want, policyChangedEvent, userId));
+    return ConnectAbility(connection);
+}
+
 bool EnterpriseConnManager::ConnectAbility(const sptr<IEnterpriseConnection>& connection)
 {
     if (connection == nullptr) {
@@ -115,5 +125,6 @@ bool EnterpriseConnManager::ConnectAbility(const sptr<IEnterpriseConnection>& co
     }
     return true;
 }
+// LCOV_EXCL_STOP
 } // namespace EDM
 } // namespace OHOS

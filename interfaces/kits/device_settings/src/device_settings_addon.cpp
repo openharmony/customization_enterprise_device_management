@@ -24,6 +24,7 @@
 #ifdef OS_ACCOUNT_EDM_ENABLE
 #include "os_account_manager.h"
 #endif
+#include "override_interface_name.h"
 
 using namespace OHOS::EDM;
 
@@ -306,18 +307,18 @@ napi_value DeviceSettingsAddon::Init(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("uninstallUserCertificate", UninstallUserCertificate),
         DECLARE_NAPI_PROPERTY("PowerScene", nTimeOut),
         DECLARE_NAPI_PROPERTY("PowerPolicyAction", nPolicyAction),
-        DECLARE_NAPI_FUNCTION("setValue", SetValue),
+        DECLARE_NAPI_FUNCTION(OverrideInterfaceName::DeviceSettings::SET_VALUE, SetValue),
         DECLARE_NAPI_FUNCTION("getValue", GetValue),
         DECLARE_NAPI_PROPERTY("SettingsItem", nSettingsItem),
         DECLARE_NAPI_FUNCTION("setValueForAccount", setValueForAccount),
         DECLARE_NAPI_FUNCTION("getValueForAccount", getValueForAccount),
-        DECLARE_NAPI_FUNCTION("setHomeWallpaper", SetHomeWallPaper),
-        DECLARE_NAPI_FUNCTION("setUnlockWallpaper", SetUnlockWallPaper),
+        DECLARE_NAPI_FUNCTION(OverrideInterfaceName::DeviceSettings::SET_HOME_WALLPAPER, SetHomeWallPaper),
+        DECLARE_NAPI_FUNCTION(OverrideInterfaceName::DeviceSettings::SET_UNLOCK_WALLPAPER, SetUnlockWallPaper),
         DECLARE_NAPI_PROPERTY("SettingsMenu", nPolicySettingsMenu),
         DECLARE_NAPI_FUNCTION("getHiddenSettingsMenu", GetHiddenSettingsMenu),
         DECLARE_NAPI_FUNCTION("addHiddenSettingsMenu", AddHiddenSettingsMenu),
         DECLARE_NAPI_FUNCTION("removeHiddenSettingsMenu", RemoveHiddenSettingsMenu),
-        DECLARE_NAPI_FUNCTION("setSwitchStatus", SetSwitchStatus),
+        DECLARE_NAPI_FUNCTION(OverrideInterfaceName::DeviceSettings::SET_SWITCH_STATUS, SetSwitchStatus),
         DECLARE_NAPI_PROPERTY("SwitchKey", nSwitchKey),
         DECLARE_NAPI_PROPERTY("SwitchStatus", nSwitchStatus),
     };

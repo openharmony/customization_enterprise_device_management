@@ -138,6 +138,7 @@ namespace EdmConstants {
         constexpr uint32_t SET_KEY_EVENTS = 31;
         constexpr uint32_t DISABLE_SUPERHUB = 36;
         constexpr uint32_t HIDE_LAUNCHER_ICON = 37;
+        constexpr uint32_t DISABLE_SECURE_ERASE = 39;
     }
 
     namespace KeepAlive {
@@ -181,6 +182,7 @@ namespace EdmConstants {
         const char* const LABEL_DISALLOWED_POLICY_BACKUP_AND_RESTORE = "backupAndRestore";
         const char* const LABEL_DISALLOWED_POLICY_APN = "setApn";
         const char* const LABEL_DISALLOWED_POLICY_DISTRIBUTED_TRANSMISSION = "distributedTransmissionOutgoing";
+        const char* const LABEL_DISALLOWED_POLICY_DISTRIBUTED_TRANSMISSION_FULL = "distributedTransmission";
         const char* const LABEL_DISALLOWED_POLICY_POWER_LONG_PRESS = "powerLongPress";
         const char* const LABEL_DISALLOWED_POLICY_MOBILE_DATA = "mobileData";
         const char* const LABEL_DISALLOWED_POLICY_AIRPLANE_MODE = "airplaneMode";
@@ -369,6 +371,7 @@ namespace PolicyName {
     const char* const POLICY_DISALLOWED_OPEN_FILE_BOOST = "disallowed_open_file_boost";
     const char* const POLICY_DISALLOWED_USB_STORAGE_DEVICE_WRITE = "disallowed_usb_storage_device_write";
     const char* const POLICY_DISALLOWED_DISTRIBUTED_TRANSMISSION = "disallowed_distributed_transmission";
+    const char* const POLICY_DISALLOWED_DISTRIBUTED_TRANSMISSION_FULL = "disallowed_distributed_transmission_full";
     const char* const POLICY_DOMAIN_FILTER_RULE = "domain_filter_rule";
     const char* const POLICY_FINGERPRINT_AUTH = "fingerprint_auth";
     const char* const POLICY_FIREWALL_RULE = "firewall_rule";

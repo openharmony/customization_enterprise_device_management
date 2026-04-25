@@ -19,6 +19,7 @@
 #include <iremote_broker.h>
 #include <string_ex.h>
 #include "policy_struct.h"
+#include "policy_changed_event.h"
 
 namespace OHOS {
 namespace EDM {
@@ -132,6 +133,8 @@ public:
      */
     virtual void OnDeviceBootCompleted() = 0;
 
+    virtual void OnAdminPolicyChanged(const PolicyChangedEvent &policyChangedEvent) = 0;
+
     enum {
         COMMAND_ON_ADMIN_ENABLED = 1,
         COMMAND_ON_ADMIN_DISABLED = 2,
@@ -152,7 +155,8 @@ public:
         COMMAND_ON_KEY_EVENT = 17,
         COMMAND_ON_STARTUP_GUIDE_COMPLETED = 18,
         COMMAND_ON_DEVICE_BOOT_COMPLETED = 19,
-        COMMAND_ON_BUNDLE_UPDATED = 20
+        COMMAND_ON_BUNDLE_UPDATED = 20,
+        COMMAND_ON_POLICIES_CHANGED = 21
     };
 };
 } // namespace EDM

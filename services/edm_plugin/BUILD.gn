@@ -88,6 +88,7 @@ ohos_shared_library("device_core_plugin") {
       "./src/disable_set_biometrics_and_screenLock_plugin.cpp",
       "./src/disable_set_device_name_plugin.cpp",
       "./src/disallow_distributed_transmission_plugin.cpp",
+      "./src/disallow_distributed_transmission_full_plugin.cpp",
       "./src/disallowed_install_bundles_plugin.cpp",
       "./src/disallowed_uninstall_bundles_plugin.cpp",
       "./src/inactive_user_freeze_plugin.cpp",
@@ -119,13 +120,14 @@ ohos_shared_library("device_core_plugin") {
       "./src/disallow_core_dump_plugin.cpp",
       ]
     }
-    
+
     if (os_account_edm_enable) {
       external_deps += [
         "graphic_2d:librender_service_base",
         "graphic_2d:librender_service_client",
         "os_account:libaccountkits",
         "os_account:os_account_innerkits",
+        "window_manager:libdm"
       ]
       sources += [
         "./src/add_os_account_plugin.cpp",
@@ -194,7 +196,7 @@ ohos_shared_library("device_core_plugin") {
       external_deps += [ "screenlock_mgr:screenlock_client" ]
       sources += [ "./src/lock_screen_plugin.cpp" ]
     }
-    
+
     if (screenlock_mgr_edm_enable && !enterprise_device_management_feature_pc_only) {
       sources += [ "./src/disable_screen_lock_plugin.cpp" ]
     }
@@ -340,6 +342,7 @@ ohos_shared_library("communication_plugin") {
       defines += [ "NET_MANAGER_BASE_EDM_ENABLE" ]
       external_deps += [
         "netmanager_base:net_conn_manager_if",
+        "netmanager_base:net_conn_parcel",
         "netmanager_base:net_policy_manager_if",
         "netmanager_base:net_stats_manager_if",
         "netmanager_base:netsys_controller",
@@ -521,22 +524,16 @@ ohos_shared_library("sys_service_plugin") {
       sources += [ "./src/reset_factory_plugin.cpp" ]
     }
 
-    if (!enterprise_device_management_feature_pc_only && ability_runtime_edm_enable) {
+    if (ability_runtime_edm_enable) {
       external_deps += [
         "ability_runtime:ability_manager",
         "resource_schedule_service:ressched_client"
-      ]
-      sources += [ "./src/manage_freeze_exempted_apps_plugin.cpp" ]
-    }
-
-    if (ability_runtime_edm_enable) {
-      external_deps += [
-        "ability_runtime:ability_manager"
       ]
       sources += [
         "./src/allowed_running_bundles_plugin.cpp",
         "./src/disallowed_running_bundles_plugin.cpp",
         "./src/manage_auto_start_apps_plugin.cpp",
+        "./src/manage_freeze_exempted_apps_plugin.cpp",
         "./src/manage_keep_alive_apps_plugin.cpp",
         "./src/utils/bms_utils.cpp",
         "./src/utils/manage_keep_alive_apps_info.cpp",

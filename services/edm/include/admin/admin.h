@@ -55,6 +55,8 @@ public:
     virtual bool HasPermissionToCallServiceCode(uint32_t interfaceCode) const;
     virtual bool HasPermissionToHandlePolicy(const std::string &policyName, FuncOperateType operateType) const;
     virtual std::string GetDisableSelfPermission() const;
+    virtual bool HasPermissionSubscribeManagedEvents(const std::vector<uint32_t> &events) const;
+    virtual bool ShouldNotifyPolicyChanged() const;
     AdminInfo adminInfo_;
 };
 } // namespace EDM

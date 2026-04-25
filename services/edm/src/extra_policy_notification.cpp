@@ -82,5 +82,48 @@ ErrCode ExtraPolicyNotification::UnloadPlugin(uint32_t code)
     EDMLOGI("ExtraPolicyNotification::UnloadCollectLogPlugin");
     return PluginManager::GetInstance()->SetPluginUnloadFlag(code, true);
 }
+
+bool ExtraPolicyNotification::NotifyPolicyChanged(const std::string &interfaceName, const std::string &parameters)
+{
+    EDMLOGI("ExtraPolicyNotification::NotifyPolicyChanged policy: %{public}s", interfaceName.c_str());
+    int32_t userId = edmOsAccountManagerImpl_->GetCurrentUserId();
+    if (userId < 0) {
+        EDMLOGE("ExtraPolicyNotification::NotifyPolicyChanged get current userId failed.");
+        return false;
+    }
+    std::vector<std::shared_ptr<Admin>> admins;
+    AdminManager::GetInstance()->GetAdmins(admins, userId);
+    if (admins.empty()) {
+        EDMLOGD("ExtraPolicyNotification::NotifyPolicyChanged no subscribers");
+        return true;
+    }
+    std::string callingBundleName;
+    if (edmBundleManagerImpl_->GetNameForUid(IPCSkeleton::GetCallingUid(), callingBundleName) != ERR_OK) {
+        EDMLOGW("CheckCallingUid failed: get calling bundleName fail.");
+        return false;
+    }
+    auto now = std::chrono::system_clock::now();
+    auto timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+    PolicyChangedEvent changedEvent(interfaceName, callingBundleName, parameters, timestamp);
+    for (const auto &admin : admins) {
+        if (admin != nullptr && admin->ShouldNotifyPolicyChanged()) {
+            NotifySubscriber(admin->adminInfo_.packageName_, admin->adminInfo_.className_, changedEvent, userId);
+        }
+    }
+    return true;
+}
+
+void ExtraPolicyNotification::NotifySubscriber(const std::string &bundleName, const std::string &abilityName,
+    const PolicyChangedEvent &changedEvent, int32_t userId)
+{
+    EDMLOGI("ExtraPolicyNotification::NotifySubscriber admin: %{public}s", bundleName.c_str());
+    AAFwk::Want want;
+    want.SetElementName(bundleName, abilityName);
+    auto manager = DelayedSingleton<EnterpriseConnManager>::GetInstance();
+    bool ret = manager->CreatePolicyChangedConnection(want, changedEvent, userId);
+    if (!ret) {
+        EDMLOGE("ExtraPolicyNotification::NotifySubscriber CreatePolicyChangedConnection failed.");
+    }
+}
 } // namespace EDM
 } // namespace OHOS

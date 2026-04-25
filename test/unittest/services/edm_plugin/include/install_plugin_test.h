@@ -17,7 +17,6 @@
 #define EDM_UNIT_TEST_INSTALL_PLUGIN_TEST_H
 
 #include <gtest/gtest.h>
-#include "install_plugin.h"
 
 namespace OHOS {
 namespace EDM {

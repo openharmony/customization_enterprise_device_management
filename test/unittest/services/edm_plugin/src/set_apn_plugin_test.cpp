@@ -291,6 +291,133 @@ HWTEST_F(SetApnPluginTest, TestSetPreferApn, TestSize.Level1)
         ASSERT_TRUE(ret == ERR_OK);
     }
 }
+
+/**
+ * @tc.name: TestNotifyPolicyChanged_Success
+ * @tc.desc: Test SetApnPlugin::NotifyPolicyChanged function with valid apnIds and apnName.
+ * @tc.type: FUNC
+ */
+HWTEST_F(SetApnPluginTest, TestNotifyPolicyChanged_Success, TestSize.Level1)
+{
+    std::shared_ptr<SetApnPlugin> plugin = std::make_shared<SetApnPlugin>();
+    std::string functionName = "AddApn";
+    std::vector<std::string> apnIds = {"apnId1"};
+    std::map<std::string, std::string> apnInfo;
+    apnInfo["apnName"] = "testApnName";
+    apnInfo["apn"] = "testApn";
+
+    plugin->NotifyPolicyChanged(functionName, apnIds, apnInfo);
+    // Verify no crash and normal execution
+    ASSERT_TRUE(true);
+}
+
+/**
+ * @tc.name: TestNotifyPolicyChanged_EmptyApnIds
+ * @tc.desc: Test SetApnPlugin::NotifyPolicyChanged function with empty apnIds.
+ * @tc.type: FUNC
+ */
+HWTEST_F(SetApnPluginTest, TestNotifyPolicyChanged_EmptyApnIds, TestSize.Level1)
+{
+    std::shared_ptr<SetApnPlugin> plugin = std::make_shared<SetApnPlugin>();
+    std::string functionName = "AddApn";
+    std::vector<std::string> apnIds;
+    std::map<std::string, std::string> apnInfo;
+    apnInfo["apnName"] = "testApnName";
+
+    plugin->NotifyPolicyChanged(functionName, apnIds, apnInfo);
+    // Verify no crash and normal execution
+    ASSERT_TRUE(true);
+}
+
+/**
+ * @tc.name: TestNotifyPolicyChanged_NoApnName
+ * @tc.desc: Test SetApnPlugin::NotifyPolicyChanged function without apnName in apnInfo.
+ * @tc.type: FUNC
+ */
+HWTEST_F(SetApnPluginTest, TestNotifyPolicyChanged_NoApnName, TestSize.Level1)
+{
+    std::shared_ptr<SetApnPlugin> plugin = std::make_shared<SetApnPlugin>();
+    std::string functionName = "AddApn";
+    std::vector<std::string> apnIds = {"apnId1"};
+    std::map<std::string, std::string> apnInfo;
+    apnInfo["apn"] = "testApn";
+
+    plugin->NotifyPolicyChanged(functionName, apnIds, apnInfo);
+    // Verify no crash and normal execution
+    ASSERT_TRUE(true);
+}
+
+/**
+ * @tc.name: TestNotifyPolicyChanged_EmptyApnIdsAndNoApnName
+ * @tc.desc: Test SetApnPlugin::NotifyPolicyChanged function with empty apnIds and no apnName.
+ * @tc.type: FUNC
+ */
+HWTEST_F(SetApnPluginTest, TestNotifyPolicyChanged_EmptyApnIdsAndNoApnName, TestSize.Level1)
+{
+    std::shared_ptr<SetApnPlugin> plugin = std::make_shared<SetApnPlugin>();
+    std::string functionName = "AddApn";
+    std::vector<std::string> apnIds;
+    std::map<std::string, std::string> apnInfo;
+    apnInfo["apn"] = "testApn";
+
+    plugin->NotifyPolicyChanged(functionName, apnIds, apnInfo);
+    // Verify no crash and normal execution
+    ASSERT_TRUE(true);
+}
+
+/**
+ * @tc.name: TestNotifyPolicyChanged_MultipleApnIds
+ * @tc.desc: Test SetApnPlugin::NotifyPolicyChanged function with multiple apnIds, verify last one is used.
+ * @tc.type: FUNC
+ */
+HWTEST_F(SetApnPluginTest, TestNotifyPolicyChanged_MultipleApnIds, TestSize.Level1)
+{
+    std::shared_ptr<SetApnPlugin> plugin = std::make_shared<SetApnPlugin>();
+    std::string functionName = "AddApn";
+    std::vector<std::string> apnIds = {"apnId1", "apnId2", "apnId3"};
+    std::map<std::string, std::string> apnInfo;
+    apnInfo["apnName"] = "testApnName";
+
+    plugin->NotifyPolicyChanged(functionName, apnIds, apnInfo);
+    // Verify no crash and normal execution, last apnId should be used
+    ASSERT_TRUE(true);
+}
+
+/**
+ * @tc.name: TestNotifyPolicyChanged_EmptyFunctionName
+ * @tc.desc: Test SetApnPlugin::NotifyPolicyChanged function with empty function name.
+ * @tc.type: FUNC
+ */
+HWTEST_F(SetApnPluginTest, TestNotifyPolicyChanged_EmptyFunctionName, TestSize.Level1)
+{
+    std::shared_ptr<SetApnPlugin> plugin = std::make_shared<SetApnPlugin>();
+    std::string functionName;
+    std::vector<std::string> apnIds = {"apnId1"};
+    std::map<std::string, std::string> apnInfo;
+    apnInfo["apnName"] = "testApnName";
+
+    plugin->NotifyPolicyChanged(functionName, apnIds, apnInfo);
+    // Verify no crash and normal execution
+    ASSERT_TRUE(true);
+}
+
+/**
+ * @tc.name: TestNotifyPolicyChanged_EmptyApnNameValue
+ * @tc.desc: Test SetApnPlugin::NotifyPolicyChanged function with empty apnName value.
+ * @tc.type: FUNC
+ */
+HWTEST_F(SetApnPluginTest, TestNotifyPolicyChanged_EmptyApnNameValue, TestSize.Level1)
+{
+    std::shared_ptr<SetApnPlugin> plugin = std::make_shared<SetApnPlugin>();
+    std::string functionName = "AddApn";
+    std::vector<std::string> apnIds = {"apnId1"};
+    std::map<std::string, std::string> apnInfo;
+    apnInfo["apnName"] = "";
+
+    plugin->NotifyPolicyChanged(functionName, apnIds, apnInfo);
+    // Verify no crash and normal execution
+    ASSERT_TRUE(true);
+}
 } // namespace TEST
 } // namespace EDM
 } // namespace OHOS

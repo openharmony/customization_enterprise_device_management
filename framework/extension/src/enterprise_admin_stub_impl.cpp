@@ -217,5 +217,15 @@ void EnterpriseAdminStubImpl::OnDeviceBootCompleted()
         EDMLOGD("EnterpriseAdminStubImpl %{public}s end successfully.", __func__);
     }
 }
+
+void EnterpriseAdminStubImpl::OnAdminPolicyChanged(const PolicyChangedEvent &policyChangedEvent)
+{
+    EDMLOGI("EnterpriseAdminStubImpl %{public}s begin.", __func__);
+    auto extension = extension_.lock();
+    if (extension != nullptr) {
+        extension->OnAdminPolicyChanged(policyChangedEvent);
+        EDMLOGD("EnterpriseAdminStubImpl %{public}s end successfully.", __func__);
+    }
+}
 } // namespace EDM
 } // namespace OHOS
