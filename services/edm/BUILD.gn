@@ -143,6 +143,7 @@ ohos_shared_library("edmservice") {
       "./src/query_policy/disallow_usb_serial_query.cpp",
       "./src/query_policy/disallow_uinput_query.cpp",
       "./src/query_policy/disallow_virtual_service_query.cpp",
+      "./src/query_policy/disallowed_device_sudo_query.cpp",
       "./src/query_policy/disallowed_install_bundles_query.cpp",
       "./src/query_policy/disallowed_tethering_query.cpp",
       "./src/query_policy/disallowed_uninstall_bundles_query.cpp",

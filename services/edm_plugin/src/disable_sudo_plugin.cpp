@@ -44,6 +44,9 @@ ErrCode DisableSudoPlugin::OnSetPolicy(bool &data, bool &currentData, bool &merg
 {
     EDMLOGI("DisableSudoPlugin::OnSetPolicy, data: %{public}d, currentData: %{public}d, "
             "mergeData: %{public}d", data, currentData, mergeData);
+    if (HasConflictPolicy() != ERR_OK) {
+        return EdmReturnErrCode::CONFIGURATION_CONFLICT_FAILED;
+    }
     if (mergeData) {
         currentData = data;
         return ERR_OK;
@@ -88,6 +91,15 @@ ErrCode DisableSudoPlugin::SetSudoPolicy(bool policy, int32_t userId)
         EdmConstants::DEFAULT_USER_ID, true);
     EDMLOGI("DisableSudoPlugin::SetSudoPolicy, SetSpecificOsAccountConstraints ret: %{public}d", ret);
     return ret;
+}
+
+ErrCode DisableSudoPlugin::HasConflictPolicy()
+{
+    auto policyManager = IPolicyManager::GetInstance();
+    std::string policyValue;
+    policyManager->GetPolicy("", PolicyName::POLICY_DISALLOWED_DEVICE_SUDO, policyValue,
+        EdmConstants::DEFAULT_USER_ID);
+    return policyValue == TRUE_VALUE ? EdmReturnErrCode::CONFIGURATION_CONFLICT_FAILED : ERR_OK;
 }
 } // namespace EDM
 } // namespace OHOS
