@@ -44,6 +44,7 @@ ohos_unittest("EdmPluginTest") {
   sources = [
     "../../common/mock/src/edm_data_ability_utils_mock.cpp",
     "./src/allowed_app_distribution_types_plugin_test.cpp",
+    "../src/allowed_collaboration_service_bundles_plugin_test.cpp",
     "./src/bundle_install_plugin_test.cpp",
     "./src/device_info_plugin_test.cpp",
     "./src/disable_app_clone_plugin_test.cpp",
@@ -484,6 +485,7 @@ ohos_static_library("edm_all_plugin_static") {
     "../../../../services/edm/src/strategy/replace_execute_strategy.cpp",
     "../../../../services/edm/src/strategy/single_execute_strategy.cpp",
     "../../../../services/edm_plugin/src/allowed_app_distribution_types_plugin.cpp",
+    "../../../../services/edm_plugin/src/allowed_collaboration_service_bundles_plugin.cpp",
     "../../../../services/edm_plugin/src/allowed_install_bundles_plugin.cpp",
     "../../../../services/edm_plugin/src/bundle_install_plugin.cpp",
     "../../../../services/edm_plugin/src/disable_app_clone_plugin.cpp",
