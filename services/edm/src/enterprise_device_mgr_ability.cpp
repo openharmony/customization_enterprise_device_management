@@ -61,8 +61,8 @@
 #include "notification_manager.h"
 #include "plugin_policy_reader.h"
 #include "policy_type.h"
-#include "update_policy_utils.h"
 #include "startup_scene.h"
+#include "update_policy_utils.h"
 
 #ifdef NET_MANAGER_BASE_EDM_ENABLE
 #include "map_string_serializer.h"
@@ -299,7 +299,7 @@ void EnterpriseDeviceMgrAbility::OnCommonEventOobeFinish(const EventFwk::CommonE
     bool isFirstBoot = data.GetWant().GetBoolParam("firstBoot", false);
     bool isSubUserScene = data.GetWant().GetBoolParam("subUserScene", false);
 
-    int32_t type = 0;
+    uint32_t type = 0;
     if (isSubUserScene) {
         type |= 1 << static_cast<uint32_t>(StartupScene::USER_SETUP);
     }

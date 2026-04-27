@@ -19,12 +19,12 @@
 #include "clear_up_application_data_param.h"
 #include "enterprise_device_mgr_proxy.h"
 #include "application_instance.h"
+#include "napi_edm_element_name.h"
 
 #ifdef FEATURE_PC_ONLY
 #include "dock_info.h"
 #endif
 #include "bundle_stats_info.h"
-#include "napi_edm_element_name.h"
 #include "net_stats_utils.h"
 #include "window_state_info.h"
 

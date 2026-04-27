@@ -317,9 +317,9 @@ namespace EdmPermission {
     const char* const PERMISSION_ENTERPRISE_SET_WALLPAPER = "ohos.permission.ENTERPRISE_SET_WALLPAPER";
     // api 23
     const char* const PERMISSION_ENTERPRISE_MANAGE_DEVICE_ADMIN = "ohos.permission.ENTERPRISE_MANAGE_DEVICE_ADMIN";
-    const char* const PERMISSION_MANAGE_EDM_POLICY = "ohos.permission.MANAGE_EDM_POLICY";
     const char* const PERMISSION_ENTERPRISE_START_ABILITIES = "ohos.permission.ENTERPRISE_START_ABILITIES";
     const char* const PERMISSION_ENTERPRISE_READ_LOG = "ohos.permission.ENTERPRISE_READ_LOG";
+    const char* const PERMISSION_MANAGE_EDM_POLICY = "ohos.permission.MANAGE_EDM_POLICY";
     const char* const PERMISSION_ENTERPRISE_DEACTIVATE_DEVICE_ADMIN =
         "ohos.permission.ENTERPRISE_DEACTIVATE_DEVICE_ADMIN";
     // api 26.0.0
@@ -442,19 +442,20 @@ namespace PolicyName {
     const char* const POLICY_MANAGE_FREEZE_EXEMPTED_APPS = "manage_freeze_exempted_apps";
     const char* const POLICY_DISABLED_HDC_REMOTE = "disabled_hdc_remote";
     const char* const POLICY_MANAGE_USER_NON_STOP_APPS = "manage_user_non_stop_apps";
+    const char* const POLICY_SET_EYE_COMFORT_MODE = "set_eye_comfort_mode";
     const char* const POLICY_SET_DEFAULT_INPUT_METHOD = "set_default_input_method";
+    const char* const POLICY_SET_KEY_CODE = "set_key_code";
     const char* const POLICY_INSTALL_ENTERPRISE_RE_SIGNATURE_CERTIFICATE =
         "install_enterprise_re_signature_certificate";
-    const char* const POLICY_SET_KEY_CODE = "set_key_code";
     const char* const POLICY_DISALLOW_USB_SERIAL = "disallow_usb_serial";
     const char* const POLICY_DISALLOW_UINPUT = "disallow_uinput";
     const char* const POLICY_DISABLED_ACTIVATION_LOCK = "disable_activation_lock";
     const char* const POLICY_ACTIVE_SIM = "active_sim";
     const char* const POLICY_DEACTIVE_SIM = "deactive_sim";
     const char* const POLICY_HIDDEN_SETTINGS_MENU = "hidden_settings_menu";
-    const char* const POLICY_SET_DEFAULT_DATA_SIM = "set_default_data_sim";
     const char* const POLICY_INSTALL_LOCAL_ENTERPRISE_APP_ENABLED_FOR_ACCOUNT =
         "install_local_enterprise_app_enabled_for_account";
+    const char* const POLICY_SET_DEFAULT_DATA_SIM = "set_default_data_sim";
     const char* const POLICY_SET_SWITCH_STATUS = "set_switch_status";
     const char* const POLICY_BUNDLE_STORAGE_STATS = "bundle_storage_stats";
     const char* const POLICY_GET_APPLICATION_WINDOW_STATES = "get_application_window_states";
@@ -469,17 +470,16 @@ namespace PolicyName {
     const char* const POLICY_ALLOW_ALL = "allow_all";
     const char* const POLICY_DISABLED_PRINT = "disabled_print";
     const char* const POLICY_DISABLE_RUNNING_BINARY_APP = "disable_running_binary_app";
-    const char* const POLICY_SET_EYE_COMFORT_MODE = "set_eye_comfort_mode";
     const char* const POLICY_SET_NETWORK_INTERFACE_CONFIG = "set_network_interface_config";
     const char* const POLICY_DISALLOW_MODIFY_WALLPAPER = "disallow_modify_wallpaper";
     const char* const POLICY_SET_ABILITY_ENABLED = "set_ability_enabled";
     const char* const POLICY_SET_FLOATING_NAVIGATION = "set_floating_navigation";
-    const char* const POLICY_ADD_DOCK_APP = "dock_info";
     const char* const POLICY_DISALLOWED_P2P = "disallowed_p2p";
-    const char* const POLICY_DISALLOWED_MULTI_WINDOW = "disallowed_multi_window";
     const char* const POLICY_QUERY_TRAFFIC_STATS = "query_traffic_stats";
+    const char* const POLICY_ADD_DOCK_APP = "dock_info";
     const char* const POLICY_DISABLED_SUPERHUB = "disabled_superhub";
     const char* const POLICY_QUERY_BUNDLE_STATS_INFOS = "query_bundle_stats_infos";
+    const char* const POLICY_DISALLOWED_MULTI_WINDOW = "disallowed_multi_window";
     const char* const POLICY_HIDE_LAUNCHER_ICON = "hide_launcher_icon";
     const char* const POLICY_DISALLOWED_DEVICE_SUDO = "disallowed_device_sudo";
 } // namespace PolicyName

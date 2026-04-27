@@ -155,7 +155,7 @@ ErrCode ManageUserNonStopAppsPlugin::HasConflictPolicy(std::vector<ApplicationIn
     if (superhubBundleName.empty()) {
         EDMLOGW("ManageUserNonStopAppsPlugin superhubBundleName is empty, some conflict will be shadowed");
     }
-    
+
     std::vector<int32_t> ids;
     ErrCode accountRet = std::make_shared<EdmOsAccountManagerImpl>()->QueryActiveOsAccountIds(ids);
     if (FAILED(accountRet) || ids.empty()) {
