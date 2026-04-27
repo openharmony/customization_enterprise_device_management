@@ -210,6 +210,9 @@ public:
     int InvokeSendRequestSizeError(uint32_t code, MessageParcel &data, MessageParcel &reply,
         MessageOption &option);
 
+    int InvokeNetStatsInfoSendRequestGetPolicy(uint32_t code, MessageParcel &data, MessageParcel &reply,
+        MessageOption &option);
+
     int InvokeSendRequestGetBundleStorageStats(uint32_t code, MessageParcel &data, MessageParcel &reply,
         MessageOption &option);
 
@@ -217,9 +220,6 @@ public:
         MessageOption &option);
 
     int InvokeSendRequestGetBundleStorageStatsEmpty(uint32_t code, MessageParcel &data, MessageParcel &reply,
-        MessageOption &option);
-
-    int InvokeNetStatsInfoSendRequestGetPolicy(uint32_t code, MessageParcel &data, MessageParcel &reply,
         MessageOption &option);
 
     int InvokeNetStatsInfoSendRequestOverMaxSize(uint32_t code, MessageParcel &data, MessageParcel &reply,

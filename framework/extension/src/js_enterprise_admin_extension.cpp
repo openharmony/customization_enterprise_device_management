@@ -614,9 +614,14 @@ napi_value JsEnterpriseAdminExtension::CreateKeyEventInfoObject(napi_env env, co
     return nKeyEventInfo;
 }
 
-void JsEnterpriseAdminExtension::OnStartupGuideCompleted(int32_t type)
+void JsEnterpriseAdminExtension::OnStartupGuideCompleted(int32_t iType)
 {
     EDMLOGI("JsEnterpriseAdminExtension::OnStartupGuideCompleted");
+    if (iType < 0) {
+        EDMLOGE("JsEnterpriseAdminExtension::OnStartupGuideCompleted iType is unexpect");
+        return;
+    }
+    uint32_t type = static_cast<uint32_t>(iType);
     if (type & (1 << static_cast<uint32_t>(StartupScene::USER_SETUP))) {
         auto task = [type, this]() {
             auto env = jsRuntime_.GetNapiEnv();

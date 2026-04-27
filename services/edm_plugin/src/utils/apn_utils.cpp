@@ -149,7 +149,7 @@ int32_t ApnUtils::ApnUpdate(const std::map<std::string, std::string> &apnInfo, c
     if (apnUtilsPassword.password != nullptr) {
         values.Put("auth_pwd", std::string(apnUtilsPassword.password));
     }
-    
+
     std::string mccmnc;
     if (apnInfo.find(PdpProfileData::MCC) != apnInfo.end() && apnInfo.find(PdpProfileData::MNC) != apnInfo.end()) {
         mccmnc = apnInfo.at(PdpProfileData::MCC) + apnInfo.at(PdpProfileData::MNC);

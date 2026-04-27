@@ -17,6 +17,7 @@
 
 #include "cJSON.h"
 #include "cjson_check.h"
+#include <string_ex.h>
 #include <unordered_set>
 
 namespace OHOS {
@@ -58,7 +59,10 @@ void BluetoothProtocolPolicySerializer::ProcessProtocolEntry(cJSON* entry,
     std::map<int32_t, std::vector<std::string>>& denyList)
 {
     const char* protocolIdStr = entry->string;
-    int32_t protocolId = std::stoi(protocolIdStr);
+    int32_t protocolId = -1;
+    if (!OHOS::StrToInt(protocolIdStr, protocolId)) {
+        return;
+    }
     
     if (!cJSON_IsArray(entry)) {
         return;

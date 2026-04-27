@@ -77,7 +77,8 @@ std::vector<uint32_t> PluginManager::deviceCoreSoCodes_ = {
     EdmInterfaceCode::SET_DEVICE_NAME, EdmInterfaceCode::SET_FLOATING_NAVIGATION,
     EdmInterfaceCode::INSTALL_LOCAL_ENTERPRISE_APP_ENABLED_FOR_ACCOUNT, EdmInterfaceCode::DISALLOWED_MULTI_WINDOW,
     EdmInterfaceCode::DISALLOW_CORE_DUMP, EdmInterfaceCode::SCREEN_WATERMARK_IMAGE,
-    EdmInterfaceCode::GET_APPLICATION_WINDOW_STATES, EdmInterfaceCode::DISALLOWED_DEVICE_SUDO,
+    EdmInterfaceCode::GET_APPLICATION_WINDOW_STATES,
+    EdmInterfaceCode::DISALLOWED_DEVICE_SUDO,
 };
 
 std::vector<uint32_t> PluginManager::communicationSoCodes_ = {
@@ -124,8 +125,8 @@ std::vector<uint32_t> PluginManager::needExtraSoCodes_ = {
     EdmInterfaceCode::SET_OTA_UPDATE_POLICY, EdmInterfaceCode::NOTIFY_UPGRADE_PACKAGES,
     EdmInterfaceCode::GET_EXT_INFO, EdmInterfaceCode::SET_WALL_PAPER,
     EdmInterfaceCode::INSTALL_MARKET_APPS, EdmInterfaceCode::SET_KEY_CODE_POLICYS,
-    EdmInterfaceCode::DISABLED_ACTIVATION_LOCK, EdmInterfaceCode::ADD_DOCK_APP,
-    EdmInterfaceCode::HIDDEN_SETTINGS_MENU, EdmInterfaceCode::SET_SWITCH_STATUS,
+    EdmInterfaceCode::DISABLED_ACTIVATION_LOCK, EdmInterfaceCode::SET_SWITCH_STATUS,
+    EdmInterfaceCode::HIDDEN_SETTINGS_MENU, EdmInterfaceCode::ADD_DOCK_APP,
     EdmInterfaceCode::ENABLE_SELF_DEVICE_ADMIN
 };
 
