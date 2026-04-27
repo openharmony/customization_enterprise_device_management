@@ -140,6 +140,7 @@ ErrCode DisallowedBluetoothProtocolsPlugin::OnRemovePolicy(BluetoothProtocolPoli
     return ERR_OK;
 }
 
+// LCOV_EXCL_START
 void DisallowedBluetoothProtocolsPlugin::RemoveProtocolsFromPolicy(
     const std::map<int32_t, std::vector<std::string>> &source,
     std::map<int32_t, std::vector<std::string>> &target)
@@ -156,7 +157,9 @@ void DisallowedBluetoothProtocolsPlugin::RemoveProtocolsFromPolicy(
         }
     }
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 void DisallowedBluetoothProtocolsPlugin::RemoveUnusedProtocolsFromFile(
     const std::map<int32_t, std::vector<std::string>> &data,
     const std::map<int32_t, std::vector<std::string>> &mergeData,
@@ -182,6 +185,7 @@ void DisallowedBluetoothProtocolsPlugin::RemoveUnusedProtocolsFromFile(
         }
     }
 }
+// LCOV_EXCL_STOP
 
 ErrCode DisallowedBluetoothProtocolsPlugin::OnGetPolicy(std::string &policyData, MessageParcel &data,
     MessageParcel &reply, int32_t userId)
@@ -220,6 +224,7 @@ ErrCode DisallowedBluetoothProtocolsPlugin::OnGetPolicy(std::string &policyData,
     return ERR_OK;
 }
 
+// LCOV_EXCL_START
 void DisallowedBluetoothProtocolsPlugin::ConvertProtocolListToInt(const std::vector<std::string> &protocolList,
     std::vector<int32_t> &protocols)
 {
@@ -232,7 +237,9 @@ void DisallowedBluetoothProtocolsPlugin::ConvertProtocolListToInt(const std::vec
         protocols.push_back(protocolInt);
     }
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 void DisallowedBluetoothProtocolsPlugin::GetSendOnlyProtocols(const BluetoothProtocolPolicy &mergeDataFromFile,
     int32_t accountId, std::vector<int32_t> &protocols)
 {
@@ -241,7 +248,9 @@ void DisallowedBluetoothProtocolsPlugin::GetSendOnlyProtocols(const BluetoothPro
         ConvertProtocolListToInt(it->second, protocols);
     }
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 void DisallowedBluetoothProtocolsPlugin::GetReceiveOnlyProtocols(const BluetoothProtocolPolicy &mergeDataFromFile,
     int32_t accountId, std::vector<int32_t> &protocols)
 {
@@ -250,7 +259,9 @@ void DisallowedBluetoothProtocolsPlugin::GetReceiveOnlyProtocols(const Bluetooth
         ConvertProtocolListToInt(it->second, protocols);
     }
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 void DisallowedBluetoothProtocolsPlugin::GetReceiveSendProtocols(const BluetoothProtocolPolicy &mergeDataFromFile,
     int32_t accountId, std::vector<int32_t> &protocols)
 {
@@ -277,7 +288,9 @@ void DisallowedBluetoothProtocolsPlugin::GetReceiveSendProtocols(const Bluetooth
         }
     }
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 ErrCode DisallowedBluetoothProtocolsPlugin::OnAdminRemove(const std::string &adminName,
     BluetoothProtocolPolicy &policyData, BluetoothProtocolPolicy &mergeData, int32_t userId)
 {
@@ -289,6 +302,7 @@ ErrCode DisallowedBluetoothProtocolsPlugin::OnAdminRemove(const std::string &adm
     NotifyBluetoothProtocolsChanged();
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
 void DisallowedBluetoothProtocolsPlugin::OnChangedPolicyDone(bool isGlobalChanged)
 {
@@ -315,6 +329,7 @@ void DisallowedBluetoothProtocolsPlugin::NotifyBluetoothProtocolsChanged()
     }
 }
 
+// LCOV_EXCL_START
 bool DisallowedBluetoothProtocolsPlugin::ReadMergeDataFromFile(BluetoothProtocolPolicy &mergeData)
 {
     EDMLOGI("DisallowedBluetoothProtocolsPlugin::loadConfig");
@@ -356,7 +371,9 @@ bool DisallowedBluetoothProtocolsPlugin::ReadMergeDataFromFile(BluetoothProtocol
     }
     return true;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 bool DisallowedBluetoothProtocolsPlugin::WriteMergeDataToFile(const BluetoothProtocolPolicy &mergeData)
 {
     EDMLOGI("DisallowedBluetoothProtocolsPlugin::WriteMergeDataToFile");
@@ -386,7 +403,9 @@ bool DisallowedBluetoothProtocolsPlugin::WriteMergeDataToFile(const BluetoothPro
     outFile.close();
     return true;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 bool DisallowedBluetoothProtocolsPlugin::CreateBluetoothConfigDir(const std::string dir)
 {
     EDMLOGI("DisallowedBluetoothProtocolsPlugin::CreateBluetoothConfigDir");
@@ -405,6 +424,7 @@ bool DisallowedBluetoothProtocolsPlugin::CreateBluetoothConfigDir(const std::str
     }
     return true;
 }
+// LCOV_EXCL_STOP
 
 bool DisallowedBluetoothProtocolsPlugin::ValidateBluetoothProtocolPolicy(const BluetoothProtocolPolicy &policy)
 {

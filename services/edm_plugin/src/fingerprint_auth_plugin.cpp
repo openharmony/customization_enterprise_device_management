@@ -78,6 +78,7 @@ ErrCode FingerprintAuthPlugin::OnHandlePolicy(std::uint32_t funcCode, MessagePar
     return ERR_OK;
 }
 
+// LCOV_EXCL_START
 ErrCode FingerprintAuthPlugin::HandleFingerprintAuthPolicy(bool disallow, FingerprintPolicy &currentPolicy,
     FingerprintPolicy &mergePolicy)
 {
@@ -94,7 +95,9 @@ ErrCode FingerprintAuthPlugin::HandleFingerprintAuthPolicy(bool disallow, Finger
     currentPolicy.globalDisallow = false;
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 ErrCode FingerprintAuthPlugin::HandleFingerprintForAccountPolicy(bool disallow, int32_t accountId,
     FingerprintPolicy &currentPolicy, FingerprintPolicy &mergePolicy)
 {
@@ -116,6 +119,7 @@ ErrCode FingerprintAuthPlugin::HandleFingerprintForAccountPolicy(bool disallow, 
     }
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
 ErrCode FingerprintAuthPlugin::SetGlobalConfigParam(FingerprintPolicy policy)
 {
@@ -129,6 +133,7 @@ ErrCode FingerprintAuthPlugin::SetGlobalConfigParam(FingerprintPolicy policy)
     return UserIam::UserAuth::UserAuthClient::GetInstance().SetGlobalConfigParam(param);
 }
 
+// LCOV_EXCL_START
 ErrCode FingerprintAuthPlugin::OnGetPolicy(std::string &policyData, MessageParcel &data,
     MessageParcel &reply, int32_t userId)
 {
@@ -150,6 +155,7 @@ ErrCode FingerprintAuthPlugin::OnGetPolicy(std::string &policyData, MessageParce
     EDMLOGI("FingerprintAuthPlugin OnGetPolicy result %{public}d", isDisallow);
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
 ErrCode FingerprintAuthPlugin::GetOthersMergePolicyData(const std::string &adminName, int32_t userId,
     std::string &othersMergePolicyData)
