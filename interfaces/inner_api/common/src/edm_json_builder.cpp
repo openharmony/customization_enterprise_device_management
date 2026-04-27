@@ -35,6 +35,14 @@ EdmJsonBuilder& EdmJsonBuilder::Add(const std::string& key, const std::string& v
     return *this;
 }
 
+EdmJsonBuilder& EdmJsonBuilder::Add(const std::string& key, const char* value)
+{
+    if (root_ != nullptr && value != nullptr) {
+        cJSON_AddStringToObject(root_, key.c_str(), value);
+    }
+    return *this;
+}
+
 EdmJsonBuilder& EdmJsonBuilder::Add(const std::string& key, int32_t value)
 {
     if (root_ != nullptr) {
@@ -55,6 +63,14 @@ EdmJsonBuilder& EdmJsonBuilder::Add(const std::string& key, int64_t value)
 {
     if (root_ != nullptr) {
         cJSON_AddNumberToObject(root_, key.c_str(), static_cast<double>(value));
+    }
+    return *this;
+}
+
+EdmJsonBuilder& EdmJsonBuilder::Add(const std::string& key, bool value)
+{
+    if (root_ != nullptr) {
+        cJSON_AddBoolToObject(root_, key.c_str(), value);
     }
     return *this;
 }
