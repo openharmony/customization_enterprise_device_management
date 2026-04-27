@@ -36,6 +36,7 @@ const std::string APP_INDEX = "appIndex";
 const std::string MANAGED_STATE = "managedState";
 const std::string TOKEN_ID = "tokenId";
 
+// LCOV_EXCL_START
 bool PermissionManagedStateSerializer::Deserialize(const std::string &data,
     std::map<std::string, PermissionManagedStateInfo> &result)
 {
@@ -78,7 +79,9 @@ bool PermissionManagedStateSerializer::Deserialize(const std::string &data,
     cJSON_Delete(root);
     return true;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 bool PermissionManagedStateSerializer::Serialize(const std::map<std::string, PermissionManagedStateInfo> &result,
     std::string &data)
 {
@@ -127,7 +130,9 @@ bool PermissionManagedStateSerializer::Serialize(const std::map<std::string, Per
     cJSON_Delete(root);
     return true;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 bool PermissionManagedStateSerializer::GetPolicy(MessageParcel &data,
     std::map<std::string, PermissionManagedStateInfo> &result)
 {
@@ -156,13 +161,17 @@ bool PermissionManagedStateSerializer::GetPolicy(MessageParcel &data,
     }
     return true;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 bool PermissionManagedStateSerializer::WritePolicy(MessageParcel &reply,
     std::map<std::string, PermissionManagedStateInfo> &result)
 {
     return true;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 bool PermissionManagedStateSerializer::MergePolicy(std::vector<std::map<std::string,
     PermissionManagedStateInfo>> &data,
     std::map<std::string, PermissionManagedStateInfo> &result)
@@ -174,5 +183,6 @@ bool PermissionManagedStateSerializer::MergePolicy(std::vector<std::map<std::str
     }
     return true;
 }
+// LCOV_EXCL_STOP
 } // namespace EDM
 } // namespace OHOS

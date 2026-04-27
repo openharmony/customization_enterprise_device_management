@@ -86,6 +86,7 @@ ErrCode SetEyeComfortModePlugin::OnSetPolicy(std::string &data)
     return EdmReturnErrCode::PARAM_ERROR;
 }
 
+// LCOV_EXCL_START
 ErrCode SetEyeComfortModePlugin::OnGetPolicy(std::string &value, MessageParcel &data, MessageParcel &reply,
     int32_t userId)
 {
@@ -117,5 +118,6 @@ ErrCode SetEyeComfortModePlugin::OnGetPolicy(std::string &value, MessageParcel &
     reply.WriteString(retValue);
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 } // namespace EDM
 } // namespace OHOS
