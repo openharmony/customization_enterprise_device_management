@@ -24,10 +24,12 @@ class DisallowDistributedTransmissionPlugin : public PluginSingleton<DisallowDis
 public:
     void InitPlugin(std::shared_ptr<IPluginTemplate<DisallowDistributedTransmissionPlugin, bool>> ptr) override;
     ErrCode OnSetPolicy(bool &data, bool &currentData, bool &mergePolicy, int32_t userId);
+    void OnChangedPolicyDone(bool isGlobalChanged);
     ErrCode OnAdminRemove(const std::string &adminName, bool &data, bool &mergeData, int32_t userId);
 
 private:
     ErrCode SetDistributedTransmissionPolicy(bool policy, int32_t userId);
+    ErrCode ClearAllowedCollaborationServiceBundlesIfNeed(int32_t userId);
     bool HasConflictPolicy(int32_t userId);
 };
 } // namespace EDM
