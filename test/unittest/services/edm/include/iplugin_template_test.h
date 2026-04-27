@@ -28,8 +28,12 @@
 #include "iplugin.h"
 #include "cjson_serializer.h"
 #include "map_string_serializer.h"
+#define private public
+#define protected public
 #include "plugin_manager.h"
 #include "plugin_singleton.h"
+#undef protected
+#undef private
 #include "string_serializer.h"
 
 namespace OHOS {
@@ -489,6 +493,7 @@ class PluginTemplateTest : public testing::Test {
 protected:
     void SetUp() override;
     void TearDown() override;
+    static void SetUpTestSuite();
 
 private:
     std::shared_ptr<IPolicyManager> policyManager_;
