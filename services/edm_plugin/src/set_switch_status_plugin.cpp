@@ -94,7 +94,7 @@ ErrCode SetSwitchStatusPlugin::OnSetPolicy(SwitchParam &param, MessageParcel &re
     return ret;
 }
 
-
+// LCOV_EXCL_START
 ErrCode SetSwitchStatusPlugin::OnSetNFCStatus(SwitchStatus status)
 {
 #ifdef NFC_EDM_ENABLE
@@ -129,7 +129,9 @@ ErrCode SetSwitchStatusPlugin::OnSetNFCStatus(SwitchStatus status)
     return EdmReturnErrCode::INTERFACE_UNSUPPORTED;
 #endif
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 ErrCode SetSwitchStatusPlugin::OnSetBluetoothStatus(SwitchStatus status)
 {
     if (system::GetBoolParameter(MDM_BLUETOOTH_PROP, false)) {
@@ -153,7 +155,9 @@ ErrCode SetSwitchStatusPlugin::OnSetBluetoothStatus(SwitchStatus status)
     }
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 ErrCode SetSwitchStatusPlugin::OnSetWifiStatus(SwitchStatus status)
 {
     if (system::GetBoolParameter(MDM_WIFI_PROP, false)) {
@@ -182,7 +186,9 @@ ErrCode SetSwitchStatusPlugin::OnSetWifiStatus(SwitchStatus status)
     }
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 ErrCode SetSwitchStatusPlugin::ForceEnableBluetooth()
 {
     Security::AccessToken::AccessTokenID tokenId = IPCSkeleton::GetCallingTokenID();
@@ -213,5 +219,6 @@ ErrCode SetSwitchStatusPlugin::ForceEnableBluetooth()
     }
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 } // namespace EDM
 } // namespace OHOS
