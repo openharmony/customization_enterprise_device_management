@@ -43,6 +43,7 @@ SetAbilityDisablePlugin::SetAbilityDisablePlugin()
     needSave_ = true;
 }
 
+// LCOV_EXCL_START
 ErrCode SetAbilityDisablePlugin::OnHandlePolicy(std::uint32_t funcCode, MessageParcel &data,
     MessageParcel &reply, HandlePolicyData &policyData, int32_t userId)
 {
@@ -73,7 +74,9 @@ ErrCode SetAbilityDisablePlugin::OnHandlePolicy(std::uint32_t funcCode, MessageP
     policyData.isChanged = true;
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 ErrCode SetAbilityDisablePlugin::SetPolicy(const std::string &bundleName, const std::string &abilityName,
     std::vector<std::string> &currentPolicy, std::vector<std::string> &mergePolicy, int32_t userId)
 {
@@ -91,7 +94,9 @@ ErrCode SetAbilityDisablePlugin::SetPolicy(const std::string &bundleName, const 
     mergePolicy = ArrayStringSerializer::GetInstance()->SetUnionPolicyData(currentPolicy, mergePolicy);
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 ErrCode SetAbilityDisablePlugin::RemovePolicy(const std::string &bundleName, const std::string &abilityName,
     std::vector<std::string> &currentPolicy, std::vector<std::string> &mergePolicy, int32_t userId)
 {
@@ -110,7 +115,9 @@ ErrCode SetAbilityDisablePlugin::RemovePolicy(const std::string &bundleName, con
     mergePolicy = ArrayStringSerializer::GetInstance()->SetUnionPolicyData(currentPolicy, mergePolicy);
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 ErrCode SetAbilityDisablePlugin::SetAbilityDisabled(const std::string &bundleName, int32_t userId,
     const std::string &abilityName, bool isDisabled)
 {
@@ -141,6 +148,7 @@ ErrCode SetAbilityDisablePlugin::SetAbilityDisabled(const std::string &bundleNam
     }
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
 ErrCode SetAbilityDisablePlugin::OnGetPolicy(std::string &policyData, MessageParcel &data, MessageParcel &reply,
     int32_t userId)

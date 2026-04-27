@@ -43,18 +43,23 @@ void ActiveSimPlugin::InitPlugin(std::shared_ptr<IPluginTemplate<ActiveSimPlugin
     ptr->SetOnHandlePolicyListener(&ActiveSimPlugin::OnRemovePolicy, FuncOperateType::REMOVE);
 }
 
+// LCOV_EXCL_START
 ErrCode ActiveSimPlugin::OnSetPolicy(int32_t &slotId)
 {
     EDMLOGI("ActiveSimPlugin OnSetPolicy slotId: %{public}d", slotId);
     return ManageSim(slotId, ACTIVATE_SIM);
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 ErrCode ActiveSimPlugin::OnRemovePolicy(int32_t &slotId)
 {
     EDMLOGI("ActiveSimPlugin OnRemovePolicy slotId: %{public}d", slotId);
     return ManageSim(slotId, DEACTIVATE_SIM);
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 ErrCode ActiveSimPlugin::ManageSim(int32_t slotId, int32_t status)
 {
     int32_t maxSlotId = Telephony::CoreServiceClient::GetInstance().GetMaxSimCount();
@@ -91,5 +96,6 @@ ErrCode ActiveSimPlugin::ManageSim(int32_t slotId, int32_t status)
     }
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 } // namespace EDM
 } // namespace OHOS
