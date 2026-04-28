@@ -21,6 +21,7 @@
 #include "edm_errors.h"
 #include "edm_ipc_interface_code.h"
 #include "edm_log.h"
+#include "edm_os_account_manager_impl.h"
 #include "iplugin_manager.h"
 #include "ipolicy_manager.h"
 #include "os_account_manager.h"
@@ -64,6 +65,9 @@ ErrCode DisallowDistributedTransmissionPlugin::OnSetPolicy(
         EDMLOGE("DisallowDistributedTransmissionPlugin::OnSetPolicy Failed, ret: %{public}d", ret);
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;
     }
+    if (!data) {
+        ClearAllowedCollaborationServiceBundles(userId);
+    }
     currentData = data;
     mergeData = data;
     return ERR_OK;
@@ -96,6 +100,31 @@ ErrCode DisallowDistributedTransmissionPlugin::SetDistributedTransmissionPolicy(
         constraints, policy, userId, EdmConstants::DEFAULT_USER_ID, true);
     EDMLOGI("DisallowDistributedTransmissionPlugin SetSpecificOsAccountConstraints ret: %{public}d", ret);
     return ret;
+}
+
+
+ErrCode DisallowDistributedTransmissionPlugin::ClearAllowedCollaborationServiceBundles(int32_t userId)
+{
+    EDMLOGI("DisallowDistributedTransmissionPlugin::ClearAllowedDistributeAbilityConnPolicy");
+    auto policyManager = IPolicyManager::GetInstance();
+    std::unordered_map<std::string, std::string> adminListMap;
+    ErrCode ret = policyManager->GetAdminByPolicyName(
+        PolicyName::POLICY_ALLOWED_COLLABORATION_SERVICE_BUNDLES, adminListMap, userId);
+    if (ret != ERR_OK || adminListMap.empty()) {
+        EDMLOGI("DisallowDistributedTransmissionPlugin No allowed list policy to clear");
+        return ERR_OK;
+    }
+    for (const auto &admin : adminListMap) {
+        EDMLOGI("DisallowDistributedTransmissionPlugin clear allowed list for: %{public}d, %{public}s",
+            userId, admin.first.c_str());
+        ErrCode retSet = policyManager->SetPolicy(admin.first,
+            PolicyName::POLICY_ALLOWED_COLLABORATION_SERVICE_BUNDLES, "", "", userId);
+        if (retSet != ERR_OK) {
+            EDMLOGW("DisallowDistributedTransmissionPlugin clear allowed list failed: %{public}d  %{public}s",
+                ret, admin.first.c_str());
+        }
+    }
+    return ERR_OK;
 }
 
 bool DisallowDistributedTransmissionPlugin::HasConflictPolicy(int32_t userId)

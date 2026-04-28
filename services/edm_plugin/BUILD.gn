@@ -74,6 +74,7 @@ ohos_shared_library("device_core_plugin") {
     defines += [ "EDM_SUPPORT_ALL_ENABLE" ]
     sources += [
       "./src/allowed_app_distribution_types_plugin.cpp",
+      "./src/allowed_collaboration_service_bundles_plugin.cpp",
       "./src/allowed_install_bundles_plugin.cpp",
       "./src/bundle_install_plugin.cpp",
       "./src/disable_camera_plugin.cpp",

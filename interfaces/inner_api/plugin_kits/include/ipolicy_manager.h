@@ -38,6 +38,13 @@ public:
     {
         return ERR_OK;
     }
+    
+    virtual ErrCode SetPolicy(const std::string &adminName, const std::string &policyName,
+        const std::string &adminPolicyValue, const std::string &mergedPolicyValue,
+        int32_t userId = EdmConstants::DEFAULT_USER_ID)
+    {
+        return ERR_OK;
+    }
 
     virtual void GetPolicyUserIds(std::vector<int32_t> &userIds) {}
 
