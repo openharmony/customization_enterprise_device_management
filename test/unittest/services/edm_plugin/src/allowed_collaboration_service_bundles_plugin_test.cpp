@@ -176,7 +176,8 @@ HWTEST_F(AllowedCollaborationServiceBundlesPluginTest, OnBasicSetPolicy_EmptyLis
  * @tc.desc: Test OnBasicSetPolicy function with normal policy data.
  * @tc.type: FUNC
  */
-HWTEST_F(AllowedCollaborationServiceBundlesPluginTest, OnBasicSetPolicy_NormalList_Without_Prerequisites, TestSize.Level1)
+HWTEST_F(AllowedCollaborationServiceBundlesPluginTest, OnBasicSetPolicy_NormalList_Without_Prerequisites,
+    TestSize.Level1)
 {
     AllowedCollaborationServiceBundlesPlugin plugin;
     plugin.maxListSize_ = EdmConstants::APPID_MAX_SIZE;

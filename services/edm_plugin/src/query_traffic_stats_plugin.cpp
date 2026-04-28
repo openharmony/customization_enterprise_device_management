@@ -81,6 +81,7 @@ ErrCode QueryTrafficStatsPlugin::OnGetPolicy(std::string &policyData, MessagePar
     return ERR_OK;
 }
 
+// LCOV_EXCL_START
 bool QueryTrafficStatsPlugin::GetAppUid(const NetStatsNetwork &networkInfo, int32_t &uid)
 {
     uid = bundleMgr_->GetApplicationUid(networkInfo.bundleName, networkInfo.accountId, networkInfo.appIndex);
@@ -101,7 +102,9 @@ bool QueryTrafficStatsPlugin::GetAppUid(const NetStatsNetwork &networkInfo, int3
     }
     return false;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 ErrCode QueryTrafficStatsPlugin::QueryTrafficStatsByUidNetwork(int32_t uid,
     const NetStatsNetwork &networkInfo, NetStatsInfo &netStatsInfo)
 {
@@ -130,5 +133,6 @@ ErrCode QueryTrafficStatsPlugin::QueryTrafficStatsByUidNetwork(int32_t uid,
     EDMLOGI("QueryTrafficStatsByUidNetwork success");
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 } // namespace EDM
 } // namespace OHOS

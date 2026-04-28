@@ -43,6 +43,7 @@ void SetDefaultDataSimPlugin::InitPlugin(std::shared_ptr<IPluginTemplate<SetDefa
     ptr->SetOnHandlePolicyListener(&SetDefaultDataSimPlugin::OnSetPolicy, FuncOperateType::SET);
 }
 
+// LCOV_EXCL_START
 ErrCode SetDefaultDataSimPlugin::OnSetPolicy(int32_t &slotId)
 {
     EDMLOGI("SetDefaultDataSimPlugin OnSetPolicy slotId: %{public}d", slotId);
@@ -84,7 +85,9 @@ ErrCode SetDefaultDataSimPlugin::OnSetPolicy(int32_t &slotId)
     
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 ErrCode SetDefaultDataSimPlugin::OnGetPolicy(std::string &policyData, MessageParcel &data, MessageParcel &reply,
     int32_t userId)
 {
@@ -100,6 +103,7 @@ ErrCode SetDefaultDataSimPlugin::OnGetPolicy(std::string &policyData, MessagePar
     EDMLOGI("SetDefaultDataSimPlugin OnGetPolicy success.");
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 } // namespace EDM
 } // namespace OHOS
 

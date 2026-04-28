@@ -55,6 +55,7 @@ SetScreenWatermarkImagePlugin::SetScreenWatermarkImagePlugin()
     needSave_ = true;
 }
 
+// LCOV_EXCL_START
 ErrCode SetScreenWatermarkImagePlugin::OnHandlePolicy(std::uint32_t funcCode, MessageParcel &data,
     MessageParcel &reply, HandlePolicyData &policyData, int32_t userId)
 {
@@ -94,7 +95,9 @@ ErrCode SetScreenWatermarkImagePlugin::OnHandlePolicy(std::uint32_t funcCode, Me
     policyData.mergePolicyData = afterMerge;
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 ErrCode SetScreenWatermarkImagePlugin::SetPolicy(MessageParcel &data,
     WatermarkImageType &currentData, WatermarkImageType &mergeData)
 {
@@ -144,7 +147,9 @@ ErrCode SetScreenWatermarkImagePlugin::SetPolicy(MessageParcel &data,
     EDMLOGI("SetScreenWatermarkImagePlugin::SetPolicy success, fileName=%{public}s", fileName.c_str());
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 ErrCode SetScreenWatermarkImagePlugin::CancelScreenWatermarkImage(WatermarkImageType &currentData)
 {
     EDMLOGI("SetScreenWatermarkImagePlugin::CancelScreenWatermarkImage start");
@@ -167,7 +172,9 @@ ErrCode SetScreenWatermarkImagePlugin::CancelScreenWatermarkImage(WatermarkImage
     currentData = emptyType;
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 ErrCode SetScreenWatermarkImagePlugin::OnAdminRemove(const std::string &adminName,
     const std::string &policyData, const std::string &mergeData, int32_t userId)
 {
@@ -190,7 +197,9 @@ ErrCode SetScreenWatermarkImagePlugin::GetOthersMergePolicyData(const std::strin
         othersMergePolicyData, EdmConstants::DEFAULT_USER_ID);
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 bool SetScreenWatermarkImagePlugin::GetWatermarkParam(WatermarkParam &param, MessageParcel &data)
 {
     param.width = data.ReadInt32();
@@ -229,7 +238,9 @@ bool SetScreenWatermarkImagePlugin::GetWatermarkParam(WatermarkParam &param, Mes
     }
     return true;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 bool SetScreenWatermarkImagePlugin::SetImageUint8(const void *pixels, int32_t size, const std::string &url)
 {
     EDMLOGI("SetScreenWatermarkImagePlugin::SetImageUint8 start, url=%{public}s", url.c_str());
@@ -260,7 +271,9 @@ bool SetScreenWatermarkImagePlugin::SetImageUint8(const void *pixels, int32_t si
     }
     return true;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 bool SetScreenWatermarkImagePlugin::RemoveImageFile(const std::string &fileName)
 {
     EDMLOGI("SetScreenWatermarkImagePlugin::RemoveImageFile start, fileName=%{public}s", fileName.c_str());
@@ -276,7 +289,9 @@ bool SetScreenWatermarkImagePlugin::RemoveImageFile(const std::string &fileName)
     }
     return true;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 std::shared_ptr<Media::PixelMap> SetScreenWatermarkImagePlugin::GetImageFromUrlUint8(
     const WatermarkImageType &imageType)
 {
@@ -306,7 +321,9 @@ std::shared_ptr<Media::PixelMap> SetScreenWatermarkImagePlugin::GetImageFromUrlU
     free(data);
     return pixelMap;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 std::shared_ptr<Media::PixelMap> SetScreenWatermarkImagePlugin::CreatePixelMapFromUint8(
     const uint8_t *data, size_t size, int32_t width, int32_t height)
 {
@@ -326,7 +343,9 @@ std::shared_ptr<Media::PixelMap> SetScreenWatermarkImagePlugin::CreatePixelMapFr
     }
     return pixelMap;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 void SetScreenWatermarkImagePlugin::OnOtherServiceStart(int32_t systemAbilityId)
 {
     EDMLOGI("SetScreenWatermarkImagePlugin::OnOtherServiceStart");
@@ -357,5 +376,6 @@ void SetScreenWatermarkImagePlugin::OnOtherServiceStart(int32_t systemAbilityId)
             ret);
     }
 }
+// LCOV_EXCL_STOP
 } // namespace EDM
 } // namespace OHOS

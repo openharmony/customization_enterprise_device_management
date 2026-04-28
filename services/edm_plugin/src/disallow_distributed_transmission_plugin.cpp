@@ -44,7 +44,6 @@ void DisallowDistributedTransmissionPlugin::InitPlugin(
         true);
     ptr->SetSerializer(BoolSerializer::GetInstance());
     ptr->SetOnHandlePolicyListener(&DisallowDistributedTransmissionPlugin::OnSetPolicy, FuncOperateType::SET);
-    ptr->SetOnHandlePolicyDoneListener(&DisallowDistributedTransmissionPlugin::OnChangedPolicyDone, FuncOperateType::SET);
     ptr->SetOnAdminRemoveListener(&DisallowDistributedTransmissionPlugin::OnAdminRemove);
 }
 
@@ -66,25 +65,12 @@ ErrCode DisallowDistributedTransmissionPlugin::OnSetPolicy(
         EDMLOGE("DisallowDistributedTransmissionPlugin::OnSetPolicy Failed, ret: %{public}d", ret);
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;
     }
+    if (!data) {
+        ClearAllowedCollaborationServiceBundles(userId);
+    }
     currentData = data;
     mergeData = data;
     return ERR_OK;
-}
-
-void DisallowDistributedTransmissionPlugin::OnChangedPolicyDone(bool isGlobalChanged)
-{
-    if (!isGlobalChanged) {
-        return;
-    }
-    std::vector<int32_t> ids;
-    ErrCode ret = std::make_shared<EdmOsAccountManagerImpl>()->QueryActiveOsAccountIds(ids);
-    if (FAILED(ret) || ids.empty()) {
-        EDMLOGE("DisallowDistributedTransmissionPlugin QueryActiveOsAccountIds failed");
-        return;
-    }
-    for (int32_t accountId : ids) {
-        ClearAllowedCollaborationServiceBundlesIfNeed(accountId);
-    }
 }
 
 ErrCode DisallowDistributedTransmissionPlugin::OnAdminRemove(
@@ -117,17 +103,10 @@ ErrCode DisallowDistributedTransmissionPlugin::SetDistributedTransmissionPolicy(
 }
 
 
-ErrCode DisallowDistributedTransmissionPlugin::ClearAllowedCollaborationServiceBundlesIfNeed(int32_t userId)
+ErrCode DisallowDistributedTransmissionPlugin::ClearAllowedCollaborationServiceBundles(int32_t userId)
 {
     EDMLOGI("DisallowDistributedTransmissionPlugin::ClearAllowedDistributeAbilityConnPolicy");
     auto policyManager = IPolicyManager::GetInstance();
-    std::string policyValue;
-    policyManager->GetPolicy("", PolicyName::POLICY_DISALLOWED_DISTRIBUTED_TRANSMISSION, policyValue, userId);
-    if (policyValue == "true") {
-        EDMLOGI("DisallowDistributedTransmissionPlugin policy data is true. No need to clear allowed list.");
-        return ERR_OK;
-    }
-
     std::unordered_map<std::string, std::string> adminListMap;
     ErrCode ret = policyManager->GetAdminByPolicyName(
         PolicyName::POLICY_ALLOWED_COLLABORATION_SERVICE_BUNDLES, adminListMap, userId);

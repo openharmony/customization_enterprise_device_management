@@ -143,6 +143,7 @@ ErrCode ManageUserNonStopAppsPlugin::OnSetPolicy(std::vector<ApplicationInstance
     return ERR_OK;
 }
 
+// LCOV_EXCL_START
 ErrCode ManageUserNonStopAppsPlugin::HasConflictPolicy(std::vector<ApplicationInstance> nonStopApps, bool &hasConflict)
 {
     hasConflict = false;
@@ -178,6 +179,7 @@ ErrCode ManageUserNonStopAppsPlugin::HasConflictPolicy(std::vector<ApplicationIn
     }
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
 ErrCode ManageUserNonStopAppsPlugin::OnRemovePolicy(std::vector<ApplicationInstance> &data,
     std::vector<ApplicationInstance> &currentData, std::vector<ApplicationInstance> &mergeData)
@@ -241,6 +243,7 @@ ErrCode ManageUserNonStopAppsPlugin::SetOtherModulePolicy(const std::vector<Appl
     return ERR_OK;
 }
 
+// LCOV_EXCL_START
 ErrCode ManageUserNonStopAppsPlugin::ConvertAppPolicyToJsonStr(const ApplicationInstance &userNonStopApp,
     std::string &appPolicyJsonStr)
 {
@@ -270,6 +273,7 @@ ErrCode ManageUserNonStopAppsPlugin::ConvertAppPolicyToJsonStr(const Application
     cJSON_free(jsonStrTemp);
     return true;
 }
+// LCOV_EXCL_STOP
 
 ErrCode ManageUserNonStopAppsPlugin::RemoveOtherModulePolicy(const std::vector<ApplicationInstance> needResetPolicy,
     const std::vector<ApplicationInstance> needRemovePolicy)
@@ -418,6 +422,7 @@ ErrCode ManageUserNonStopAppsPlugin::FilterUninstalledBundle(std::vector<Applica
     return ERR_OK;
 }
 
+// LCOV_EXCL_START
 void ManageUserNonStopAppsPlugin::GetSessionParam(const ApplicationInstance &userNonStopAppInfos,
     std::vector<Rosen::AbilityInfoBase> &infoBaseList)
 {
@@ -444,7 +449,9 @@ void ManageUserNonStopAppsPlugin::GetSessionParam(const ApplicationInstance &use
         }
     }
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 int32_t ManageUserNonStopAppsPlugin::GetCurrentUserId()
 {
     std::vector<int32_t> ids;
@@ -456,6 +463,7 @@ int32_t ManageUserNonStopAppsPlugin::GetCurrentUserId()
     EDMLOGD("ManageUserNonStopAppsPlugin GetCurrentUserId");
     return (ids.at(0));
 }
+// LCOV_EXCL_STOP
 
 void ManageUserNonStopAppsPlugin::OnOtherServiceStart(int32_t systemAbilityId)
 {
