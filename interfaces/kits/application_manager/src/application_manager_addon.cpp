@@ -1788,8 +1788,8 @@ napi_value ApplicationManagerAddon::RemoveAllowedDistributeAbilityConnBundles(na
     return AddOrRemoveAllowedDistributeAbilityConnBundles(env, info, false);
 }
 
-napi_value ApplicationManagerAddon::AddOrRemoveAllowedDistributeAbilityConnBundles(napi_env env, napi_callback_info info,
-    bool isAdd)
+napi_value ApplicationManagerAddon::AddOrRemoveAllowedDistributeAbilityConnBundles(napi_env env,
+    napi_callback_info info, bool isAdd)
 {
     EDMLOGI("NAPI_AddOrRemoveAllowedDistributeAbilityConnBundles called");
     AddonMethodSign addonMethodSign;

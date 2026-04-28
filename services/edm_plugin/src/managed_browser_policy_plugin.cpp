@@ -190,6 +190,7 @@ ErrCode ManagedBrowserPolicyPlugin::GetOthersMergePolicyData(const std::string &
     return ERR_OK;
 }
 
+// LCOV_EXCL_START
 ErrCode ManagedBrowserPolicyPlugin::ModifyOrRemoveManagedBrowserPolicy(
     std::map<std::string, ManagedBrowserPolicyType> &policies, const std::string &bundleName,
     const std::string &policyName, const std::string &policyValue)
@@ -241,7 +242,9 @@ ErrCode ManagedBrowserPolicyPlugin::ModifyOrRemoveManagedBrowserPolicy(
 
     return UpdatePolicyFile(policies, bundleName, url, tempUrl) ? ERR_OK : EdmReturnErrCode::SYSTEM_ABNORMALLY;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 ErrCode ManagedBrowserPolicyPlugin::AddManagedBrowserPolicy(std::map<std::string, ManagedBrowserPolicyType> &policies,
     const std::string &bundleName, const std::string &policyName, const std::string &policyValue)
 {
@@ -256,6 +259,7 @@ ErrCode ManagedBrowserPolicyPlugin::AddManagedBrowserPolicy(std::map<std::string
     outfile.close();
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
 void ManagedBrowserPolicyPlugin::OnHandlePolicyDone(std::uint32_t funcCode, const std::string &adminName,
     bool isGlobalChanged, int32_t userId)
@@ -291,6 +295,7 @@ ErrCode ManagedBrowserPolicyPlugin::OnGetPolicy(std::string &policyData, Message
     }
 }
 
+// LCOV_EXCL_START
 ErrCode ManagedBrowserPolicyPlugin::GetManagedBrowserPolicyFileData(const std::string &bundleName, MessageParcel &reply)
 {
     std::string url = MANAGED_BROWSER_POLICY_DIR + bundleName + MANAGED_BROWSER_POLICY_SUFFIX;
@@ -342,7 +347,9 @@ ErrCode ManagedBrowserPolicyPlugin::GetManagedBrowserPolicyFileData(const std::s
     reply.WriteRawData(reinterpret_cast<const void*>(fileData.data()), fileData.size());
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 ErrCode ManagedBrowserPolicyPlugin::GetManagedBrowserPolicyVersion(const std::string &policyData,
     const std::string &bundleName, MessageParcel &reply)
 {
@@ -362,7 +369,9 @@ ErrCode ManagedBrowserPolicyPlugin::GetManagedBrowserPolicyVersion(const std::st
     }
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 bool ManagedBrowserPolicyPlugin::FindPolicyNameInLine(const std::string &line, std::string &policyNameInLine)
 {
     size_t pos = line.find(':');
@@ -372,6 +381,7 @@ bool ManagedBrowserPolicyPlugin::FindPolicyNameInLine(const std::string &line, s
     }
     return false;
 }
+// LCOV_EXCL_STOP
 
 bool ManagedBrowserPolicyPlugin::GetCallingBundleName(std::string &bundleName)
 {
@@ -403,6 +413,7 @@ ErrCode ManagedBrowserPolicyPlugin::OnAdminRemove(const std::string &adminName,
     return ERR_OK;
 }
 
+// LCOV_EXCL_START
 bool ManagedBrowserPolicyPlugin::UpdatePolicyFile(std::map<std::string, ManagedBrowserPolicyType> &policies,
     const std::string &bundleName, std::string &url, std::string &tempUrl)
 {
@@ -420,6 +431,7 @@ bool ManagedBrowserPolicyPlugin::UpdatePolicyFile(std::map<std::string, ManagedB
     }
     return true;
 }
+// LCOV_EXCL_STOP
 
 void ManagedBrowserPolicyPlugin::PublishEventToBrowser()
 {

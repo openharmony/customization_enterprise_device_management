@@ -25,7 +25,8 @@ std::string AllowedCollaborationServiceBundlesQuery::GetPolicyName()
     return PolicyName::POLICY_ALLOWED_COLLABORATION_SERVICE_BUNDLES;
 }
 
-std::string AllowedCollaborationServiceBundlesQuery::GetPermission(IPlugin::PermissionType, const std::string &permissionTag)
+std::string AllowedCollaborationServiceBundlesQuery::GetPermission(IPlugin::PermissionType,
+    const std::string &permissionTag)
 {
     return EdmPermission::PERMISSION_ENTERPRISE_MANAGE_APPLICATION;
 }

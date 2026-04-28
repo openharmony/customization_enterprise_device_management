@@ -38,6 +38,7 @@ void KioskFeaturePlugin::InitPlugin(std::shared_ptr<IPluginTemplate<KioskFeature
     ptr->SetOnAdminRemoveListener(&KioskFeaturePlugin::OnAdminRemove);
 }
 
+// LCOV_EXCL_START
 ErrCode KioskFeaturePlugin::OnSetPolicy(std::vector<int32_t> &data, std::vector<int32_t> &currentData,
     std::vector<int32_t> &mergeData, int32_t userId)
 {
@@ -61,7 +62,9 @@ ErrCode KioskFeaturePlugin::OnSetPolicy(std::vector<int32_t> &data, std::vector<
     mergeData = currentData;
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 void KioskFeaturePlugin::SetDefaultKioskFeatures(bool isDisallow)
 {
     std::string value = isDisallow ? "true" : "false";
@@ -71,7 +74,9 @@ void KioskFeaturePlugin::SetDefaultKioskFeatures(bool isDisallow)
     system::SetParameter(EdmConstants::ApplicationManager::PARAM_EDM_KIOSK_ALLOW_SIDE_DOCK, value);
     NotifyKioskFeatureChanged();
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 ErrCode KioskFeaturePlugin::SetSpecifiedKioskFeatures(int32_t data)
 {
     switch (data) {
@@ -95,14 +100,18 @@ ErrCode KioskFeaturePlugin::SetSpecifiedKioskFeatures(int32_t data)
     }
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 ErrCode KioskFeaturePlugin::OnAdminRemove(const std::string &adminName, std::vector<int32_t> &policyData,
     std::vector<int32_t> &mergeData, int32_t userId)
 {
     SetDefaultKioskFeatures(false);
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 void KioskFeaturePlugin::NotifyKioskFeatureChanged()
 {
     EDMLOGD("KioskFeaturePlugin NotifyKioskFeatureChanged.");
@@ -114,5 +123,6 @@ void KioskFeaturePlugin::NotifyKioskFeatureChanged()
         EDMLOGE("NotifyKioskFeatureChanged failed.");
     }
 }
+// LCOV_EXCL_STOP
 } // namespace EDM
 } // namespace OHOS

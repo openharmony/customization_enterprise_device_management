@@ -161,6 +161,197 @@ HWTEST_F(DisallowDistributedTransmissionPluginTest, TestDisallowDistributedTrans
 
     IPolicyManager::policyManagerInstance_ = nullptr;
 }
+
+/**
+ * @tc.name: ClearAllowedCollaborationServiceBundles_EmptyPolicyList_Success
+ * @tc.desc: Test ClearAllowedCollaborationServiceBundles when no policy exists.
+ * @tc.type: FUNC
+ */
+HWTEST_F(DisallowDistributedTransmissionPluginTest, ClearAllowedCollaborationServiceBundles_EmptyPolicyList_Success,
+    TestSize.Level1)
+{
+    std::shared_ptr<PolicyManager> policyManager = std::make_shared<PolicyManager>();
+    IPolicyManager::policyManagerInstance_ = policyManager.get();
+
+    DisallowDistributedTransmissionPlugin plugin;
+    ErrCode ret = plugin.ClearAllowedCollaborationServiceBundles(DEFAULT_USER_ID);
+    EXPECT_EQ(ret, ERR_OK);
+
+    IPolicyManager::policyManagerInstance_ = nullptr;
+}
+
+/**
+ * @tc.name: ClearAllowedCollaborationServiceBundles_SingleAdmin_Success
+ * @tc.desc: Test ClearAllowedCollaborationServiceBundles with single admin policy.
+ * @tc.type: FUNC
+ */
+HWTEST_F(DisallowDistributedTransmissionPluginTest, ClearAllowedCollaborationServiceBundles_SingleAdmin_Success,
+    TestSize.Level1)
+{
+    std::shared_ptr<PolicyManager> policyManager = std::make_shared<PolicyManager>();
+    IPolicyManager::policyManagerInstance_ = policyManager.get();
+
+    ErrCode res = policyManager->SetPolicy(TEST_ADMIN_NAME,
+        PolicyName::POLICY_ALLOWED_COLLABORATION_SERVICE_BUNDLES,
+        "[\"com.test.app1\", \"com.test.app2\"]",
+        "[\"com.test.app1\", \"com.test.app2\"]",
+        DEFAULT_USER_ID);
+    ASSERT_EQ(res, ERR_OK);
+
+    std::string policyValue;
+    res = policyManager->GetPolicy(TEST_ADMIN_NAME,
+        PolicyName::POLICY_ALLOWED_COLLABORATION_SERVICE_BUNDLES, policyValue, DEFAULT_USER_ID);
+    ASSERT_EQ(res, ERR_OK);
+    EXPECT_FALSE(policyValue.empty());
+
+    DisallowDistributedTransmissionPlugin plugin;
+    ErrCode ret = plugin.ClearAllowedCollaborationServiceBundles(DEFAULT_USER_ID);
+    EXPECT_EQ(ret, ERR_OK);
+
+    IPolicyManager::policyManagerInstance_ = nullptr;
+}
+
+/**
+ * @tc.name: ClearAllowedCollaborationServiceBundles_MultipleAdmins_Success
+ * @tc.desc: Test ClearAllowedCollaborationServiceBundles with multiple admin policies.
+ * @tc.type: FUNC
+ */
+HWTEST_F(DisallowDistributedTransmissionPluginTest, ClearAllowedCollaborationServiceBundles_MultipleAdmins_Success,
+    TestSize.Level1)
+{
+    std::shared_ptr<PolicyManager> policyManager = std::make_shared<PolicyManager>();
+    IPolicyManager::policyManagerInstance_ = policyManager.get();
+
+    const std::string admin1 = "com.edm.test.demo1";
+    const std::string admin2 = "com.edm.test.demo2";
+    const std::string policyValue1 = "[\"com.test.app1\"]";
+    const std::string policyValue2 = "[\"com.test.app2\"]";
+
+    ErrCode res = policyManager->SetPolicy(admin1,
+        PolicyName::POLICY_ALLOWED_COLLABORATION_SERVICE_BUNDLES, policyValue1, policyValue1, DEFAULT_USER_ID);
+    ASSERT_EQ(res, ERR_OK);
+    res = policyManager->SetPolicy(admin2,
+        PolicyName::POLICY_ALLOWED_COLLABORATION_SERVICE_BUNDLES, policyValue2, policyValue2, DEFAULT_USER_ID);
+    ASSERT_EQ(res, ERR_OK);
+
+    std::unordered_map<std::string, std::string> adminListMap;
+    res = policyManager->GetAdminByPolicyName(PolicyName::POLICY_ALLOWED_COLLABORATION_SERVICE_BUNDLES,
+        adminListMap, DEFAULT_USER_ID);
+    ASSERT_EQ(res, ERR_OK);
+    EXPECT_EQ(adminListMap.size(), 2);
+
+    DisallowDistributedTransmissionPlugin plugin;
+    ErrCode ret = plugin.ClearAllowedCollaborationServiceBundles(DEFAULT_USER_ID);
+    EXPECT_EQ(ret, ERR_OK);
+
+    adminListMap.clear();
+    res = policyManager->GetAdminByPolicyName(PolicyName::POLICY_ALLOWED_COLLABORATION_SERVICE_BUNDLES,
+        adminListMap, DEFAULT_USER_ID);
+    EXPECT_TRUE(adminListMap.empty());
+
+    IPolicyManager::policyManagerInstance_ = nullptr;
+}
+
+/**
+ * @tc.name: ClearAllowedCollaborationServiceBundles_GetAdminFailed_ReturnOK
+ * @tc.desc: Test ClearAllowedCollaborationServiceBundles when GetAdminByPolicyName fails.
+ * @tc.type: FUNC
+ */
+HWTEST_F(DisallowDistributedTransmissionPluginTest, ClearAllowedCollaborationServiceBundles_GetAdminFailed_ReturnOK,
+    TestSize.Level1)
+{
+    DisallowDistributedTransmissionPlugin plugin;
+    ErrCode ret = plugin.ClearAllowedCollaborationServiceBundles(DEFAULT_USER_ID);
+    EXPECT_EQ(ret, ERR_OK);
+}
+
+/**
+ * @tc.name: ClearAllowedCollaborationServiceBundles_AlreadyCleared_Success
+ * @tc.desc: Test ClearAllowedCollaborationServiceBundles when policy already cleared.
+ * @tc.type: FUNC
+ */
+HWTEST_F(DisallowDistributedTransmissionPluginTest, ClearAllowedCollaborationServiceBundles_AlreadyCleared_Success,
+    TestSize.Level1)
+{
+    std::shared_ptr<PolicyManager> policyManager = std::make_shared<PolicyManager>();
+    IPolicyManager::policyManagerInstance_ = policyManager.get();
+
+    ErrCode res = policyManager->SetPolicy(TEST_ADMIN_NAME,
+        PolicyName::POLICY_ALLOWED_COLLABORATION_SERVICE_BUNDLES, "", "", DEFAULT_USER_ID);
+    ASSERT_EQ(res, ERR_OK);
+
+    DisallowDistributedTransmissionPlugin plugin;
+    ErrCode ret = plugin.ClearAllowedCollaborationServiceBundles(DEFAULT_USER_ID);
+    EXPECT_EQ(ret, ERR_OK);
+
+    IPolicyManager::policyManagerInstance_ = nullptr;
+}
+
+/**
+ * @tc.name: OnSetPolicy_ClearAllowedList_Success
+ * @tc.desc: Test OnSetPolicy triggers ClearAllowedCollaborationServiceBundles when data is false.
+ * @tc.type: FUNC
+ */
+HWTEST_F(DisallowDistributedTransmissionPluginTest, OnSetPolicy_ClearAllowedList_Success, TestSize.Level1)
+{
+    std::shared_ptr<PolicyManager> policyManager = std::make_shared<PolicyManager>();
+    IPolicyManager::policyManagerInstance_ = policyManager.get();
+
+    ErrCode res = policyManager->SetPolicy(TEST_ADMIN_NAME,
+        PolicyName::POLICY_ALLOWED_COLLABORATION_SERVICE_BUNDLES,
+        "[\"com.test.app1\"]",
+        "[\"com.test.app1\"]",
+        DEFAULT_USER_ID);
+    ASSERT_EQ(res, ERR_OK);
+
+    DisallowDistributedTransmissionPlugin plugin;
+    bool data = false;
+    bool currentData;
+    bool mergeData = false;
+    ErrCode ret = plugin.OnSetPolicy(data, currentData, mergeData, DEFAULT_USER_ID);
+    EXPECT_EQ(ret, ERR_OK);
+
+    std::string policyValue;
+    res = policyManager->GetPolicy(TEST_ADMIN_NAME,
+        PolicyName::POLICY_ALLOWED_COLLABORATION_SERVICE_BUNDLES, policyValue, DEFAULT_USER_ID);
+    EXPECT_TRUE(policyValue.empty());
+
+    IPolicyManager::policyManagerInstance_ = nullptr;
+}
+
+/**
+ * @tc.name: OnSetPolicy_NoClearWhenTrue_Success
+ * @tc.desc: Test OnSetPolicy does not clear allowed list when data is true.
+ * @tc.type: FUNC
+ */
+HWTEST_F(DisallowDistributedTransmissionPluginTest, OnSetPolicy_NoClearWhenTrue_Success, TestSize.Level1)
+{
+    std::shared_ptr<PolicyManager> policyManager = std::make_shared<PolicyManager>();
+    IPolicyManager::policyManagerInstance_ = policyManager.get();
+
+    const std::string policyValueStr = "[\"com.test.app1\"]";
+    ErrCode res = policyManager->SetPolicy(TEST_ADMIN_NAME,
+        PolicyName::POLICY_ALLOWED_COLLABORATION_SERVICE_BUNDLES,
+        policyValueStr, policyValueStr, DEFAULT_USER_ID);
+    ASSERT_EQ(res, ERR_OK);
+
+    DisallowDistributedTransmissionPlugin plugin;
+    bool data = true;
+    bool currentData;
+    bool mergeData = false;
+    ErrCode ret = plugin.OnSetPolicy(data, currentData, mergeData, DEFAULT_USER_ID);
+    EXPECT_EQ(ret, ERR_OK);
+
+    std::string policyValue;
+    res = policyManager->GetPolicy(TEST_ADMIN_NAME,
+        PolicyName::POLICY_ALLOWED_COLLABORATION_SERVICE_BUNDLES, policyValue, DEFAULT_USER_ID);
+    EXPECT_EQ(policyValue, policyValueStr);
+
+    ErrCode clearRes = policyManager->SetPolicy(TEST_ADMIN_NAME,
+        PolicyName::POLICY_ALLOWED_COLLABORATION_SERVICE_BUNDLES, "", "", DEFAULT_USER_ID);
+    ASSERT_EQ(clearRes, ERR_OK);
+    IPolicyManager::policyManagerInstance_ = nullptr;
+}
 } // namespace TEST
 } // namespace EDM
 } // namespace OHOS
