@@ -159,6 +159,7 @@
 #endif
 
 #include "allowed_app_distribution_types_query.h"
+#include "allowed_collaboration_service_bundles_query.h"
 #include "allowed_install_bundles_query.h"
 #include "allowed_notification_bundles_query.h"
 #include "disable_app_clone_query.h"
@@ -556,6 +557,9 @@ ErrCode PluginPolicyReader::GetPolicyQuerySixth(std::shared_ptr<IPolicyQuery> &o
             return ERR_OK;
         case EdmInterfaceCode::DISALLOWED_DISTRIBUTED_TRANSMISSION_FULL:
             obj = std::make_shared<DisallowDistributedTransmissionFullQuery>();
+            return ERR_OK;
+        case EdmInterfaceCode::ALLOWED_COLLABORATION_SERVICE_BUNDLES:
+            obj = std::make_shared<AllowedCollaborationServiceBundlesQuery>();
             return ERR_OK;
         case EdmInterfaceCode::DISALLOWED_NOTIFICATION:
 #ifdef NOTIFICATION_EDM_ENABLE
