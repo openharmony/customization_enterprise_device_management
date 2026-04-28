@@ -591,6 +591,279 @@ HWTEST_F(EdmJsonBuilderTest, TestAddRawJson_MixedWithAdd_Success, TestSize.Level
     EXPECT_TRUE(result.find("\"metadata\":{\"nested\":\"value\"}") != std::string::npos);
     EXPECT_TRUE(result.find("\"list\":[\"x\",\"y\",\"z\"]") != std::string::npos);
 }
+
+/**
+ * @tc.name: TestAddConstCharPtr_Success
+ * @tc.desc: Test EdmJsonBuilder::Add with const char* value.
+ * @tc.type: FUNC
+ */
+HWTEST_F(EdmJsonBuilderTest, TestAddConstCharPtr_Success, TestSize.Level1)
+{
+    const char* value = "test_value";
+    std::string result = jsonBuilder_->Add("key", value).Build();
+    EXPECT_TRUE(result.find("\"key\":\"test_value\"") != std::string::npos);
+}
+
+/**
+ * @tc.name: TestAddConstCharPtr_EmptyValue_Success
+ * @tc.desc: Test EdmJsonBuilder::Add with empty const char* value.
+ * @tc.type: FUNC
+ */
+HWTEST_F(EdmJsonBuilderTest, TestAddConstCharPtr_EmptyValue_Success, TestSize.Level1)
+{
+    const char* value = "";
+    std::string result = jsonBuilder_->Add("key", value).Build();
+    EXPECT_TRUE(result.find("\"key\":\"\"") != std::string::npos);
+}
+
+/**
+ * @tc.name: TestAddConstCharPtr_Nullptr_Success
+ * @tc.desc: Test EdmJsonBuilder::Add with nullptr const char* value.
+ * @tc.type: FUNC
+ */
+HWTEST_F(EdmJsonBuilderTest, TestAddConstCharPtr_Nullptr_Success, TestSize.Level1)
+{
+    const char* value = nullptr;
+    std::string result = jsonBuilder_->Add("key", value).Build();
+    // nullptr should not add the key to JSON
+    EXPECT_TRUE(result.find("\"key\"") == std::string::npos);
+}
+
+/**
+ * @tc.name: TestAddConstCharPtr_ChainedCalls_Success
+ * @tc.desc: Test EdmJsonBuilder::Add const char* with chained calls.
+ * @tc.type: FUNC
+ */
+HWTEST_F(EdmJsonBuilderTest, TestAddConstCharPtr_ChainedCalls_Success, TestSize.Level1)
+{
+    const char* value1 = "first";
+    const char* value2 = "second";
+    const char* value3 = "third";
+    
+    std::string result = jsonBuilder_->Add("key1", value1)
+        .Add("key2", value2)
+        .Add("key3", value3)
+        .Build();
+    
+    EXPECT_TRUE(result.find("\"key1\":\"first\"") != std::string::npos);
+    EXPECT_TRUE(result.find("\"key2\":\"second\"") != std::string::npos);
+    EXPECT_TRUE(result.find("\"key3\":\"third\"") != std::string::npos);
+}
+
+/**
+ * @tc.name: TestAddConstCharPtr_MixedWithOtherTypes_Success
+ * @tc.desc: Test EdmJsonBuilder::Add const char* mixed with other types.
+ * @tc.type: FUNC
+ */
+HWTEST_F(EdmJsonBuilderTest, TestAddConstCharPtr_MixedWithOtherTypes_Success, TestSize.Level1)
+{
+    const char* charValue = "char_ptr_value";
+    std::string stringValue = "string_value";
+    
+    std::string result = jsonBuilder_->Add("charKey", charValue)
+        .Add("stringKey", stringValue)
+        .Add("intKey", 123)
+        .Build();
+    
+    EXPECT_TRUE(result.find("\"charKey\":\"char_ptr_value\"") != std::string::npos);
+    EXPECT_TRUE(result.find("\"stringKey\":\"string_value\"") != std::string::npos);
+    EXPECT_TRUE(result.find("\"intKey\":123") != std::string::npos);
+}
+
+/**
+ * @tc.name: TestAddConstCharPtr_WithSpecialCharacters_Success
+ * @tc.desc: Test EdmJsonBuilder::Add const char* with special characters.
+ * @tc.type: FUNC
+ */
+HWTEST_F(EdmJsonBuilderTest, TestAddConstCharPtr_WithSpecialCharacters_Success, TestSize.Level1)
+{
+    const char* value = "value with spaces and symbols!@#$%";
+    std::string result = jsonBuilder_->Add("key", value).Build();
+    EXPECT_TRUE(result.find("\"key\":\"value with spaces and symbols!@#$%\"") != std::string::npos);
+}
+
+/**
+ * @tc.name: TestAddConstCharPtr_WithUnicodeCharacters_Success
+ * @tc.desc: Test EdmJsonBuilder::Add const char* with unicode characters.
+ * @tc.type: FUNC
+ */
+HWTEST_F(EdmJsonBuilderTest, TestAddConstCharPtr_WithUnicodeCharacters_Success, TestSize.Level1)
+{
+    const char* value = "中文测试";
+    std::string result = jsonBuilder_->Add("key", value).Build();
+    EXPECT_TRUE(result.find("\"key\":\"中文测试\"") != std::string::npos);
+}
+
+/**
+ * @tc.name: TestAddBool_True_Success
+ * @tc.desc: Test EdmJsonBuilder::Add with true bool value.
+ * @tc.type: FUNC
+ */
+HWTEST_F(EdmJsonBuilderTest, TestAddBool_True_Success, TestSize.Level1)
+{
+    std::string result = jsonBuilder_->Add("enabled", true).Build();
+    EXPECT_TRUE(result.find("\"enabled\":true") != std::string::npos);
+}
+
+/**
+ * @tc.name: TestAddBool_False_Success
+ * @tc.desc: Test EdmJsonBuilder::Add with false bool value.
+ * @tc.type: FUNC
+ */
+HWTEST_F(EdmJsonBuilderTest, TestAddBool_False_Success, TestSize.Level1)
+{
+    std::string result = jsonBuilder_->Add("disabled", false).Build();
+    EXPECT_TRUE(result.find("\"disabled\":false") != std::string::npos);
+}
+
+/**
+ * @tc.name: TestAddBool_ChainedCalls_Success
+ * @tc.desc: Test EdmJsonBuilder::Add bool with chained calls.
+ * @tc.type: FUNC
+ */
+HWTEST_F(EdmJsonBuilderTest, TestAddBool_ChainedCalls_Success, TestSize.Level1)
+{
+    std::string result = jsonBuilder_->Add("flag1", true)
+        .Add("flag2", false)
+        .Add("flag3", true)
+        .Build();
+    
+    EXPECT_TRUE(result.find("\"flag1\":true") != std::string::npos);
+    EXPECT_TRUE(result.find("\"flag2\":false") != std::string::npos);
+    EXPECT_TRUE(result.find("\"flag3\":true") != std::string::npos);
+}
+
+/**
+ * @tc.name: TestAddBool_MixedWithOtherTypes_Success
+ * @tc.desc: Test EdmJsonBuilder::Add bool mixed with other types.
+ * @tc.type: FUNC
+ */
+HWTEST_F(EdmJsonBuilderTest, TestAddBool_MixedWithOtherTypes_Success, TestSize.Level1)
+{
+    std::string result = jsonBuilder_->Add("name", "test")
+        .Add("count", 42)
+        .Add("active", true)
+        .Add("deleted", false)
+        .Build();
+    
+    EXPECT_TRUE(result.find("\"name\":\"test\"") != std::string::npos);
+    EXPECT_TRUE(result.find("\"count\":42") != std::string::npos);
+    EXPECT_TRUE(result.find("\"active\":true") != std::string::npos);
+    EXPECT_TRUE(result.find("\"deleted\":false") != std::string::npos);
+}
+
+/**
+ * @tc.name: TestAddBool_ComplexJson_Success
+ * @tc.desc: Test EdmJsonBuilder::Add bool in complex JSON structure.
+ * @tc.type: FUNC
+ */
+HWTEST_F(EdmJsonBuilderTest, TestAddBool_ComplexJson_Success, TestSize.Level1)
+{
+    std::vector<std::string> list = {"item1", "item2"};
+    std::map<std::string, std::string> map = {{"k1", "v1"}};
+    
+    std::string result = jsonBuilder_->Add("string", "value")
+        .Add("number", 100)
+        .Add("boolTrue", true)
+        .Add("boolFalse", false)
+        .Add("list", list)
+        .Add("map", map)
+        .Build();
+    
+    EXPECT_TRUE(result.find("\"string\":\"value\"") != std::string::npos);
+    EXPECT_TRUE(result.find("\"number\":100") != std::string::npos);
+    EXPECT_TRUE(result.find("\"boolTrue\":true") != std::string::npos);
+    EXPECT_TRUE(result.find("\"boolFalse\":false") != std::string::npos);
+    EXPECT_TRUE(result.find("\"list\":[\"item1\",\"item2\"]") != std::string::npos);
+    EXPECT_TRUE(result.find("\"map\":{") != std::string::npos);
+}
+
+/**
+ * @tc.name: TestAddBool_MultipleTrueValues_Success
+ * @tc.desc: Test EdmJsonBuilder::Add with multiple true bool values.
+ * @tc.type: FUNC
+ */
+HWTEST_F(EdmJsonBuilderTest, TestAddBool_MultipleTrueValues_Success, TestSize.Level1)
+{
+    std::string result = jsonBuilder_->Add("enabled1", true)
+        .Add("enabled2", true)
+        .Add("enabled3", true)
+        .Build();
+    
+    EXPECT_TRUE(result.find("\"enabled1\":true") != std::string::npos);
+    EXPECT_TRUE(result.find("\"enabled2\":true") != std::string::npos);
+    EXPECT_TRUE(result.find("\"enabled3\":true") != std::string::npos);
+}
+
+/**
+ * @tc.name: TestAddBool_MultipleFalseValues_Success
+ * @tc.desc: Test EdmJsonBuilder::Add with multiple false bool values.
+ * @tc.type: FUNC
+ */
+HWTEST_F(EdmJsonBuilderTest, TestAddBool_MultipleFalseValues_Success, TestSize.Level1)
+{
+    std::string result = jsonBuilder_->Add("disabled1", false)
+        .Add("disabled2", false)
+        .Add("disabled3", false)
+        .Build();
+    
+    EXPECT_TRUE(result.find("\"disabled1\":false") != std::string::npos);
+    EXPECT_TRUE(result.find("\"disabled2\":false") != std::string::npos);
+    EXPECT_TRUE(result.find("\"disabled3\":false") != std::string::npos);
+}
+
+/**
+ * @tc.name: TestAddBool_WithConstCharPtr_Success
+ * @tc.desc: Test EdmJsonBuilder::Add bool mixed with const char*.
+ * @tc.type: FUNC
+ */
+HWTEST_F(EdmJsonBuilderTest, TestAddBool_WithConstCharPtr_Success, TestSize.Level1)
+{
+    const char* name = "test_item";
+    
+    std::string result = jsonBuilder_->Add("name", name)
+        .Add("active", true)
+        .Add("visible", false)
+        .Build();
+    
+    EXPECT_TRUE(result.find("\"name\":\"test_item\"") != std::string::npos);
+    EXPECT_TRUE(result.find("\"active\":true") != std::string::npos);
+    EXPECT_TRUE(result.find("\"visible\":false") != std::string::npos);
+}
+
+/**
+ * @tc.name: TestAddBool_AllTypesChained_Success
+ * @tc.desc: Test EdmJsonBuilder::Add all types in chained calls.
+ * @tc.type: FUNC
+ */
+HWTEST_F(EdmJsonBuilderTest, TestAddBool_AllTypesChained_Success, TestSize.Level1)
+{
+    const char* charPtr = "char_value";
+    std::string str = "string_value";
+    std::vector<std::string> list = {"a", "b"};
+    std::map<std::string, std::string> map = {{"mk", "mv"}};
+    
+    std::string result = jsonBuilder_->Add("charPtr", charPtr)
+        .Add("string", str)
+        .Add("int32", 123)
+        .Add("uint32", 456U)
+        .Add("int64", static_cast<int64_t>(789012))
+        .Add("boolTrue", true)
+        .Add("boolFalse", false)
+        .Add("list", list)
+        .Add("map", map)
+        .Build();
+    
+    EXPECT_TRUE(result.find("\"charPtr\":\"char_value\"") != std::string::npos);
+    EXPECT_TRUE(result.find("\"string\":\"string_value\"") != std::string::npos);
+    EXPECT_TRUE(result.find("\"int32\":123") != std::string::npos);
+    EXPECT_TRUE(result.find("\"uint32\":456") != std::string::npos);
+    EXPECT_TRUE(result.find("\"int64\":789012") != std::string::npos);
+    EXPECT_TRUE(result.find("\"boolTrue\":true") != std::string::npos);
+    EXPECT_TRUE(result.find("\"boolFalse\":false") != std::string::npos);
+    EXPECT_TRUE(result.find("\"list\":[\"a\",\"b\"]") != std::string::npos);
+    EXPECT_TRUE(result.find("\"map\":{") != std::string::npos);
+}
 } // namespace TEST
 } // namespace EDM
 } // namespace OHOS
