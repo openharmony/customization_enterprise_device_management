@@ -24,8 +24,6 @@ class GetApplicationWindowStatesPlugin : public PluginSingleton<GetApplicationWi
 public:
     void InitPlugin(std::shared_ptr<IPluginTemplate<GetApplicationWindowStatesPlugin, std::string>> ptr) override;
     ErrCode OnGetPolicy(std::string &policyData, MessageParcel &data, MessageParcel &reply, int32_t userId) override;
-private:
-    int32_t GetCurrentUserId();
 };
 } // namespace EDM
 } // namespace OHOS

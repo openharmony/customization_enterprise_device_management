@@ -1504,17 +1504,17 @@ napi_value ApplicationManagerAddon::GetApplicationWindowStates(napi_env env, nap
     napi_value thisArg = nullptr;
     void *data = nullptr;
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisArg, &data));
-    ASSERT_AND_THROW_PARAM_ERROR(env, argc >= ARGS_SIZE_THREE, "parameter count error");
+    ASSERT_AND_THROW_PARAM_ERROR_AFTER_API24(env, argc >= ARGS_SIZE_THREE, "parameter count error");
     bool hasAdmin = MatchValueType(env, argv[ARR_INDEX_ZERO], napi_object);
-    ASSERT_AND_THROW_PARAM_ERROR(env, hasAdmin, "The first parameter must be want.");
+    ASSERT_AND_THROW_PARAM_ERROR_AFTER_API24(env, hasAdmin, "The first parameter must be want.");
     OHOS::AppExecFwk::ElementName elementName;
-    ASSERT_AND_THROW_PARAM_ERROR(env, ParseElementName(env, elementName, argv[ARR_INDEX_ZERO]),
+    ASSERT_AND_THROW_PARAM_ERROR_AFTER_API24(env, ParseElementName(env, elementName, argv[ARR_INDEX_ZERO]),
         "Parameter elementName error");
     std::string bundleName;
-    ASSERT_AND_THROW_PARAM_ERROR(env, ParseString(env, bundleName, argv[ARR_INDEX_ONE]),
+    ASSERT_AND_THROW_PARAM_ERROR_AFTER_API24(env, ParseString(env, bundleName, argv[ARR_INDEX_ONE]),
         "Parameter bundleName error");
     int32_t appIndex = 0;
-    ASSERT_AND_THROW_PARAM_ERROR(env, ParseInt(env, appIndex, argv[ARR_INDEX_TWO]),
+    ASSERT_AND_THROW_PARAM_ERROR_AFTER_API24(env, ParseInt(env, appIndex, argv[ARR_INDEX_TWO]),
         "Parameter appIndex error");
 
     EDMLOGD("EnableAdmin: elementName.bundlename %{public}s, elementName.abilityname:%{public}s",
