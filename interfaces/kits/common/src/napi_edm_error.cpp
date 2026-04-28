@@ -104,7 +104,10 @@ static const std::unordered_map<int32_t, std::string> errMessageMap = {
     {EdmReturnErrCode::INSTALL_APP_CODE_SIGNATURE_VERIFICATION_FAILURE,
         "Failed to install the HAP due to code signature verification failure."},
     {EdmReturnErrCode::INSTALL_APP_ENTERPRISE_DEVICE_VERIFICATION_FAILURE,
-        "Failed to install the HAP due to enterprise device verification failure."}
+        "Failed to install the HAP due to enterprise device verification failure."},
+    {EdmReturnErrCode::PREREQUISITES_NOT_SATISFIED_FAILED,
+        "Prerequisites for the API call have not been satisfied. For example, distributed outgoing transmission " \
+        "is not disallowed before adding the distributed bidirectional collaboration trustlist."},
 };
 
 napi_value CreateError(napi_env env, ErrCode errorCode, int32_t isAfterApi24)

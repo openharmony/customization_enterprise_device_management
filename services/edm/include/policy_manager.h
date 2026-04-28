@@ -43,7 +43,7 @@ public:
     void Init(std::vector<int32_t> userIds);
 
     ErrCode SetPolicy(const std::string &adminName, const std::string &policyName, const std::string &adminPolicyValue,
-        const std::string &mergedPolicyValue, int32_t userId = EdmConstants::DEFAULT_USER_ID);
+        const std::string &mergedPolicyValue, int32_t userId = EdmConstants::DEFAULT_USER_ID) override;
 
     ErrCode GetAllPolicyByAdmin(const std::string &adminName, PolicyItemsMap &allAdminPolicy,
         int32_t userId = EdmConstants::DEFAULT_USER_ID);

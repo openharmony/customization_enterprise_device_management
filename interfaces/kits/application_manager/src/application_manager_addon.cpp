@@ -30,6 +30,8 @@
 #endif
 #include "override_interface_name.h"
 
+#include "service_type.h"
+
 using namespace OHOS::EDM;
 
 const std::u16string DESCRIPTOR = u"ohos.edm.IEnterpriseDeviceMgr";
@@ -39,6 +41,10 @@ napi_value ApplicationManagerAddon::Init(napi_env env, napi_value exports)
     napi_value nKioskFeature = nullptr;
     NAPI_CALL(env, napi_create_object(env, &nKioskFeature));
     CreateKioskFeatureObject(env, nKioskFeature);
+
+    napi_value nServiceType = nullptr;
+    NAPI_CALL(env, napi_create_object(env, &nServiceType));
+    CreateServiceTypeObject(env, nServiceType);
     
     std::vector<napi_property_descriptor> property = {
         DECLARE_NAPI_FUNCTION("addDisallowedRunningBundles", AddDisallowedRunningBundles),
@@ -75,12 +81,6 @@ napi_value ApplicationManagerAddon::Init(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("addDockApp", AddDockApp),
         DECLARE_NAPI_FUNCTION("removeDockApp", RemoveDockApp),
         DECLARE_NAPI_FUNCTION("getDockApps", GetDockApps),
-        DECLARE_NAPI_FUNCTION("addAllowedNotificationBundles", AddAllowedNotificationBundles),
-        DECLARE_NAPI_FUNCTION("removeAllowedNotificationBundles", RemoveAllowedNotificationBundles),
-        DECLARE_NAPI_FUNCTION("getAllowedNotificationBundles", GetAllowedNotificationBundles),
-        DECLARE_NAPI_FUNCTION("queryTrafficStats", QueryTrafficStats),
-        DECLARE_NAPI_FUNCTION("queryBundleStatsInfos", QueryBundleStatsInfos),
-        DECLARE_NAPI_FUNCTION("getApplicationWindowStates", GetApplicationWindowStates),
     };
     std::vector<napi_property_descriptor> propertyOne = InitOne();
     property.insert(property.end(), propertyOne.begin(), propertyOne.end());
@@ -91,9 +91,18 @@ napi_value ApplicationManagerAddon::Init(napi_env env, napi_value exports)
 std::vector<napi_property_descriptor> ApplicationManagerAddon::InitOne()
 {
     std::vector<napi_property_descriptor> property = {
+        DECLARE_NAPI_FUNCTION("addAllowedNotificationBundles", AddAllowedNotificationBundles),
+        DECLARE_NAPI_FUNCTION("removeAllowedNotificationBundles", RemoveAllowedNotificationBundles),
+        DECLARE_NAPI_FUNCTION("getAllowedNotificationBundles", GetAllowedNotificationBundles),
+        DECLARE_NAPI_FUNCTION("queryTrafficStats", QueryTrafficStats),
+        DECLARE_NAPI_FUNCTION("queryBundleStatsInfos", QueryBundleStatsInfos),
+        DECLARE_NAPI_FUNCTION("getApplicationWindowStates", GetApplicationWindowStates),
         DECLARE_NAPI_FUNCTION("addHideLauncherIcon", AddHideLauncherIcon),
         DECLARE_NAPI_FUNCTION("removeHideLauncherIcon", RemoveHideLauncherIcon),
         DECLARE_NAPI_FUNCTION("getHideLauncherIcon", GetHideLauncherIcon),
+        DECLARE_NAPI_FUNCTION("addAllowedDistributeAbilityConnBundles", AddAllowedDistributeAbilityConnBundles),
+        DECLARE_NAPI_FUNCTION("removeAllowedDistributeAbilityConnBundles", RemoveAllowedDistributeAbilityConnBundles),
+        DECLARE_NAPI_FUNCTION("getAllowedDistributeAbilityConnBundles", GetAllowedDistributeAbilityConnBundles),
     };
     return property;
 }
@@ -1765,6 +1774,82 @@ napi_value ApplicationManagerAddon::GetHideLauncherIcon(napi_env env, napi_callb
     napi_throw(env, CreateError(env, EdmReturnErrCode::INTERFACE_UNSUPPORTED, AFTER_API24_FLAG));
     return nullptr;
 #endif
+}
+
+napi_value ApplicationManagerAddon::AddAllowedDistributeAbilityConnBundles(napi_env env, napi_callback_info info)
+{
+    EDMLOGI("NAPI_AddAllowedDistributeAbilityConnBundles called");
+    return AddOrRemoveAllowedDistributeAbilityConnBundles(env, info, true);
+}
+
+napi_value ApplicationManagerAddon::RemoveAllowedDistributeAbilityConnBundles(napi_env env, napi_callback_info info)
+{
+    EDMLOGI("NAPI_RemoveAllowedDistributeAbilityConnBundles called");
+    return AddOrRemoveAllowedDistributeAbilityConnBundles(env, info, false);
+}
+
+napi_value ApplicationManagerAddon::AddOrRemoveAllowedDistributeAbilityConnBundles(napi_env env,
+    napi_callback_info info, bool isAdd)
+{
+    EDMLOGI("NAPI_AddOrRemoveAllowedDistributeAbilityConnBundles called");
+    AddonMethodSign addonMethodSign;
+    addonMethodSign.name = "AddOrRemoveAllowedDistributeAbilityConnBundles";
+    addonMethodSign.argsType = {EdmAddonCommonType::ELEMENT, EdmAddonCommonType::ARRAY_STRING,
+        EdmAddonCommonType::INT32, EdmAddonCommonType::USERID};
+    addonMethodSign.methodAttribute = MethodAttribute::HANDLE;
+    addonMethodSign.argsConvert = {nullptr, nullptr, nullptr, nullptr};
+    addonMethodSign.apiVersionTag = EdmConstants::PERMISSION_TAG_VERSION_23;
+    AdapterAddonData adapterAddonData{};
+    if (JsObjectToData(env, info, addonMethodSign, &adapterAddonData) == nullptr) {
+        return nullptr;
+    }
+    int32_t retCode = ApplicationManagerProxy::GetApplicationManagerProxy()->
+        AddOrRemoveAllowedDistributeAbilityConnBundles(adapterAddonData.data, isAdd);
+    if (FAILED(retCode)) {
+        napi_throw(env, CreateError(env, retCode));
+        EDMLOGE("NAPI_AddOrRemoveAllowedDistributeAbilityConnBundles failed!");
+    }
+    return nullptr;
+}
+
+napi_value ApplicationManagerAddon::GetAllowedDistributeAbilityConnBundles(napi_env env, napi_callback_info info)
+{
+    EDMLOGI("NAPI_GetAllowedDistributeAbilityConnBundles called");
+    AddonMethodSign addonMethodSign;
+    addonMethodSign.name = "GetAllowedDistributeAbilityConnBundles";
+    addonMethodSign.argsType = {EdmAddonCommonType::ELEMENT_NULL, EdmAddonCommonType::INT32,
+        EdmAddonCommonType::USERID};
+    addonMethodSign.methodAttribute = MethodAttribute::GET;
+    addonMethodSign.argsConvert = {nullptr, nullptr, nullptr};
+    addonMethodSign.apiVersionTag = EdmConstants::PERMISSION_TAG_VERSION_23;
+    AdapterAddonData adapterAddonData{};
+    if (JsObjectToData(env, info, addonMethodSign, &adapterAddonData) == nullptr) {
+        return nullptr;
+    }
+    std::vector<std::string> appIdentifiers;
+    int32_t retCode = ApplicationManagerProxy::GetApplicationManagerProxy()->GetAllowedDistributeAbilityConnBundles(
+        adapterAddonData.data, appIdentifiers);
+    if (FAILED(retCode)) {
+        napi_throw(env, CreateError(env, retCode));
+        EDMLOGE("NAPI_GetAllowedDistributeAbilityConnBundles failed!");
+        return nullptr;
+    }
+    napi_value result = nullptr;
+    NAPI_CALL(env, napi_create_array(env, &result));
+    for (size_t i = 0; i < appIdentifiers.size(); i++) {
+        napi_value appIdentifier = nullptr;
+        NAPI_CALL(env, napi_create_string_utf8(env, appIdentifiers[i].c_str(), NAPI_AUTO_LENGTH, &appIdentifier));
+        NAPI_CALL(env, napi_set_element(env, result, i, appIdentifier));
+    }
+    return result;
+}
+
+void ApplicationManagerAddon::CreateServiceTypeObject(napi_env env, napi_value value)
+{
+    napi_value nCollaborationService;
+    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, static_cast<int32_t>(ServiceType::COLLABORATION_SERVICE),
+        &nCollaborationService));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "COLLABORATION_SERVICE", nCollaborationService));
 }
 
 static napi_module g_applicationManagerModule = {
