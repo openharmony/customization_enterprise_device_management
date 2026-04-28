@@ -24,6 +24,7 @@
 #include "directory_ex.h"
 #include "edm_log.h"
 #include "func_code.h"
+#include "install_error_codes.h"
 #include "message_parcel_utils.h"
 #include "policy_type.h"
 
@@ -35,27 +36,6 @@ const std::u16string DESCRIPTOR = u"ohos.edm.IEnterpriseDeviceMgr";
 const std::string HAP_DIRECTORY = "/data/service/el1/public/edm/stream_install";
 const std::string SEPARATOR = "/";
 const int32_t SET_MARKET_APPS = 0;
-static const std::vector<uint32_t> INSTALL_ERROR_CODES = {
-    EdmReturnErrCode::APPLICATION_INSTALL_FAILED,
-    EdmReturnErrCode::INSTALL_APP_INSUFFICIENT_DISK_SPACE,
-    EdmReturnErrCode::INSTALL_APP_ENTERPRISE_DISALLOWED,
-    EdmReturnErrCode::INSTALL_APP_PARSE_FAILED,
-    EdmReturnErrCode::INSTALL_APP_SIGNATURE_VERIFY_FAILED,
-    EdmReturnErrCode::INSTALL_APP_PATH_INVALID_OR_TOO_LARGE,
-    EdmReturnErrCode::INSTALL_APPS_CONFIGURATION_MISMATCH,
-    EdmReturnErrCode::INSTALL_APP_ISOLATION_MODE_NOT_SUPPORTED,
-    EdmReturnErrCode::INSTALL_APP_VERSION_TOO_EARLY,
-    EdmReturnErrCode::INSTALL_APP_VERSION_CODE_NOT_GREATER,
-    EdmReturnErrCode::INSTALL_APP_DEPENDANT_MODULE_NOT_EXIST,
-    EdmReturnErrCode::INSTALL_APP_USER_ID_NOT_FOUND,
-    EdmReturnErrCode::INSTALL_APP_OVERLAY_CHECK_FAILED,
-    EdmReturnErrCode::INSTALL_APP_MISSING_REQUIRED_PERMISSIONS_FOR_HSP,
-    EdmReturnErrCode::INSTALL_APP_SHARED_LIBRARIES_NOT_ALLOWED,
-    EdmReturnErrCode::INSTALL_APP_URI_INCORRECT,
-    EdmReturnErrCode::INSTALL_APP_PERMISSION_CONFIGURATION_INCORRECT,
-    EdmReturnErrCode::INSTALL_APP_CODE_SIGNATURE_VERIFICATION_FAILURE,
-    EdmReturnErrCode::INSTALL_APP_ENTERPRISE_DEVICE_VERIFICATION_FAILURE
-};
 
 bool BundleManagerProxy::GetData(void *&buffer, size_t size, const void *data)
 {

@@ -20,6 +20,7 @@
 #include "app_distribution_type.h"
 #include "edm_constants.h"
 #include "edm_log.h"
+#include "install_error_codes.h"
 #include "napi_edm_adapter.h"
 #include "napi_edm_common.h"
 #include "os_account_manager.h"
@@ -285,7 +286,8 @@ void BundleManagerAddon::NativeInstallCommon(napi_env env, void *data, bool isIn
         asyncCallbackInfo->installParam, asyncCallbackInfo->innerCodeMsg);
     EDMLOGI("NAPI_NativeInstallCommon Install asyncCallbackInfo->ret : %{public}d", asyncCallbackInfo->ret);
 
-    if (!isInstallForResult && asyncCallbackInfo->ret != ERR_OK) {
+    auto it = std::find(INSTALL_ERROR_CODES.begin(), INSTALL_ERROR_CODES.end(), asyncCallbackInfo->ret);
+    if (!isInstallForResult && it != INSTALL_ERROR_CODES.end()) {
         asyncCallbackInfo->ret = EdmReturnErrCode::APPLICATION_INSTALL_FAILED;
     }
 #endif
