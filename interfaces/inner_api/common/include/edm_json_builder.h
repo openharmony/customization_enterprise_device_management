@@ -32,11 +32,15 @@ public:
 
     EdmJsonBuilder& Add(const std::string& key, const std::string& value);
 
+    EdmJsonBuilder& Add(const std::string& key, const char* value);
+
     EdmJsonBuilder& Add(const std::string& key, int32_t value);
 
     EdmJsonBuilder& Add(const std::string& key, uint32_t value);
 
     EdmJsonBuilder& Add(const std::string& key, int64_t value);
+
+    EdmJsonBuilder& Add(const std::string& key, bool value);
 
     EdmJsonBuilder& Add(const std::string& key, const std::vector<std::string>& list);
 

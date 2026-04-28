@@ -372,6 +372,7 @@ namespace PolicyName {
     const char* const POLICY_DISALLOWED_USB_STORAGE_DEVICE_WRITE = "disallowed_usb_storage_device_write";
     const char* const POLICY_DISALLOWED_DISTRIBUTED_TRANSMISSION = "disallowed_distributed_transmission";
     const char* const POLICY_DISALLOWED_DISTRIBUTED_TRANSMISSION_FULL = "disallowed_distributed_transmission_full";
+    const char* const POLICY_ALLOWED_COLLABORATION_SERVICE_BUNDLES = "allowed_collaboration_service_bundles";
     const char* const POLICY_DOMAIN_FILTER_RULE = "domain_filter_rule";
     const char* const POLICY_FINGERPRINT_AUTH = "fingerprint_auth";
     const char* const POLICY_FIREWALL_RULE = "firewall_rule";

@@ -95,6 +95,10 @@ public:
     int32_t GetHideLauncherIcon(const AppExecFwk::ElementName *admin, int32_t userId,
         std::vector<std::string> &bundleNames);
 #endif
+    int32_t AddOrRemoveAllowedDistributeAbilityConnBundles(MessageParcel &data, bool isAdd);
+    int32_t GetAllowedDistributeAbilityConnBundles(MessageParcel &data, std::vector<std::string> &appIdentifiers);
+    int32_t GetAllowedDistributeAbilityConnBundles(int32_t serviceType, int32_t accountId,
+        std::vector<std::string> &appIdentifiers);
 private:
     static std::shared_ptr<ApplicationManagerProxy> instance_;
     static std::once_flag flag_;

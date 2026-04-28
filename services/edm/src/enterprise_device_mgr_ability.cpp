@@ -235,6 +235,7 @@ std::shared_ptr<EventFwk::CommonEventSubscriber> EnterpriseDeviceMgrAbility::Cre
     return std::make_shared<EnterpriseDeviceEventSubscriber>(info, listener);
 }
 
+// LCOV_EXCL_START
 void EnterpriseDeviceMgrAbility::UpdateMarketAppsState(const EventFwk::CommonEventData &data, int32_t event)
 {
     auto superAdmin = AdminManager::GetInstance()->GetSuperAdmin();
@@ -260,6 +261,7 @@ void EnterpriseDeviceMgrAbility::UpdateMarketAppsState(const EventFwk::CommonEve
     elementName.SetAbilityName(superAdmin->adminInfo_.className_);
     HandleDevicePolicy(funcCode, elementName, messageData, reply, EdmConstants::DEFAULT_USER_ID);
 }
+// LCOV_EXCL_STOP
 
 void EnterpriseDeviceMgrAbility::OnCommonEventSystemUpdate(const EventFwk::CommonEventData &data)
 {
@@ -293,6 +295,7 @@ void EnterpriseDeviceMgrAbility::UpdateNotifyPackagePolicy()
     }
 }
 
+// LCOV_EXCL_START
 void EnterpriseDeviceMgrAbility::OnCommonEventOobeFinish(const EventFwk::CommonEventData &data)
 {
     bool isOtaFinish = data.GetWant().GetBoolParam("ota", false);
@@ -336,7 +339,9 @@ void EnterpriseDeviceMgrAbility::OnCommonEventOobeFinish(const EventFwk::CommonE
         }
     }
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 void EnterpriseDeviceMgrAbility::OnCommonEventDevicePowerOn(const EventFwk::CommonEventData &data)
 {
 #ifdef UINPUT_MANAGER_EDM_ENABLE
@@ -362,7 +367,9 @@ void EnterpriseDeviceMgrAbility::OnCommonEventDevicePowerOn(const EventFwk::Comm
         }
     }
 }
+// LCOV_EXCL_STOP
 
+// LCOV_EXCL_START
 #ifdef UINPUT_MANAGER_EDM_ENABLE
 void EnterpriseDeviceMgrAbility::ResetDisallowUinputStatus()
 {
@@ -383,6 +390,7 @@ void EnterpriseDeviceMgrAbility::ResetDisallowUinputStatus()
     }
 }
 #endif
+// LCOV_EXCL_STOP
 
 void EnterpriseDeviceMgrAbility::ConnectAbilityOnSystemUpdate(const UpdateInfo &updateInfo)
 {
@@ -1066,6 +1074,7 @@ EnterpriseDeviceMgrAbility::~EnterpriseDeviceMgrAbility()
     EDMLOGD("instance is destroyed");
 }
 
+// LCOV_EXCL_START
 int32_t EnterpriseDeviceMgrAbility::Dump(int32_t fd, const std::vector<std::u16string> &args)
 {
     EDMLOGI("EnterpriseDeviceMgrAbility::Dump");
@@ -1093,6 +1102,7 @@ int32_t EnterpriseDeviceMgrAbility::Dump(int32_t fd, const std::vector<std::u16s
     }
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
 void EnterpriseDeviceMgrAbility::OnStart()
 {
@@ -1918,6 +1928,7 @@ ErrCode EnterpriseDeviceMgrAbility::DisableSuperAdmin(const std::string &bundleN
     return DoDisableAdmin(bundleName, EdmConstants::DEFAULT_USER_ID, AdminType::ENT);
 }
 
+// LCOV_EXCL_START
 ErrCode EnterpriseDeviceMgrAbility::CheckDisableAdmin(std::shared_ptr<Admin> admin, AdminType adminType)
 {
     bool isDebug = GetPermissionChecker()->CheckIsDebug();
@@ -1952,6 +1963,7 @@ ErrCode EnterpriseDeviceMgrAbility::CheckDisableAdmin(std::shared_ptr<Admin> adm
     }
     return ERR_OK;
 }
+// LCOV_EXCL_STOP
 
 // non-thread-safe function
 ErrCode EnterpriseDeviceMgrAbility::DoDisableAdmin(const std::string &bundleName, int32_t userId, AdminType adminType)

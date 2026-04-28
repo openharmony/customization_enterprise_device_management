@@ -803,5 +803,44 @@ int32_t ApplicationManagerProxy::GetHideLauncherIcon(const AppExecFwk::ElementNa
     return ERR_OK;
 }
 #endif
+
+int32_t ApplicationManagerProxy::AddOrRemoveAllowedDistributeAbilityConnBundles(MessageParcel &data, bool isAdd)
+{
+    EDMLOGI("ApplicationManagerProxy::AddOrRemoveAllowedDistributeAbilityConnBundles");
+    FuncOperateType operateType = isAdd ? FuncOperateType::SET : FuncOperateType::REMOVE;
+    std::uint32_t funcCode = POLICY_FUNC_CODE((std::uint32_t)operateType,
+        EdmInterfaceCode::ALLOWED_COLLABORATION_SERVICE_BUNDLES);
+    return EnterpriseDeviceMgrProxy::GetInstance()->HandleDevicePolicy(funcCode, data);
+}
+
+int32_t ApplicationManagerProxy::GetAllowedDistributeAbilityConnBundles(MessageParcel &data,
+    std::vector<std::string> &appIdentifiers)
+{
+    EDMLOGI("ApplicationManagerProxy::GetAllowedDistributeAbilityConnBundles");
+    MessageParcel reply;
+    EnterpriseDeviceMgrProxy::GetInstance()->GetPolicy(EdmInterfaceCode::ALLOWED_COLLABORATION_SERVICE_BUNDLES,
+        data, reply);
+    int32_t ret = ERR_INVALID_VALUE;
+    bool blRes = reply.ReadInt32(ret) && (ret == ERR_OK);
+    if (!blRes) {
+        EDMLOGW("EnterpriseDeviceMgrProxy::GetPolicy fail. %{public}d", ret);
+        return ret;
+    }
+    reply.ReadStringVector(&appIdentifiers);
+    return ERR_OK;
+}
+
+int32_t ApplicationManagerProxy::GetAllowedDistributeAbilityConnBundles(int32_t serviceType, int32_t accountId,
+    std::vector<std::string> &appIdentifiers)
+{
+    EDMLOGI("ApplicationManagerProxy::GetAllowedDistributeAbilityConnBundles type: %d", serviceType);
+    MessageParcel data;
+    data.WriteInterfaceToken(DESCRIPTOR);
+    data.WriteUint32(HAS_USERID);
+    data.WriteUint32(accountId);
+    data.WriteString(EdmConstants::PERMISSION_TAG_VERSION_23);
+    data.WriteInt32(WITHOUT_ADMIN);
+    return GetAllowedDistributeAbilityConnBundles(data, appIdentifiers);
+}
 } // namespace EDM
 } // namespace OHOS
