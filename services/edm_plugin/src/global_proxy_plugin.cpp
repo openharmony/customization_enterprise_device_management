@@ -57,8 +57,8 @@ ErrCode GlobalProxyPlugin::OnSetPolicy(NetManagerStandard::HttpProxy &httpProxy)
         .Add("port", port)
         .Add("exclusionList", exclusionVec)
         .Build();
-    EdmJsonBuilder &jsonBuilder = EdmJsonBuilder()
-        .AddRawJson("httpProxy", httpProxyJson);
+    EdmJsonBuilder jsonBuilder;
+    jsonBuilder.AddRawJson("httpProxy", httpProxyJson);
     if (userId != -1) {
         interfaceName = OverrideInterfaceName::NetworkManager::SET_GLOBAL_PROXY_FOR_ACCOUNT;
         jsonBuilder.Add("accountId", userId);
