@@ -59,7 +59,7 @@ ErrCode DisallowDistributedTransmissionFullPlugin::OnSetPolicy(
         EDMLOGE("DisallowDistributedTransmissionFullPlugin::OnSetPolicy HasConflictPolicy failed");
         return EdmReturnErrCode::CONFIGURATION_CONFLICT_FAILED;
     }
-    ErrCode ret = SetDistributedTransmissionFullPolicy(data, userId);
+    int32_t ret = SetDistributedTransmissionFullPolicy(data, userId);
     if (FAILED(ret)) {
         EDMLOGE("DisallowDistributedTransmissionFullPlugin::OnSetPolicy Failed, ret: %{public}d", ret);
         return EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED;

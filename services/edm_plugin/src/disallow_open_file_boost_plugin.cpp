@@ -46,8 +46,7 @@ void DisallowOpenFileBoostPlugin::InitPlugin(
     ptr->SetOnAdminRemoveListener(&DisallowOpenFileBoostPlugin::OnAdminRemove);
 }
 
-ErrCode DisallowOpenFileBoostPlugin::OnSetPolicy(
-    bool &data, bool &currentData, bool &mergeData, int32_t userId)
+ErrCode DisallowOpenFileBoostPlugin::OnSetPolicy(bool &data, bool &currentData, bool &mergeData, int32_t userId)
 {
     EDMLOGI("DisallowOpenFileBoostPlugin::OnSetPolicy, data: %{public}d, currentData: %{public}d, "
             "mergeData: %{public}d", data, currentData, mergeData);

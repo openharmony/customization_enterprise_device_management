@@ -55,7 +55,7 @@ ErrCode GetApplicationWindowStatesPlugin::OnGetPolicy(std::string &policyData, M
         return EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED;
     }
     auto wmsProxy = OHOS::Rosen::SessionManagerLite::GetInstance().GetSceneSessionManagerLiteProxy();
-    if (wmsProxy == nullptr) { //LCOV_EXCL_BR_LINE
+    if (wmsProxy == nullptr) { // LCOV_EXCL_BR_LINE
         EDMLOGE("GetApplicationWindowStatesPlugin  wmsproxy is nullptr");
         return EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED;
     }
@@ -64,7 +64,7 @@ ErrCode GetApplicationWindowStatesPlugin::OnGetPolicy(std::string &policyData, M
     appInfo.appIndex = appIndex;
     std::vector<Rosen::AppWindowShowingInfo> windowInfos;
     OHOS::Rosen::WMError ret = wmsProxy->GetAppWindowShowingInfosByBundleName(appInfo, windowInfos);
-    if (ret != OHOS::Rosen::WMError::WM_OK) { //LCOV_EXCL_BR_LINE
+    if (ret != OHOS::Rosen::WMError::WM_OK) { // LCOV_EXCL_BR_LINE
         EDMLOGE("GetApplicationWindowStatesPlugin GetApplicationWindowStates failed, ret: %{public}d", ret);
         return EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED;
     }

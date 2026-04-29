@@ -537,6 +537,17 @@ int EnterpriseDeviceMgrStubMock::InvokeSendRequestSizeError(uint32_t code, Messa
     return 0;
 }
 
+int EnterpriseDeviceMgrStubMock::InvokeNetStatsInfoSendRequestGetPolicy(uint32_t code, MessageParcel &data,
+    MessageParcel &reply, MessageOption &option)
+{
+    GTEST_LOG_(INFO) << "mock EnterpriseDeviceMgrStubMock InvokeNetStatsInfoSendRequestGetPolicy code :" << code;
+    code_ = code;
+    reply.WriteInt32(ERR_OK);
+    NetStatsInfo netStatsInfo;
+    netStatsInfo.Marshalling(reply);
+    return 0;
+}
+
 int EnterpriseDeviceMgrStubMock::InvokeSendRequestGetBundleStorageStats(uint32_t code, MessageParcel &data,
     MessageParcel &reply, MessageOption &option)
 {
@@ -576,18 +587,6 @@ int EnterpriseDeviceMgrStubMock::InvokeSendRequestGetBundleStorageStatsEmpty(uin
     code_ = code;
     reply.WriteInt32(ERR_OK);
     reply.WriteInt32(0);
-    return 0;
-}
-
-int EnterpriseDeviceMgrStubMock::InvokeNetStatsInfoSendRequestGetPolicy(uint32_t code, MessageParcel &data,
-    MessageParcel &reply, MessageOption &option)
-{
-    GTEST_LOG_(INFO) << "mock EnterpriseDeviceMgrStubMock InvokeNetStatsInfoSendRequestGetPolicy code :" << code;
-    code_ = code;
-    reply.WriteInt32(ERR_OK);
-    NetStatsInfo netStatsInfo;
-    netStatsInfo.Marshalling(reply);
-
     return 0;
 }
 
