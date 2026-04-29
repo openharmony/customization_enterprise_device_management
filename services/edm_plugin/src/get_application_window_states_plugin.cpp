@@ -15,10 +15,8 @@
 
 #include "get_application_window_states_plugin.h"
 
-#include "edm_bundle_manager_impl.h"
 #include "edm_constants.h"
 #include "edm_ipc_interface_code.h"
-#include "edm_os_account_manager_impl.h"
 #include "edm_log.h"
 #include "iplugin_manager.h"
 #include "session_manager_lite.h"
@@ -48,12 +46,6 @@ ErrCode GetApplicationWindowStatesPlugin::OnGetPolicy(std::string &policyData, M
     EDMLOGI("GetApplicationWindowStatesPlugin OnGetPolicy");
     std::string bundleName = data.ReadString();
     int32_t appIndex = data.ReadInt32();
-    int32_t currentUserId = GetCurrentUserId();
-    auto bundleMgr = std::make_shared<EdmBundleManagerImpl>();
-    if (!bundleMgr->IsBundleInstalled(bundleName, currentUserId, appIndex)) {
-        EDMLOGE("GetApplicationWindowStatesPlugin GetApplicationWindowStates failed");
-        return EdmReturnErrCode::PARAMETER_VERIFICATION_FAILED;
-    }
     auto wmsProxy = OHOS::Rosen::SessionManagerLite::GetInstance().GetSceneSessionManagerLiteProxy();
     if (wmsProxy == nullptr) { // LCOV_EXCL_BR_LINE
         EDMLOGE("GetApplicationWindowStatesPlugin  wmsproxy is nullptr");
@@ -85,18 +77,6 @@ ErrCode GetApplicationWindowStatesPlugin::OnGetPolicy(std::string &policyData, M
     reply.WriteInt32(ERR_OK);
     WindowStateInfoHandle::WriteWindowStateInfoVector(reply, windowStateInfos);
     return ERR_OK;
-}
-
-int32_t GetApplicationWindowStatesPlugin::GetCurrentUserId()
-{
-    std::vector<int32_t> ids;
-    ErrCode ret = std::make_shared<EdmOsAccountManagerImpl>()->QueryActiveOsAccountIds(ids);
-    if (FAILED(ret) || ids.empty()) {
-        EDMLOGE("GetApplicationWindowStatesPlugin GetCurrentUserId failed");
-        return -1;
-    }
-    EDMLOGD("GetApplicationWindowStatesPlugin GetCurrentUserId");
-    return (ids.at(0));
 }
 // LCOV_EXCL_STOP
 } // namespace EDM

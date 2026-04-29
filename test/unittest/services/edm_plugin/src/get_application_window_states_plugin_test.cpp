@@ -48,11 +48,11 @@ void GetApplicationWindowStatesPluginTest::TearDownTestSuite(void)
 }
 
 /**
- * @tc.name: TestOnGetPolicyFail
+ * @tc.name: TestOnGetPolicy
  * @tc.desc: Test GetApplicationWindowStatesPlugin::OnGetPolicy with uninstall app.
  * @tc.type: FUNC
  */
-HWTEST_F(GetApplicationWindowStatesPluginTest, TestOnGetPolicyFail, TestSize.Level1)
+HWTEST_F(GetApplicationWindowStatesPluginTest, TestOnGetPolicy, TestSize.Level1)
 {
     std::string policyData;
     MessageParcel data;
@@ -62,6 +62,28 @@ HWTEST_F(GetApplicationWindowStatesPluginTest, TestOnGetPolicyFail, TestSize.Lev
 
     data.WriteString(bundleName);
     data.WriteInt32(appIndex);
+    std::vector<WindowStateInfo> windowStateInfos;
+    GetApplicationWindowStatesPlugin plugin;
+    ErrCode ret = plugin.OnGetPolicy(policyData, data, reply, DEFAULT_USER_ID);
+    ASSERT_EQ(ret, ERR_OK);
+    ASSERT_EQ(reply.ReadInt32(), ERR_OK);
+    WindowStateInfoHandle::ReadWindowStateInfoVector(reply, windowStateInfos);
+    ASSERT_EQ(windowStateInfos.empty(), true);
+}
+
+/**
+ * @tc.name: TestOnGetPolicyFail
+ * @tc.desc: Test GetApplicationWindowStatesPlugin::OnGetPolicy with invalid bundlename.
+ * @tc.type: FUNC
+ */
+HWTEST_F(GetApplicationWindowStatesPluginTest, TestOnGetPolicyFail, TestSize.Level1)
+{
+    std::string policyData;
+    MessageParcel data;
+    MessageParcel reply;
+
+    data.WriteString("");
+    data.WriteInt32(0);
     std::vector<WindowStateInfo> windowStateInfos;
     GetApplicationWindowStatesPlugin plugin;
     ErrCode ret = plugin.OnGetPolicy(policyData, data, reply, DEFAULT_USER_ID);
