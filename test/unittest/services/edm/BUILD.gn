@@ -34,6 +34,24 @@ config("edm_config") {
     "../../../../services/edm/include/strategy",
     "../../../../services/edm/include/watermark",
     "../../../../services/edm_plugin/include",
+    "../../../../services/edm_plugin/include/account_manager",
+    "../../../../services/edm_plugin/include/admin_manager",
+    "../../../../services/edm_plugin/include/application_manager",
+    "../../../../services/edm_plugin/include/bluetooth_manager",
+    "../../../../services/edm_plugin/include/browser",
+    "../../../../services/edm_plugin/include/bundle_manager",
+    "../../../../services/edm_plugin/include/datetime_manager",
+    "../../../../services/edm_plugin/include/device_control",
+    "../../../../services/edm_plugin/include/device_info",
+    "../../../../services/edm_plugin/include/device_settings",
+    "../../../../services/edm_plugin/include/location_manager",
+    "../../../../services/edm_plugin/include/network_manager",
+    "../../../../services/edm_plugin/include/restrictions",
+    "../../../../services/edm_plugin/include/security_manager",
+    "../../../../services/edm_plugin/include/system_manager",
+    "../../../../services/edm_plugin/include/telephony_manager",
+    "../../../../services/edm_plugin/include/usb_manager",
+    "../../../../services/edm_plugin/include/wifi_manager",
     "../../../../services/edm_plugin/include/utils",
     "../../../../framework/extension/include",
   ]
@@ -130,7 +148,7 @@ ohos_static_library("edmservice_static") {
     "../../../../services/edm_plugin/src/utils/usb_policy_utils.cpp",
     "../../../../services/edm/src/query_policy/disallowed_sms_query.cpp",
     "../../../../services/edm/src/query_policy/disallowed_mms_query.cpp",
-    "../../../../services/edm_plugin/src/set_browser_policies_plugin.cpp",
+    "../../../../services/edm_plugin/src/browser/set_browser_policies_plugin.cpp",
   ]
 
   public_configs = [
