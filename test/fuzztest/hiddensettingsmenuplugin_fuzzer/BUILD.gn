@@ -33,7 +33,7 @@ ohos_fuzztest("HiddenSettingsMenuPluginFuzzTest") {
   sources = [
     "../common/src/common_fuzzer.cpp",
     "hidden_settings_menu_plugin_fuzzer.cpp",
-    "../../../services/edm_plugin/src/hidden_settings_menu_plugin.cpp",
+    "../../../services/edm_plugin/src/device_settings/hidden_settings_menu_plugin.cpp",
   ]
 
   include_dirs = [
