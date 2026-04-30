@@ -42,6 +42,10 @@ napi_value ApplicationManagerAddon::Init(napi_env env, napi_value exports)
     NAPI_CALL(env, napi_create_object(env, &nKioskFeature));
     CreateKioskFeatureObject(env, nKioskFeature);
 
+    napi_value nWindowState = nullptr;
+    NAPI_CALL(env, napi_create_object(env, &nWindowState));
+    CreateWindowStateObject(env, nWindowState);
+
     napi_value nServiceType = nullptr;
     NAPI_CALL(env, napi_create_object(env, &nServiceType));
     CreateServiceTypeObject(env, nServiceType);
@@ -76,11 +80,7 @@ napi_value ApplicationManagerAddon::Init(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("addUserNonStopApps", AddUserNonStopApps),
         DECLARE_NAPI_FUNCTION("removeUserNonStopApps", RemoveUserNonStopApps),
         DECLARE_NAPI_FUNCTION("getUserNonStopApps", GetUserNonStopApps),
-        DECLARE_NAPI_FUNCTION("setAbilityDisabled", SetAbilityDisabled),
-        DECLARE_NAPI_FUNCTION("isAbilityDisabled", IsAbilityDisabled),
-        DECLARE_NAPI_FUNCTION("addDockApp", AddDockApp),
-        DECLARE_NAPI_FUNCTION("removeDockApp", RemoveDockApp),
-        DECLARE_NAPI_FUNCTION("getDockApps", GetDockApps),
+        DECLARE_NAPI_PROPERTY("WindowState", nWindowState),
     };
     std::vector<napi_property_descriptor> propertyOne = InitOne();
     property.insert(property.end(), propertyOne.begin(), propertyOne.end());
@@ -91,11 +91,16 @@ napi_value ApplicationManagerAddon::Init(napi_env env, napi_value exports)
 std::vector<napi_property_descriptor> ApplicationManagerAddon::InitOne()
 {
     std::vector<napi_property_descriptor> property = {
+        DECLARE_NAPI_FUNCTION("setAbilityDisabled", SetAbilityDisabled),
+        DECLARE_NAPI_FUNCTION("isAbilityDisabled", IsAbilityDisabled),
         DECLARE_NAPI_FUNCTION("addAllowedNotificationBundles", AddAllowedNotificationBundles),
         DECLARE_NAPI_FUNCTION("removeAllowedNotificationBundles", RemoveAllowedNotificationBundles),
         DECLARE_NAPI_FUNCTION("getAllowedNotificationBundles", GetAllowedNotificationBundles),
         DECLARE_NAPI_FUNCTION("queryTrafficStats", QueryTrafficStats),
         DECLARE_NAPI_FUNCTION("queryBundleStatsInfos", QueryBundleStatsInfos),
+        DECLARE_NAPI_FUNCTION("addDockApp", AddDockApp),
+        DECLARE_NAPI_FUNCTION("removeDockApp", RemoveDockApp),
+        DECLARE_NAPI_FUNCTION("getDockApps", GetDockApps),
         DECLARE_NAPI_FUNCTION("getApplicationWindowStates", GetApplicationWindowStates),
         DECLARE_NAPI_FUNCTION("addHideLauncherIcon", AddHideLauncherIcon),
         DECLARE_NAPI_FUNCTION("removeHideLauncherIcon", RemoveHideLauncherIcon),
@@ -1174,6 +1179,40 @@ void ApplicationManagerAddon::CreateKioskFeatureObject(napi_env env, napi_value 
     NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env,
         static_cast<uint32_t>(KioskFeature::ALLOW_SIDE_DOCK), &nAllowSideDock));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "ALLOW_SIDE_DOCK", nAllowSideDock));
+}
+
+void ApplicationManagerAddon::CreateWindowStateObject(napi_env env, napi_value value)
+{
+    napi_value nDisconnect;
+    NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env,
+        static_cast<uint32_t>(OHOS::EDM::WindowState::DISCONNECT), &nDisconnect));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "DISCONNECT",
+        nDisconnect));
+
+    napi_value nConnect;
+    NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env,
+        static_cast<uint32_t>(OHOS::EDM::WindowState::CONNECT), &nConnect));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "CONNECT", nConnect));
+
+    napi_value nForeground;
+    NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env,
+        static_cast<uint32_t>(OHOS::EDM::WindowState::FOREGROUND), &nForeground));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "FOREGROUND", nForeground));
+
+    napi_value nActive;
+    NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env,
+        static_cast<uint32_t>(OHOS::EDM::WindowState::ACTIVE), &nActive));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "ACTIVE", nActive));
+
+    napi_value nInactive;
+    NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env,
+        static_cast<uint32_t>(OHOS::EDM::WindowState::INACTIVE), &nInactive));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "INACTIVE", nInactive));
+
+    napi_value nBackground;
+    NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env,
+        static_cast<uint32_t>(OHOS::EDM::WindowState::BACKGROUND), &nBackground));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "BACKGROUND", nBackground));
 }
 
 napi_value ApplicationManagerAddon::SetKioskFeatures(napi_env env, napi_callback_info info)
