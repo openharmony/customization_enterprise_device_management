@@ -81,6 +81,7 @@ napi_value ApplicationManagerAddon::Init(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("removeUserNonStopApps", RemoveUserNonStopApps),
         DECLARE_NAPI_FUNCTION("getUserNonStopApps", GetUserNonStopApps),
         DECLARE_NAPI_PROPERTY("WindowState", nWindowState),
+        DECLARE_NAPI_PROPERTY("ServiceType", nServiceType),
     };
     std::vector<napi_property_descriptor> propertyOne = InitOne();
     property.insert(property.end(), propertyOne.begin(), propertyOne.end());
