@@ -113,6 +113,7 @@ private:
         std::vector<EdmElementName> autoStartApps);
 
     static void CreateKioskFeatureObject(napi_env env, napi_value value);
+    static void CreateWindowStateObject(napi_env env, napi_value value);
     static void CreateServiceTypeObject(napi_env env, napi_value value);
     static std::vector<napi_property_descriptor> InitOne();
     static void NativeAddDisallowedRunningBundles(napi_env env, void *data);

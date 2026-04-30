@@ -21,7 +21,7 @@
 
 namespace OHOS {
 namespace EDM {
-enum WindowState : uint32_t {
+enum class WindowState : uint32_t {
     DISCONNECT = 0,
     CONNECT = 1,
     FOREGROUND = 2,
