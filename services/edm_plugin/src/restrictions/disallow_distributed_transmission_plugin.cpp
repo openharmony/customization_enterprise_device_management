@@ -81,6 +81,7 @@ ErrCode DisallowDistributedTransmissionPlugin::OnAdminRemove(
     if (mergeData) {
         return ERR_OK;
     }
+    ClearAllowedCollaborationServiceBundles(userId);
     if (data) {
         ErrCode ret = SetDistributedTransmissionPolicy(false, userId);
         if (FAILED(ret)) {
