@@ -15,6 +15,8 @@
 
 #include "apn_utils.h"
 
+#include "parse_apn_id_int.h"
+
 #include <algorithm>
 #include "parameters.h"
 #include "edm_errors.h"
@@ -350,10 +352,9 @@ int32_t ApnUtils::ApnSetPrefer(const std::string &apnId)
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;
     }
 
-    char* pResult = nullptr;
-    const int32_t apnIdInt = static_cast<int32_t>(std::strtol(apnId.c_str(), &pResult, 10));
-    if (apnId.c_str() == pResult) {
-        EDMLOGE("ApnUtils::ApnSetPrefer failed to convert type");
+    int32_t apnIdInt = 0;
+    if (!ParseApnIdInt32(apnId, apnIdInt)) {
+        EDMLOGE("ApnUtils::ApnSetPrefer failed to convert type: %{public}s", apnId.c_str());
         return EdmReturnErrCode::SYSTEM_ABNORMALLY;
     }
     DataShare::DataSharePredicates predicates;
